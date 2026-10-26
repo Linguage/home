@@ -146,9 +146,9 @@ const cardGroups = {
     })),
   ],
   alpaca: moduleItems('alpaca', [
-    { id: 'notes', title: 'Notes', href: 'https://linguista.cn/alpacanotes/notes/', meta: '文章、制作记录和日常笔记', icon: 'sticky-note', palette: ['#e0d2b4', '#51432d', '#a78c59'], motif: 'lines' },
-    { id: 'topics', title: 'Topics', href: 'https://linguista.cn/alpacanotes/topics/', meta: '书单、赛事、工作流与项目记录', icon: 'layers', palette: ['#3d6865', '#f2ead8', '#9ec8bb'], motif: 'grid' },
-    { id: 'prompts', title: 'Prompts', href: 'https://linguista.cn/alpacanotes/prompts/', meta: 'AI 绘画提示词与实验', icon: 'folder-open', palette: ['#65455c', '#fbebdd', '#c9a1bd'], motif: 'arch' },
+    { id: 'notes', title: 'Notes', href: 'https://linguista.cn/alpacanotes/notes', meta: '文章、制作记录和日常笔记', icon: 'sticky-note', palette: ['#e0d2b4', '#51432d', '#a78c59'], motif: 'lines' },
+    { id: 'topics', title: 'Topics', href: 'https://linguista.cn/alpacanotes/topics', meta: '书单、赛事、工作流与项目记录', icon: 'layers', palette: ['#3d6865', '#f2ead8', '#9ec8bb'], motif: 'grid' },
+    { id: 'prompts', title: 'Prompts', href: 'https://linguista.cn/alpacanotes/prompts', meta: 'AI 绘画提示词与实验', icon: 'folder-open', palette: ['#65455c', '#fbebdd', '#c9a1bd'], motif: 'arch' },
   ]),
   library: moduleItems('library', [
     { id: 'persons', title: '人物文集', href: 'https://linguista.cn/library/#persons', meta: '按作者浏览文集', icon: 'users', palette: ['#294763', '#f4ead2', '#b9cfe0'], motif: 'arch' },
