@@ -403,6 +403,12 @@ html:not(.js) .feature { overflow: visible; }
 .newsletter-edition-label span:last-child { color: var(--muted); }
 .newsletter-cover-topic { font: 17px/1.5 var(--serif); margin-top: 22px; }
 .newsletter-cover-footer { width: 100%; display: flex; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 13px; border-top: 1px solid var(--line); font: 10px/1.4 var(--sans); color: var(--muted); }
+.newsletter-channel-updates { display: grid; width: 100%; gap: 18px; margin: auto 0; padding: 24px 0; }
+.newsletter-channel-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font: 13px/1.5 var(--sans); }
+.newsletter-channel-line time, .newsletter-channel-line > span:last-child { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.newsletter-contents .newsletter-channel-copy { display: grid; gap: 5px; padding: 12px 0; color: var(--ink); font-size: 13px; }
+.newsletter-channel-copy strong { font-weight: 500; }
+.newsletter-channel-copy small { color: var(--muted); font: 11px/1.5 var(--sans); }
 .newsletter .newsletter-face-back { padding: 20px; background: var(--surface-raised); color: var(--ink); transform: rotateY(180deg); visibility: hidden; border: 1px solid var(--line); max-height: none; overflow: auto; }
 .newsletter-back-button { display: block; margin: -8px 0 14px auto; min-height: 36px; color: var(--accent); font-size: 12px; }
 .newsletter-fold[data-flipped="true"] .newsletter-cover-button { transform: rotateY(-180deg); visibility: hidden; }
@@ -426,6 +432,9 @@ html:not(.js) .newsletter-cover-button { display: none; }
   .newsletter-running-head { display: none; }
   .newsletter-cover-title { flex-direction: row; align-items: baseline; gap: 10px; margin-top: 0; }
   .newsletter-cover-name { font-size: 30px; }.newsletter-cover-chinese { font-size: 27px; margin: 0; }
+  .newsletter-channel-updates { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 10px 0; margin: 0; }
+  .newsletter-channel-line { display: grid; gap: 2px; font-size: 11px; }
+  .newsletter-channel-line time, .newsletter-channel-line > span:last-child { font-size: 9px; }
   .newsletter-cover-edition { position: absolute; right: 22px; top: 16px; margin: 0; gap: 8px; }
   .newsletter-cover-number { font-size: 42px; }.newsletter-edition-label { font-size: 8px; }
   .newsletter-cover-topic { font-size: 14px; margin-top: 10px; }

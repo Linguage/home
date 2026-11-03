@@ -111,13 +111,35 @@ let currentPanel = null;
 let syncPlayback = () => {};
 let returnFocus = homeButton;
 let shelfReturnFocus = homeButton;
+// sync:sites:start
 const sites = {
-  home: { title: 'Linguista', href: 'https://linguista.cn/', description: '所读 · 所思 · 所想' },
-  alpaca: { title: 'AlpacaNotes', href: 'https://linguista.cn/alpacanotes/', description: '学习与思考' },
-  library: { title: 'Library', href: 'https://linguista.cn/library/', description: '人物、图书与课程' },
-  hinbox: { title: 'Hinbox', href: 'https://linguista.cn/hinbox/', description: '文章、笔记与访谈' },
-  science: { title: "what's old", href: 'https://linguista.cn/sci-notes/', description: '科学技术笔记' },
+  "home": {
+    "title": "Linguista",
+    "href": "https://linguista.cn/",
+    "description": "所读 · 所思 · 所想"
+  },
+  "alpaca": {
+    "title": "AlpacaNotes",
+    "href": "https://linguista.cn/alpacanotes/",
+    "description": "我的博客，不定期更新，记录我的学习与思考。"
+  },
+  "library": {
+    "title": "Library",
+    "href": "https://linguista.cn/library/",
+    "description": "按人物、频道和课程整理值得连续阅读的内容。"
+  },
+  "hinbox": {
+    "title": "Hinbox",
+    "href": "https://linguista.cn/hinbox/",
+    "description": "用收件箱整理文章、研究笔记、访谈和演讲。"
+  },
+  "science": {
+    "title": "what's old",
+    "href": "https://linguista.cn/sci-notes/",
+    "description": "记录我在科学技术领域的学习和实践。"
+  }
 };
+// sync:sites:end
 const groupLabels = Object.fromEntries(Object.entries(sites).map(([key, site]) => [key, site.title]));
 const textOf = (element, selector) => element.querySelector(selector)?.textContent.trim() || '';
 const slideSources = [...document.querySelectorAll('[data-slide]')];
@@ -136,52 +158,306 @@ function moduleItems(group, entries) {
     image: `./assets/modules/${icon}.svg`, imageStyle: 'icon',
   }));
 }
+// sync:modules:start
 const cardGroups = {
   home: [
-    { key: 'newsletter', title: 'Newsletter', meta: '精选阅读与个人思考', href: 'https://linguista.cn/newsletter/', action: '进入周刊', image: './assets/linguista/newsletter-geometric.svg', palette: ['#efe0bc', '#4d4930', '#c0a56c'], isModule: true },
-    ...['workshop', 'bookmarks', 'about'].map((id, index) => ({
-      key: id, panel: id, title: textOf(document.querySelector(`#${id}`), 'h2'), isModule: true,
-      image: document.querySelector(`[data-open-panel="${id}"] img`).getAttribute('src'),
-      palette: [['#5d735d', '#fff3d9', '#a2bc8e'], ['#b7cad4', '#28444b', '#6d94a7'], ['#6c4149', '#f9e7d8', '#c59494']][index],
-    })),
-  ],
+  {
+    "key": "newsletter",
+    "title": "Newsletter",
+    "meta": "每周精选与每日剪报，按期阅读。",
+    "href": "https://linguista.cn/newsletter/",
+    "description": "每周精选与每日剪报，按期阅读。",
+    "action": "进入Newsletter",
+    "image": "./assets/linguista/newsletter-geometric.svg",
+    "palette": [
+      "#efe0bc",
+      "#4d4930",
+      "#c0a56c"
+    ],
+    "isModule": true
+  },
+  {
+    "key": "workshop",
+    "title": "Workshop",
+    "meta": "浏览原创项目的用途、实现方式与技术更新，并进入公开仓库。",
+    "href": "https://linguista.cn/lab",
+    "description": "浏览原创项目的用途、实现方式与技术更新，并进入公开仓库。",
+    "action": "进入工坊",
+    "image": "./assets/linguista/woz-jobs.webp",
+    "palette": [
+      "#5d735d",
+      "#fff3d9",
+      "#a2bc8e"
+    ],
+    "isModule": true
+  },
+  {
+    "key": "bookmarks",
+    "title": "Bookmarks",
+    "meta": "精心整理的阅读清单与个人知识库，涵盖技术探索与设计美学的珍贵碎片。",
+    "href": "https://linguista.cn/bookmarks",
+    "description": "精心整理的阅读清单与个人知识库，涵盖技术探索与设计美学的珍贵碎片。",
+    "action": "浏览收藏",
+    "image": "./assets/linguista/Einstein-office.png",
+    "palette": [
+      "#b7cad4",
+      "#28444b",
+      "#6d94a7"
+    ],
+    "isModule": true
+  },
+  {
+    "key": "about",
+    "title": "About",
+    "meta": "分享个人的所读、所思与所想。通过跨学科的视角，观察数字时代的极简主义与结构化表达。致力于知识边界的无缝对接。",
+    "href": "https://linguista.cn/about",
+    "description": "分享个人的所读、所思与所想。通过跨学科的视角，观察数字时代的极简主义与结构化表达。致力于知识边界的无缝对接。",
+    "action": "了解本站",
+    "image": "./assets/linguista/Apollo-console.jpg",
+    "palette": [
+      "#6c4149",
+      "#f9e7d8",
+      "#c59494"
+    ],
+    "isModule": true
+  }
+],
   alpaca: moduleItems('alpaca', [
-    { id: 'notes', title: 'Notes', href: 'https://linguista.cn/alpacanotes/notes', meta: '文章、制作记录和日常笔记', icon: 'sticky-note', palette: ['#e0d2b4', '#51432d', '#a78c59'], motif: 'lines' },
-    { id: 'topics', title: 'Topics', href: 'https://linguista.cn/alpacanotes/topics', meta: '书单、赛事、工作流与项目记录', icon: 'layers', palette: ['#3d6865', '#f2ead8', '#9ec8bb'], motif: 'grid' },
-    { id: 'prompts', title: 'Prompts', href: 'https://linguista.cn/alpacanotes/prompts', meta: 'AI 绘画提示词与实验', icon: 'folder-open', palette: ['#65455c', '#fbebdd', '#c9a1bd'], motif: 'arch' },
-  ]),
+  {
+    "id": "notes",
+    "title": "Writings",
+    "href": "https://linguista.cn/alpacanotes/notes",
+    "meta": "Essay 与 Notes：文章、评论和日常笔记。",
+    "icon": "sticky-note",
+    "palette": [
+      "#e0d2b4",
+      "#51432d",
+      "#a78c59"
+    ],
+    "motif": "lines"
+  },
+  {
+    "id": "topics",
+    "title": "Topics",
+    "href": "https://linguista.cn/alpacanotes/topics",
+    "meta": "书单、赛事、工作流与项目记录的专题目录。",
+    "icon": "layers",
+    "palette": [
+      "#3d6865",
+      "#f2ead8",
+      "#9ec8bb"
+    ],
+    "motif": "grid"
+  },
+  {
+    "id": "prompts",
+    "title": "Prompts",
+    "href": "https://linguista.cn/alpacanotes/prompts",
+    "meta": "A collection of AI art prompts and experiments.",
+    "icon": "folder-open",
+    "palette": [
+      "#65455c",
+      "#fbebdd",
+      "#c9a1bd"
+    ],
+    "motif": "arch"
+  }
+]),
   library: moduleItems('library', [
-    { id: 'persons', title: '人物文集', href: 'https://linguista.cn/library/#persons', meta: '按作者浏览文集', icon: 'users', palette: ['#294763', '#f4ead2', '#b9cfe0'], motif: 'arch' },
-    { id: 'courses', title: '图书与课程', href: 'https://linguista.cn/library/#courses', meta: '图书与课程书架', icon: 'library', palette: ['#e2cf9f', '#5a4433', '#b48b54'], motif: 'lines' },
-    { id: 'channels', title: '频道精选', href: 'https://linguista.cn/library/#channels', meta: '按频道浏览阅读内容', icon: 'radio', palette: ['#4d6653', '#f4efda', '#acc7a4'], motif: 'grid' },
-  ]),
+  {
+    "id": "persons",
+    "title": "人物文集",
+    "href": "https://linguista.cn/library/#persons",
+    "meta": "按作者浏览文集",
+    "icon": "users",
+    "palette": [
+      "#294763",
+      "#f4ead2",
+      "#b9cfe0"
+    ],
+    "motif": "arch"
+  },
+  {
+    "id": "courses",
+    "title": "图书与课程",
+    "href": "https://linguista.cn/library/#courses",
+    "meta": "图书与课程书架",
+    "icon": "library",
+    "palette": [
+      "#e2cf9f",
+      "#5a4433",
+      "#b48b54"
+    ],
+    "motif": "lines"
+  },
+  {
+    "id": "channels",
+    "title": "频道精选",
+    "href": "https://linguista.cn/library/#channels",
+    "meta": "按频道浏览阅读内容",
+    "icon": "radio",
+    "palette": [
+      "#4d6653",
+      "#f4efda",
+      "#acc7a4"
+    ],
+    "motif": "grid"
+  }
+]),
   hinbox: moduleItems('hinbox', [
-    { id: 'notes', title: 'Notes', href: 'https://linguista.cn/hinbox/?label=Notes', meta: '阅读笔记', icon: 'eye', palette: ['#dae7dc', '#294e41', '#76a587'], motif: 'arch' },
-    { id: 'essays', title: 'Essays', href: 'https://linguista.cn/hinbox/?label=Essays', meta: '思想、方法与个人判断', icon: 'book-open', palette: ['#503e58', '#f8ead9', '#b89bc4'], motif: 'lines' },
-    { id: 'talks', title: 'Talks', href: 'https://linguista.cn/hinbox/?label=Talks', meta: '访谈、演讲与课堂整理', icon: 'video', palette: ['#844f3e', '#fff0dc', '#d6a476'], motif: 'diagonal' },
-    { id: 'reports', title: 'Reports', href: 'https://linguista.cn/hinbox/?label=Reports', meta: '长文与研究笔记', icon: 'file-text', palette: ['#d8e1ed', '#294362', '#8da6c5'], motif: 'grid' },
-  ]),
+  {
+    "id": "essays",
+    "title": "Essays",
+    "href": "https://linguista.cn/hinbox/?label=Essays",
+    "meta": "Essays 收录偏思想、方法与个人判断的文章。这里的内容不追求新闻速度，更关注一个观点如何被组织、一个问题如何被拆开，以及技术、学习、写作和社会之间的长线关系。",
+    "icon": "book-open",
+    "palette": [
+      "#503e58",
+      "#f8ead9",
+      "#b89bc4"
+    ],
+    "motif": "lines"
+  },
+  {
+    "id": "talks",
+    "title": "Talks",
+    "href": "https://linguista.cn/hinbox/?label=Talks",
+    "meta": "Talks 收录访谈、演讲、课堂与长视频整理。这里保留视频入口，也把核心脉络整理成可阅读文本，方便在人物、主题和时间之间回看思想如何被说出来。",
+    "icon": "video",
+    "palette": [
+      "#844f3e",
+      "#fff0dc",
+      "#d6a476"
+    ],
+    "motif": "diagonal"
+  },
+  {
+    "id": "reports",
+    "title": "Reports",
+    "href": "https://linguista.cn/hinbox/?label=Reports",
+    "meta": "Reports 收录围绕人工智能、计算系统、科学研究与技术社会影响的长文和研究笔记。这里的条目通常来自论文、机构博客、工程报告或高密度技术评论，更适合做主题追踪、概念索引和后续精读。",
+    "icon": "file-text",
+    "palette": [
+      "#d8e1ed",
+      "#294362",
+      "#8da6c5"
+    ],
+    "motif": "grid"
+  }
+]),
   science: moduleItems('science', [
-    { id: 'reports', title: '调研', href: 'https://linguista.cn/sci-notes/category/调研报告/', meta: '长篇综述与调研报告', icon: 'file-text', palette: ['#c9d8e5', '#28465b', '#88a9c0'], motif: 'lines' },
-    { id: 'dynamics', title: '动力系统', href: 'https://linguista.cn/sci-notes/category/动力系统/', meta: '动力系统的学习和实践', icon: 'chart-spline', palette: ['#325859', '#f3edd7', '#8fb6ae'], motif: 'arch' },
-    { id: 'engineering', title: '工程设计', href: 'https://linguista.cn/sci-notes/category/工程设计/', meta: '工程设计的学习和实践', icon: 'ruler', palette: ['#d9bf92', '#4f3d2a', '#af8856'], motif: 'grid' },
-    { id: 'algorithms', title: '算法理论', href: 'https://linguista.cn/sci-notes/category/算法理论/', meta: '算法理论的学习和实践', icon: 'workflow', palette: ['#534f76', '#f0e8fa', '#b5acd8'], motif: 'diagonal' },
-    { id: 'status', title: '随手记', href: 'https://linguista.cn/sci-notes/status/', meta: '随手记录与更新', icon: 'messages', palette: ['#e0c4bd', '#653f42', '#bc8b87'], motif: 'lines' },
-  ]),
+  {
+    "id": "reports",
+    "title": "调研",
+    "href": "https://linguista.cn/sci-notes/articles/?category=%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A",
+    "meta": "长篇综述与调研报告",
+    "icon": "file-text",
+    "palette": [
+      "#c9d8e5",
+      "#28465b",
+      "#88a9c0"
+    ],
+    "motif": "lines"
+  },
+  {
+    "id": "dynamics",
+    "title": "动力系统",
+    "href": "https://linguista.cn/sci-notes/articles/?category=%E5%8A%A8%E5%8A%9B%E7%B3%BB%E7%BB%9F",
+    "meta": "动力系统的学习和实践",
+    "icon": "chart-spline",
+    "palette": [
+      "#325859",
+      "#f3edd7",
+      "#8fb6ae"
+    ],
+    "motif": "arch"
+  },
+  {
+    "id": "engineering",
+    "title": "工程设计",
+    "href": "https://linguista.cn/sci-notes/articles/?category=%E5%B7%A5%E7%A8%8B%E8%AE%BE%E8%AE%A1",
+    "meta": "工程设计的学习和实践",
+    "icon": "ruler",
+    "palette": [
+      "#d9bf92",
+      "#4f3d2a",
+      "#af8856"
+    ],
+    "motif": "grid"
+  },
+  {
+    "id": "algorithms",
+    "title": "算法理论",
+    "href": "https://linguista.cn/sci-notes/articles/?category=%E7%AE%97%E6%B3%95%E7%90%86%E8%AE%BA",
+    "meta": "算法理论的学习和实践",
+    "icon": "workflow",
+    "palette": [
+      "#534f76",
+      "#f0e8fa",
+      "#b5acd8"
+    ],
+    "motif": "diagonal"
+  },
+  {
+    "id": "status",
+    "title": "随手记",
+    "href": "https://linguista.cn/sci-notes/status/",
+    "meta": "随手记录与更新",
+    "icon": "messages",
+    "palette": [
+      "#e0c4bd",
+      "#653f42",
+      "#bc8b87"
+    ],
+    "motif": "lines"
+  }
+]),
 };
-// These links browse indexes or site information; they do not become content cards.
 const shelfLinks = {
-  hinbox: [
-    { title: 'People', href: 'https://linguista.cn/hinbox/?label=People' },
-    { title: 'Tags', href: 'https://linguista.cn/hinbox/?label=Tags' },
-    { title: 'Media', href: 'https://linguista.cn/hinbox/?label=Media' },
+  "home": [
+    {
+      "title": "Weekly",
+      "href": "https://linguista.cn/newsletter/"
+    },
+    {
+      "title": "科技剪报",
+      "href": "https://linguista.cn/newsletter/tech/"
+    },
+    {
+      "title": "HN热点",
+      "href": "https://linguista.cn/newsletter/hn/"
+    }
   ],
-  science: [
-    { title: '文章', href: 'https://linguista.cn/sci-notes/archives/' },
-    { title: '分类', href: 'https://linguista.cn/sci-notes/categories/' },
-    { title: '关于', href: 'https://linguista.cn/sci-notes/about/' },
+  "hinbox": [
+    {
+      "title": "People",
+      "href": "https://linguista.cn/hinbox/?label=People"
+    },
+    {
+      "title": "Tags",
+      "href": "https://linguista.cn/hinbox/?label=Tags"
+    },
+    {
+      "title": "Media",
+      "href": "https://linguista.cn/hinbox/?label=Media"
+    }
   ],
+  "science": [
+    {
+      "title": "文章",
+      "href": "https://linguista.cn/sci-notes/articles/"
+    },
+    {
+      "title": "分类",
+      "href": "https://linguista.cn/sci-notes/categories/"
+    },
+    {
+      "title": "关于",
+      "href": "https://linguista.cn/sci-notes/about/"
+    }
+  ]
 };
+// sync:modules:end
 
 function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
