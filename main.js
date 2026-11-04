@@ -83,23 +83,6 @@ const dockButtons = [...document.querySelectorAll('[data-card-group]')];
 const mobile = matchMedia('(max-width: 900px)');
 const hoverPointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
 let suppressFocusPreview = false;
-const newsletterFold = document.querySelector('#newsletter-fold');
-const newsletterToggle = document.querySelector('#newsletter-toggle');
-const newsletterPages = document.querySelector('#newsletter-pages');
-const newsletterBack = document.querySelector('#newsletter-back');
-const newsletterIsOpen = () => newsletterFold.dataset.flipped === 'true';
-const quickLinks = document.querySelector('.quick-links');
-const quickLinksHome = document.createComment('Desktop module navigation');
-quickLinks.before(quickLinksHome);
-function placeModuleLinks() {
-  const target = mobile.matches ? document.querySelector('#newsletter-pages') : quickLinksHome.parentElement;
-  if (quickLinks.parentElement === target) return;
-  const focus = quickLinks.contains(document.activeElement) ? document.activeElement : null;
-  if (mobile.matches) target.append(quickLinks);
-  else quickLinksHome.after(quickLinks);
-  if (focus?.getClientRects().length) focus.focus({ preventScroll: true });
-}
-placeModuleLinks();
 const shelf = document.querySelector('#card-shelf');
 const shelfTrack = document.querySelector('#shelf-track');
 const detail = document.querySelector('#content-detail');
@@ -225,7 +208,7 @@ const cardGroups = {
   alpaca: moduleItems('alpaca', [
   {
     "id": "notes",
-    "title": "Writings",
+    "title": "Writes",
     "href": "https://linguista.cn/alpacanotes/notes",
     "meta": "Essay 与 Notes：文章、评论和日常笔记。",
     "icon": "sticky-note",
@@ -240,7 +223,7 @@ const cardGroups = {
     "id": "topics",
     "title": "Topics",
     "href": "https://linguista.cn/alpacanotes/topics",
-    "meta": "书单、赛事、工作流与项目记录的专题目录。",
+    "meta": "赛事、工作流与项目记录的专题目录。",
     "icon": "layers",
     "palette": [
       "#3d6865",
@@ -541,32 +524,6 @@ function miniCover(item, group) {
   if (!item.isModule && subtitle.textContent) cover.append(subtitle);
   return cover;
 }
-function closeNewsletter({ restoreFocus = false } = {}) {
-  if (!newsletterIsOpen()) return;
-  setNewsletterOpen(false, restoreFocus || newsletterPages.contains(document.activeElement));
-}
-function setNewsletterOpen(open, focus = false) {
-  newsletterFold.dataset.flipped = String(open);
-  newsletterToggle.setAttribute('aria-expanded', String(open));
-  newsletterToggle.setAttribute('aria-hidden', String(open));
-  newsletterToggle.inert = open;
-  newsletterPages.setAttribute('aria-hidden', String(!open));
-  newsletterPages.inert = !open;
-  if (open && mobile.matches) {
-    closeShelf({ restoreFocus: false });
-    closePanel({ restoreFocus: false, immediate: true });
-  }
-  if (focus) (open ? newsletterBack : newsletterToggle).focus({ preventScroll: true });
-  syncPlayback();
-}
-newsletterBack.hidden = false;
-newsletterPages.inert = true;
-newsletterPages.setAttribute('aria-hidden', 'true');
-newsletterToggle.addEventListener('click', () => setNewsletterOpen(true, true));
-newsletterBack.addEventListener('click', () => closeNewsletter({ restoreFocus: true }));
-newsletterPages.addEventListener('click', event => {
-  if (!event.target.closest('a, button') && !window.getSelection()?.toString()) closeNewsletter({ restoreFocus: true });
-});
 panels.forEach(panel => {
   panel.hidden = false;
   panel.setAttribute('role', 'region');
@@ -649,9 +606,8 @@ function closePanel({ restoreFocus = true, immediate = false } = {}) {
 function openPanel(id, trigger, { focus = true } = {}) {
   const panel = panels.find(item => item.id === id);
   if (!panel) return;
-  if (mobile.matches) closeNewsletter();
   closePanel({ restoreFocus: false, immediate: true });
-  returnFocus = mobile.matches && trigger?.closest('#newsletter-pages') ? newsletterToggle : trigger || homeButton;
+  returnFocus = trigger || homeButton;
   currentPanel = panel;
   document.querySelector('.feature').classList.add('is-browsing');
   cancelMotion(panel);
@@ -690,7 +646,6 @@ function closeShelf({ restoreFocus = true } = {}) {
 function openShelf(group, trigger = homeButton) {
   if (shelfGroup === group) { closeShelf(); return; }
   if (mobile.matches) {
-    closeNewsletter();
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
   shelfGroup = group;
@@ -819,8 +774,6 @@ document.addEventListener('click', event => {
   if (shelfGroup && !event.target.closest('#card-shelf, .app-panel, .dock, #search-dialog')) closeShelf({ restoreFocus: false });
 });
 mobile.addEventListener('change', () => {
-  placeModuleLinks();
-  if (mobile.matches && (currentPanel || shelfGroup)) closeNewsletter();
   updateNavigation();
 });
 panels.forEach(panel => trackDrag(panel, {
@@ -850,7 +803,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (reducedMotion.matches || document.hidden || pointerReading || keyboardReading || carouselDragging || currentPanel || shelfGroup || newsletterIsOpen() || document.querySelector('#search-dialog').open) return;
+  if (reducedMotion.matches || document.hidden || pointerReading || keyboardReading || carouselDragging || currentPanel || shelfGroup || document.querySelector('#search-dialog').open) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -931,7 +884,7 @@ setSlide(0, false);
 trackDrag(feature, {
   axis: 'x',
   canStart: event => {
-    const allowed = !currentPanel && !shelfGroup && !newsletterIsOpen() && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
+    const allowed = !currentPanel && !shelfGroup && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
     if (allowed) { carouselDragging = true; syncPlayback(); }
     return allowed;
   },
@@ -1048,7 +1001,6 @@ document.addEventListener('keydown', event => {
     event.preventDefault();
     if (shelfGroup) closeShelf();
     else if (currentPanel) closePanel();
-    else closeNewsletter({ restoreFocus: true });
   }
   const typing = event.target.closest('input, textarea, [contenteditable="true"]');
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
