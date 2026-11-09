@@ -48,7 +48,6 @@
       const select = group => {
         if (!sites[group]) group = 'home';
         clear(); root.dataset.homeSite = group;
-        if (matchMedia('(max-width: 900px)').matches) window.scrollTo({ top: 0, behavior: 'instant' });
         const isHome = group === 'home';
 
         if (!isHome) {

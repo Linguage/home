@@ -2,6 +2,8 @@ export function listFeeds() {
   return fetch('./rss-feeds.json', { cache: 'no-cache' });
 }
 
+export const getArticle = null;
+
 export async function getFeed(feed, { refresh }) {
   const response = await fetch(feed.webSnapshot ? new URL(feed.webSnapshot, import.meta.url) : feed.url, {
     cache: refresh ? 'reload' : 'no-cache',

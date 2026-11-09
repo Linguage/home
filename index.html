@@ -18,7 +18,7 @@
   <script defer src="./site-home.js"></script>
   <script defer src="./main.js"></script>
   <script defer src="./shell.js"></script>
-  <script type="module" src="./rss.js"></script>
+  <script type="module" src="./rss.js?v=4f5a612b870201af"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -153,13 +153,27 @@
     <section class="rss-stage" aria-label="RSS 阅读区">
       <div class="rss-welcome" id="rss-welcome" hidden></div>
       <article class="rss-reader" id="rss-reader" aria-labelledby="rss-article-title" hidden>
-        <div class="rss-reader-top"><span class="rss-eyebrow" id="rss-reader-site"></span><button type="button" id="rss-close" class="icon-button" aria-label="关闭摘要，返回文章列表"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
-        <p class="rss-reader-date" id="rss-article-meta"></p>
-        <h2 id="rss-article-title" tabindex="-1"></h2>
-        <div class="rss-categories" id="rss-article-categories"></div>
-        <div class="rss-summary-label"><span>RSS 摘要</span><span class="rss-summary-rule"></span></div>
-        <p class="rss-excerpt" id="rss-article-summary"></p>
-        <footer class="rss-reader-footer"><a class="rss-original" id="rss-original" target="_blank" rel="noopener noreferrer"><span>阅读全文</span></a></footer>
+        <div class="rss-reader-top">
+          <span class="rss-eyebrow" id="rss-reader-site"></span>
+          <div class="rss-reader-actions">
+            <button type="button" id="rss-ask-selection" hidden>解释选段</button>
+            <button type="button" id="rss-ask-ai" hidden>AI 伴读</button>
+            <button type="button" id="rss-close" class="icon-button" aria-label="关闭阅读，返回文章列表"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+          </div>
+        </div>
+        <div class="rss-reader-content">
+          <p class="rss-reader-date" id="rss-article-meta"></p>
+          <h2 id="rss-article-title" tabindex="-1"></h2>
+          <div class="rss-categories" id="rss-article-categories"></div>
+          <div class="rss-summary-label"><span id="rss-reading-label">RSS 摘要</span><span class="rss-summary-rule"></span></div>
+          <p class="rss-body-status" id="rss-body-status" role="status" hidden></p>
+          <p class="rss-excerpt" id="rss-article-summary"></p>
+          <div class="rss-reader-footer">
+            <button class="rss-original" id="rss-read-full" type="button" aria-controls="rss-article-body" aria-expanded="false" hidden>全文阅读</button>
+            <a class="rss-original" id="rss-original" target="_blank" rel="noopener noreferrer">在原站打开</a>
+          </div>
+          <div class="rss-article-body" id="rss-article-body" hidden></div>
+        </div>
       </article>
     </section>
   </template>

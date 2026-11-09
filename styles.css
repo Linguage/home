@@ -389,11 +389,10 @@ body:has(dialog[open]) { overflow: hidden; }
   .js .app-panel { left: 24px; right: 24px; }
 }
 @media (max-width: 900px) {
-  .card-shelf { position: fixed; left: 0; right: 0; bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 56px); height: 150px; padding: 5px 8px 10px; }
+  .feature { --mobile-shelf-height: 132px; }
+  .card-shelf { position: absolute; inset: 0 0 auto; height: var(--mobile-shelf-height); padding: 4px 8px 0; overflow-anchor: none; }
   .shelf-heading { height: 34px; gap: 8px; }
   .shelf-heading h2 { font-size: 12px; }.shelf-description { font-size: 10px; }
-  .js .dashboard:has(.is-browsing), .js .dashboard:has(.has-shelf) { height: calc(100svh - var(--dock-height) - env(safe-area-inset-bottom)); min-height: 0; }
-  .js .feature:is(.is-browsing, .has-shelf) { flex: 1; min-height: 0; }
   .feature.has-shelf .feature-bottom { display: none; }
   .content-detail .panel-heading h2 { overflow-wrap: anywhere; font-size: 28px; }
   .detail-category { font-size: 11px; margin-bottom: 8px; }

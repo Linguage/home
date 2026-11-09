@@ -624,10 +624,9 @@ function openPanel(id, trigger, { focus = true } = {}) {
 }
 function reserveShelfSpace() {
   const stage = document.querySelector('.feature');
-  if (shelf.hidden) { stage.style.removeProperty('--shelf-clearance'); return; }
+  if (shelf.hidden || mobile.matches) { stage.style.removeProperty('--shelf-clearance'); return; }
   const style = getComputedStyle(shelf);
-  let clearance = shelf.offsetHeight + (parseFloat(style.bottom) || 0) + 10;
-  if (style.position === 'fixed') clearance += stage.getBoundingClientRect().bottom - innerHeight;
+  const clearance = shelf.offsetHeight + (parseFloat(style.bottom) || 0) + 10;
   stage.style.setProperty('--shelf-clearance', `${Math.max(0, clearance)}px`);
 }
 const shelfLayout = new ResizeObserver(reserveShelfSpace);
@@ -660,9 +659,6 @@ function openShelf(group, trigger = homeButton) {
     if (!mobile.matches && group !== 'home') return;
   }
   if (shelfGroup === group) { closeShelf(); return; }
-  if (mobile.matches) {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }
   shelfGroup = group;
   syncPlayback();
   shelfReturnFocus = trigger;
@@ -698,11 +694,15 @@ function openShelf(group, trigger = homeButton) {
   shelfTrack.append(indexNav);
   shelf.hidden = false;
   document.querySelector('.feature').classList.add('has-shelf');
+  if (mobile.matches && shelf.getBoundingClientRect().top < 0) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
   reserveShelfSpace();
   shelfTrack.scrollLeft = 0;
   updateNavigation();
   updateShelfArrows();
-  move(shelf, [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }]);
+  move(shelf, mobile.matches ? [{ opacity: 0 }, { opacity: 1 }] :
+    [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }]);
   // Keep focus on the dock so repeated activation can fold the shelf.
 }
 function showItem(item, group, trigger, { focus = true } = {}) {

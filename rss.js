@@ -1,4 +1,4 @@
-import { getFeed, listFeeds } from './feed-source.js';
+import { getArticle, getFeed, listFeeds } from './feed-source.js';
 import { parseFeed } from './rss-content.js';
 import { mergeArticles, articleChanged } from './rss-state.js';
 
@@ -11,6 +11,16 @@ const dock = [...document.querySelectorAll('.dock [data-card-group]')];
 const switches = [...document.querySelectorAll('[data-view]')];
 const snapshots = new Map(), requests = new Map(), selected = new Map();
 let feeds = [], activeSite = 'home', mode = 'home', activeArticle = null;
+let articleRequest;
+let readingAI;
+if (getArticle) {
+  root.dataset.instantReader = 'true';
+  void import('./reader-ai.js' + new URL(import.meta.url).search).then(({ connectReadingAI }) => {
+    readingAI = connectReadingAI({ snapshot: () => activeArticle && ({
+      title: activeArticle.title, url: activeArticle.url, edition: $('rss-reading-label').textContent,
+    }) });
+  });
+}
 let readIds = new Set();
 let readFilter = 'unread';
 function stored(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
@@ -63,6 +73,8 @@ function syncLabel(value) {
   return new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(value));
 }
 function closeReader({ focus = true } = {}) {
+  articleRequest?.abort(); articleRequest = undefined;
+  if (activeArticle) readingAI?.reset();
   activeArticle = null; root.removeAttribute('data-rss-reading');
   $('rss-reader').hidden = true; $('rss-welcome').hidden = false;
   document.querySelectorAll('.rss-article-item').forEach(button => button.removeAttribute('aria-current'));
@@ -70,6 +82,8 @@ function closeReader({ focus = true } = {}) {
 }
 function openArticle(article, { focus = true, markRead = true, resetScroll = true } = {}) {
   const feed = feedFor(activeSite); if (!feed) return;
+  const resetBody = resetScroll || activeArticle?.url !== article.url;
+  if (activeArticle?.url !== article.url) readingAI?.reset();
   activeArticle = article; selected.set(activeSite, article.id);
   if (markRead) {
     readIds.delete(article.id); readIds.add(article.id);
@@ -83,9 +97,55 @@ function openArticle(article, { focus = true, markRead = true, resetScroll = tru
   $('rss-article-categories').replaceChildren(...article.categories.slice(0, 6).map(category => node('span', '', category)));
   $('rss-reader').hidden = false; $('rss-welcome').hidden = true; root.dataset.rssReading = 'true';
   if (resetScroll) $('rss-reader').scrollTop = 0;
+  if (resetBody) resetArticleBody(feed);
   renderList();
   if (focus) $('rss-article-title').focus({ preventScroll: true });
 }
+function resetArticleBody(feed) {
+  articleRequest?.abort(); articleRequest = undefined;
+  $('rss-article-body').replaceChildren();
+  $('rss-article-body').hidden = true;
+  $('rss-reading-label').textContent = 'RSS 摘要';
+  $('rss-article-summary').hidden = false;
+  $('rss-body-status').hidden = true;
+  const toggle = $('rss-read-full');
+  toggle.hidden = !getArticle || !feed?.inAppArticle;
+  toggle.disabled = false;
+  toggle.textContent = '全文阅读';
+  toggle.setAttribute('aria-expanded', 'false');
+  readingAI?.clearSelection();
+}
+
+async function loadArticleBody(article) {
+  const request = new AbortController();
+  articleRequest = request;
+  const body = $('rss-article-body');
+  const status = $('rss-body-status');
+  const toggle = $('rss-read-full');
+  toggle.disabled = true;
+  status.textContent = '正在读取正文…'; status.hidden = false;
+  try {
+    const result = await getArticle(article, { signal: request.signal });
+    if (request.signal.aborted) return;
+    body.replaceChildren(result.body); body.hidden = false;
+    $('rss-article-summary').hidden = true;
+    $('rss-reading-label').textContent = result.label;
+    status.hidden = true;
+    toggle.textContent = '收起全文';
+    toggle.setAttribute('aria-expanded', 'true');
+    readingAI?.clearSelection();
+  } catch {
+    if (request.signal.aborted) return;
+    status.textContent = '正文暂时无法读取，可重试或在原站打开。';
+  } finally {
+    if (articleRequest === request) { articleRequest = undefined; toggle.disabled = false; }
+  }
+}
+$('rss-read-full').addEventListener('click', () => {
+  if (!activeArticle || articleRequest) return;
+  if ($('rss-article-body').hidden) void loadArticleBody(activeArticle);
+  else resetArticleBody(feedFor(activeSite));
+});
 function renderList() {
   const feed = feedFor(activeSite); if (!feed) return;
   const snapshot = snapshots.get(activeSite);
