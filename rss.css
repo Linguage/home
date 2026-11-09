@@ -101,3 +101,5 @@ html[data-view-mode="rss"] .rss-stage { display: flex; }
 #rss-filter-menu button[aria-checked="true"] { color:var(--accent); background:var(--accent-soft); }
 #rss-filter-menu button:hover { background:var(--accent-soft); }
 #rss-filter-menu button:focus-visible { outline-offset:-2px; }
+
+.view-icon{display:none}

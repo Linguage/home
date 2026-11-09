@@ -116,7 +116,7 @@ function renderList() {
   else $('rss-sync-status').textContent = snapshot?.checkedAt ? `已同步 · ${syncLabel(snapshot.checkedAt)}` : feed.url ? '等待同步' : '尚未配置公开 RSS';
   empty.replaceChildren();
   if (!feed.url) {
-    (feed.links || []).forEach(link => empty.append(externalLink(link.title + ' ↗', link.url)));
+    (feed.links || []).forEach(link => empty.append(externalLink(link.title, link.url)));
   } else if (query) empty.textContent = '没有匹配的文章。';
   else if (snapshot?.loading) empty.textContent = '正在读取…';
   else if (snapshot?.error) empty.textContent = '暂无可用缓存。';
@@ -153,6 +153,7 @@ async function loadFeed(site, { refresh = false } = {}) {
       snapshots.set(site, { ...previous, site, items: previous?.items || [], error: true, loading: false });
     } finally {
       requests.delete(site);
+      publishSearchUpdate();
       if (activeSite === site && mode === 'rss') renderList();
     }
   })();
@@ -268,3 +269,45 @@ document.addEventListener('click', event => { if (!event.target.closest('#rss-fi
 document.addEventListener('focusin', event => { if (!event.target.closest('#rss-filter')) closeFilter(); });
 
 if (stored('linguista-view-mode', 'home') === 'rss') void setMode('rss');
+
+// Search uses the same bounded, sanitized cache as the reader, regardless of read status.
+let searchTask = null;
+function publishSearchUpdate() { window.dispatchEvent(new Event('linguista-rss-update')); }
+window.LinguistaRSS = {
+  search(query = '') {
+    const sources = feeds.filter(feed => feed.url);
+    const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const matches = sources.flatMap(feed => (snapshots.get(feed.id)?.items || []).map(article => ({ feed, article })))
+      .filter(({ feed, article }) => terms.every(term => `${feed.title} ${article.title} ${article.summary} ${article.author} ${article.categories.join(' ')}`.toLocaleLowerCase().includes(term)))
+      .sort((a, b) => (b.article.timestamp || 0) - (a.article.timestamp || 0));
+    return { items: matches.slice(0, 100), total: matches.length, loading: !!searchTask,
+      sources: sources.length, available: sources.filter(feed => snapshots.get(feed.id)?.checkedAt).length,
+      failed: sources.filter(feed => snapshots.get(feed.id)?.error).length };
+  },
+  syncSearch() {
+    if (searchTask) return searchTask;
+    searchTask = (async () => {
+      await ready;
+      const sources = feeds.filter(feed => feed.url);
+      await Promise.all(sources.map(async feed => {
+        if (!snapshots.has(feed.id)) { const cached = await cacheRead(feed.id); if (cached && !snapshots.has(feed.id)) snapshots.set(feed.id, cached); }
+      }));
+      publishSearchUpdate();
+      const queue = [...sources];
+      await Promise.all(Array.from({ length: Math.min(3, queue.length) }, async () => {
+        while (queue.length) await loadFeed(queue.shift().id);
+      }));
+    })().finally(() => { searchTask = null; publishSearchUpdate(); });
+    publishSearchUpdate();
+    return searchTask;
+  },
+  async openResult(site, id) {
+    await ready;
+    const article = snapshots.get(site)?.items.find(item => item.id === id);
+    if (!article) return;
+    activeSite = site;
+    if (mode === 'rss') selectSite(site); else await setMode('rss');
+    if (activeSite === site && mode === 'rss') openArticle(article);
+  },
+};
+if ($('search-dialog')?.open) void window.LinguistaRSS.syncSearch();

@@ -319,7 +319,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .dock { padding-left: 8px; padding-right: 8px; }.dock-item { font-size: 8.5px; }.dock-brand { font-size: 12px; }.js .app-panel { padding-left: 18px; padding-right: 18px; }.row-copy strong { font-size: 13px; }.row-copy small { font-size: 10px; }
 }
 /* Two-stage navigation: a horizontal shelf feeds a single main-screen card. */
-.card-shelf { position: absolute; z-index: 8; left: 24px; right: 24px; bottom: 12px; height: 156px; padding: 8px 12px 12px; color: var(--ink); background: var(--shelf-glass); border: 1px solid var(--control-line); border-radius: 0; -webkit-backdrop-filter: var(--control-filter); backdrop-filter: var(--control-filter); box-shadow: 0 -4px 26px #10251a0a; }
+.card-shelf { position: absolute; z-index: 8; left: 24px; right: 24px; bottom: 78px; height: 156px; padding: 8px 12px 12px; color: var(--ink); background: var(--shelf-glass); border: 1px solid var(--control-line); border-radius: 0; -webkit-backdrop-filter: var(--control-filter); backdrop-filter: var(--control-filter); box-shadow: 0 -4px 26px #10251a0a; }
 .shelf-heading { display: flex; align-items: center; gap: 16px; height: 38px; padding-left: 4px; }
 .shelf-heading h2 { flex-shrink: 0; font: 500 14px var(--sans); }
 #shelf-site { display: inline-flex; align-items: center; min-height: 34px; text-underline-offset: 4px; }
@@ -371,7 +371,7 @@ body:has(dialog[open]) { overflow: hidden; }
 .mini-book[data-cover-kind="module"] .mini-book-title { font-size: 13px; line-height: 1.35; text-wrap: pretty; }
 .module-glyph { position: absolute; top: 8px; right: 9px; width: 44px; height: 44px; z-index: -1; background: var(--cover-ink); mask: var(--module-image) center / contain no-repeat; opacity: .42; pointer-events: none; }
 .mini-card-cover[aria-pressed="true"]::after { z-index: 1; }
-.feature.has-shelf .feature-bottom, .feature.has-shelf .search-button { visibility: hidden; pointer-events: none; }
+.feature.has-shelf .feature-bottom { visibility: hidden; pointer-events: none; }
 .feature.has-detail .feature-slide, .feature.has-detail .feature-bottom { visibility: hidden; pointer-events: none; }
 .js .app-panel .panel-body { flex-shrink: 0; overflow: visible; }
 .js .app-panel .panel-heading { align-items: flex-start; }
@@ -389,7 +389,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .js .app-panel { left: 24px; right: 24px; }
 }
 @media (max-width: 900px) {
-  .card-shelf { position: fixed; left: 0; right: 0; bottom: calc(var(--dock-height) + env(safe-area-inset-bottom)); height: 150px; padding: 5px 8px 10px; }
+  .card-shelf { position: fixed; left: 0; right: 0; bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 56px); height: 150px; padding: 5px 8px 10px; }
   .shelf-heading { height: 34px; gap: 8px; }
   .shelf-heading h2 { font-size: 12px; }.shelf-description { font-size: 10px; }
   .js .dashboard:has(.is-browsing), .js .dashboard:has(.has-shelf) { height: calc(100svh - var(--dock-height) - env(safe-area-inset-bottom)); min-height: 0; }
@@ -413,7 +413,7 @@ html:not(.js) .feature { overflow: visible; }
 .newsletter-channel-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 4px; border-bottom: 1px solid var(--line); font: 13px/1.5 var(--sans); }
 .newsletter-channel-link .icon { width: 15px; height: 15px; opacity: .65; }
 .newsletter-channel-link:hover, .newsletter-channel-link:focus-visible { color: var(--accent); background: var(--accent-soft); }
-.newsletter-cover-footer { margin-top: auto; padding-top: 13px; border-top: 1px solid var(--line); font: 10px/1.4 var(--sans); color: var(--muted); }
+
 @media (min-width: 901px) and (max-height: 800px) {
   .newsletter { padding: 14px 24px; }
   .newsletter-cover { padding: 15px; }
@@ -428,7 +428,7 @@ html:not(.js) .feature { overflow: visible; }
   .newsletter-channels { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 4px 0; margin: 0; }
   .newsletter-channel-link { font-size: 12px; padding: 0; border-bottom: 0; }
   .newsletter-channel-link .icon { width: 13px; height: 13px; }
-  .newsletter-cover-footer { padding-top: 8px; font-size: 9px; }
+
   .feature-bottom { gap: 10px; }
   .carousel-arrows { gap: 6px; }
   .feature-bottom .round-button { width: 34px; height: 34px; }
