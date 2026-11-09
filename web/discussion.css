@@ -1,0 +1,59 @@
+.linguista-workspace {
+  container-type: inline-size;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.linguista-workspace > iframe { flex: 1; min-width: 0; height: 100%; border: 0; }
+
+.linguista-discussion {
+  --dsw-alias-bg-base: var(--linguista-reader-surface, Canvas);
+  --dsw-alias-bg-layer-1: var(--linguista-reader-surface-raised, Canvas);
+  --dsw-alias-bg-module-platform: var(--linguista-reader-surface-raised, Canvas);
+  --dsw-alias-label-primary: var(--linguista-reader-ink, CanvasText);
+  --dsw-alias-label-secondary: var(--linguista-reader-muted, GrayText);
+  --dsw-alias-border-l1: var(--linguista-reader-line, #8885);
+  --dsw-alias-separator-primary: var(--linguista-reader-line, #8885);
+  --dsw-alias-interactive-bg-hover: var(--linguista-reader-accent-soft, #8882);
+  position: absolute;
+  inset: var(--linguista-tray-top, 132px) 0 var(--linguista-tray-bottom, 60px) auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, clamp(300px, 36%, 430px));
+  min-width: 0;
+  min-height: 0;
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  border-inline-start: 1px solid var(--dsw-alias-border-l1);
+  box-shadow: -8px 0 24px #00000016;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: transform 220ms cubic-bezier(.22, .61, .36, 1), visibility 0s 220ms;
+}
+
+.linguista-discussion[data-open] { visibility: visible; transform: translateX(0); transition-delay: 0s; }
+.linguista-discussion > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
+.linguista-discussion > header div { min-width: 0; }
+.linguista-discussion h2 { margin: 0; font-size: 15px; font-weight: 650; }
+.linguista-discussion > header p { display: flex; align-items: baseline; gap: 6px; margin: 4px 0 0; font-size: 12px; color: var(--dsw-alias-label-secondary, GrayText); }
+.linguista-discussion > header a { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; }
+.linguista-discussion-source { flex: none; white-space: nowrap; font-size: 10px; }
+.linguista-discussion > nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1, #8885); }
+.linguista-discussion :is(header, nav) button { background: transparent; color: inherit; border: 1px solid var(--dsw-alias-border-l1, #8885); border-radius: 6px; padding: 4px 9px; font-size: 12px; min-height: 30px; cursor: pointer; }
+.linguista-discussion > header button { min-width: 32px; font-size: 20px; line-height: 1; }
+.linguista-discussion :is(header, nav) button:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover, #8882); }
+.linguista-discussion > nav button[aria-pressed="true"] { background: var(--dsw-alias-interactive-bg-hover, #8882); }
+.linguista-discussion > nav button:disabled { opacity: .5; cursor: default; }
+.linguista-discussion-status { padding: 0 16px; margin: 10px 0; font-size: 12px; }
+.linguista-discussion-session { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+.linguista-discussion-session > * { flex: 1; min-height: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .linguista-discussion { transition: none; }
+}

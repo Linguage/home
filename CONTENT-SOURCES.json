@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "name": "Linguista Home",
+    "publicUrl": "https://linguista.cn/home/"
+  },
+  "files": [
+    {
+      "path": "assets/identities/alpaca-covers/essay.svg",
+      "bytes": 707,
+      "sha256": "d927b194f4847652f5d6304c8d4132b33de4f8016a45baa628433e5e25eedfc9"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/home.svg",
+      "bytes": 503,
+      "sha256": "de72dba97287604971ba65eb53a9714a5a3b114937b87ab794b79305d5bbb198"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/linguista.svg",
+      "bytes": 1328,
+      "sha256": "cc681f38efe51c99ff1a6835a235ca124946b0a54b2558f44af4f5c29e75c865"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/notes.svg",
+      "bytes": 633,
+      "sha256": "9b3f7dd97749bd5893fa9d6fb7f91370dffef6e682abda1699788e7cdca3d6bb"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/prompts.svg",
+      "bytes": 658,
+      "sha256": "e494a20d7a8065c0941422e9f0b9308061b8095b18c9485c592ac36b6063cd0f"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/readings.svg",
+      "bytes": 638,
+      "sha256": "d778851ec84b21cd05930849749e421f996be544258b2a06f9a7b1e01cea82e7"
+    },
+    {
+      "path": "assets/identities/alpaca-covers/topics.svg",
+      "bytes": 770,
+      "sha256": "bfa6ea6fb112a8de8fe796e1c33cb1c33afcad923c9716fa9142edc1e426b053"
+    },
+    {
+      "path": "assets/identities/alpaca-device.svg",
+      "bytes": 972,
+      "sha256": "aa8dad4fd1a1efcab6cf04a898dd6026314409a684d6531fce6597c2668af604"
+    },
+    {
+      "path": "assets/identities/bearblog.svg",
+      "bytes": 1412,
+      "sha256": "1b3abb213b551ed18442f68ba0dfe87e824172ad81b78571f32e250dc9f7bc8f"
+    },
+    {
+      "path": "assets/identities/hinbox.svg",
+      "bytes": 1698,
+      "sha256": "138af7d27a129ad043d28c24ddc396832b6bec82d5fa03fbc0aec407d66078a7"
+    },
+    {
+      "path": "assets/identities/library-campus-front.svg",
+      "bytes": 2902,
+      "sha256": "35e0d30b9ab291aec3fbe30c8e2421532211fbe5fb2146fef83a49b14f734fc0"
+    },
+    {
+      "path": "assets/identities/library-logo.svg",
+      "bytes": 2173,
+      "sha256": "f18ec9e184b0dcf44d3e4c475d6cdfaf34413bf7c010aa0cd9bfa85cb93718d7"
+    },
+    {
+      "path": "assets/identities/notion.svg",
+      "bytes": 1652,
+      "sha256": "8779f43a73cc80c159cfc8aa69de2b7660de5c6c09307adb5d6ff968e8cd6db7"
+    },
+    {
+      "path": "assets/identities/whats-old.svg",
+      "bytes": 1666,
+      "sha256": "d535b300771ae8de36dea327320753b6bd85051964cbc79b286ca2576328ffe5"
+    },
+    {
+      "path": "assets/library/agent-skills.svg",
+      "bytes": 1451,
+      "sha256": "95b18e95289a5d955776094785e64e182426e379af84d02ee5655941418b864c"
+    },
+    {
+      "path": "assets/library/agentic-ai.svg",
+      "bytes": 1429,
+      "sha256": "767ab7f7f6874b200d456c0290f53bfe5e0ac5fcc7f33d8d9369c4044aa3b117"
+    },
+    {
+      "path": "assets/library/lenny-podcast.svg",
+      "bytes": 1040,
+      "sha256": "1fce6fbfcea3cd026142ea90cc3631675d11a6d14f3b57261318f6397705cb64"
+    },
+    {
+      "path": "assets/library/recoltes-et-semailles.svg",
+      "bytes": 2415,
+      "sha256": "42f1033fe5f3e8b5190b4ca0f4f9707a694b387408807fa994c2c300d52eb042"
+    },
+    {
+      "path": "assets/linguista/Apollo-console.jpg",
+      "bytes": 665977,
+      "sha256": "d8dd2e7a1b02a7df1f47e63e439ce10c0a63c74954043847555c2a8b46eeb1c9"
+    },
+    {
+      "path": "assets/linguista/bookmarks-icon.svg",
+      "bytes": 478,
+      "sha256": "1461f7e9cf97ddcf84feef236e6ec924d6a10cf5758b7a532fc6039812676630"
+    },
+    {
+      "path": "assets/linguista/dlai-skills-anthropic.webp",
+      "bytes": 28792,
+      "sha256": "d264a72031393ecea494dc8a78732064dcf70a6bfac16a710fdce715942a6de8"
+    },
+    {
+      "path": "assets/linguista/dock-alpaca.svg",
+      "bytes": 263,
+      "sha256": "3d8797fdbd9edc7271b5ac3b1c0d15c457735b42a99974ca66785979e370c383"
+    },
+    {
+      "path": "assets/linguista/dock-hinbox.svg",
+      "bytes": 1055,
+      "sha256": "5e6371ac1a3bfafe77ba921d7d88edb1e5fff04b6e3f1aa33b6ddd1924b9adfc"
+    },
+    {
+      "path": "assets/linguista/dock-library.svg",
+      "bytes": 2173,
+      "sha256": "f18ec9e184b0dcf44d3e4c475d6cdfaf34413bf7c010aa0cd9bfa85cb93718d7"
+    },
+    {
+      "path": "assets/linguista/dock-whats-old.svg",
+      "bytes": 720,
+      "sha256": "b62e647697844ab0961085d12b79eb5a15b97b0f87153c5d85a2697a931ec79c"
+    },
+    {
+      "path": "assets/linguista/earth-via-moon.avif",
+      "bytes": 30405,
+      "sha256": "0c9f9cc3cdcfff846cddf8e72d084257f6d5024b08bf8336c31a177459ab1008"
+    },
+    {
+      "path": "assets/linguista/Einstein-office.png",
+      "bytes": 1103392,
+      "sha256": "fd0e0874880ecfc396a15a63257441416cf1f167bf767f6b1871500e41cebc0b"
+    },
+    {
+      "path": "assets/linguista/hinbox.svg",
+      "bytes": 1783,
+      "sha256": "258419ac120739808b9a8633fc013b03afed5d0a4d0fbbc3bcfc16819728867f"
+    },
+    {
+      "path": "assets/linguista/labs-icon.svg",
+      "bytes": 588,
+      "sha256": "416753c19eab0b833bcddc9b95a90eef8e6c943f99962449dea814a9e86ca76f"
+    },
+    {
+      "path": "assets/linguista/lucide-LICENSE",
+      "bytes": 2004,
+      "sha256": "3c57143f22dac950efebf84002e360bba5458c7b90fe583b0667aaaef1a7256e"
+    },
+    {
+      "path": "assets/linguista/minimal-blog-favicon.svg",
+      "bytes": 496,
+      "sha256": "68859837a2e4910a9e21ee62438e2e07fe11b905f50f39750aa6512cd01323de"
+    },
+    {
+      "path": "assets/linguista/naval_logo.png",
+      "bytes": 7826,
+      "sha256": "3dbedf7be2c54e5b26e9f020792a41de41533c16aa51493afb1d633fdb99b5a8"
+    },
+    {
+      "path": "assets/linguista/newsletter-geometric.svg",
+      "bytes": 29432,
+      "sha256": "2fcda2907f0e142ba83a9921737f7e8301f6912f279aa354d2374429c6dd5eaf"
+    },
+    {
+      "path": "assets/linguista/paul_graham.jpg",
+      "bytes": 49123,
+      "sha256": "257807ed23cae2f7dd623412a6fbfbf3a81fd49b1fb816adadb0bd2d29972441"
+    },
+    {
+      "path": "assets/linguista/person-entry-face.svg",
+      "bytes": 924,
+      "sha256": "4d1a9a2f0f08e6936bb4e6b43d5dffe768f4f79a7fa2e4faae2a70cf61215a03"
+    },
+    {
+      "path": "assets/linguista/quantamagazine.jpg",
+      "bytes": 11350,
+      "sha256": "bb3be98a061ed1fa12f00618a4824d54b2135c972e051fed4d790a6597045083"
+    },
+    {
+      "path": "assets/linguista/rosetta-icon.svg",
+      "bytes": 1045,
+      "sha256": "4a4678b416d84a67c007d2395e0b6dbfe20b9c44bfef67cd1f472247ab41209f"
+    },
+    {
+      "path": "assets/linguista/TerenceTao-10_mid.jpg",
+      "bytes": 104420,
+      "sha256": "d7c588d40c4bab9f995cb345e4b7520ddcf84961c11f3185bd5cf6e472e51874"
+    },
+    {
+      "path": "assets/linguista/whats-old-favicon.svg",
+      "bytes": 307,
+      "sha256": "fab54eacf3077433c417bee17eb2cffaba201fc70c696ded9ca5df984ba48b35"
+    },
+    {
+      "path": "assets/linguista/workshop-mark.svg",
+      "bytes": 480,
+      "sha256": "78026ad851288a84958d87af2186f8b0dec498db077671374f9894dcb7735d07"
+    },
+    {
+      "path": "assets/linguista/woz-jobs.webp",
+      "bytes": 51278,
+      "sha256": "7e23f1b5eec54b2621b2035d2e1fbb6f31d4db72f5d29b8849484bb90a9ee7ba"
+    },
+    {
+      "path": "assets/mathematical-thought.webp",
+      "bytes": 139630,
+      "sha256": "311315f8b4cdf595e0cacdd5219281f03857d3344ce0d59c4dd4150d8a1bfe6f"
+    },
+    {
+      "path": "assets/modules/book-open.svg",
+      "bytes": 383,
+      "sha256": "6449984fd714d29aab86967ba55e14b4e495c8c5ff1b0d1e561acc7177534a68"
+    },
+    {
+      "path": "assets/modules/chart-spline.svg",
+      "bytes": 317,
+      "sha256": "ccf886be065dcd8afd0190ca9da02d9a1c718707ce5556becdb7874c617cd290"
+    },
+    {
+      "path": "assets/modules/eye.svg",
+      "bytes": 367,
+      "sha256": "7327eee431784a624283415689e030a3c29767f2199ef56ad62375f2a6889f5e"
+    },
+    {
+      "path": "assets/modules/file-text.svg",
+      "bytes": 455,
+      "sha256": "65b9babace860554c105d1775e0088b25e888c82810ac775cb4d80d9ec3b8774"
+    },
+    {
+      "path": "assets/modules/folder-open.svg",
+      "bytes": 404,
+      "sha256": "ed374c748a7a6b7bd503033198a294b8e6f6cfe8944b8863f971befc303c8399"
+    },
+    {
+      "path": "assets/modules/layers.svg",
+      "bytes": 517,
+      "sha256": "99f4edbb4ee83101fc3ddc1354158ef767584c1cb08ed6502ba9ffe1a0f52fad"
+    },
+    {
+      "path": "assets/modules/library.svg",
+      "bytes": 416,
+      "sha256": "e28199673bb8be66cf2cfc7d08abc86bc9966f78e6a15f179a03479fa5c84dc4"
+    },
+    {
+      "path": "assets/modules/messages.svg",
+      "bytes": 462,
+      "sha256": "c1cc13582e5211361e4c466840384758cf6bd9d709af2792887f080aba3d54f2"
+    },
+    {
+      "path": "assets/modules/radio.svg",
+      "bytes": 450,
+      "sha256": "98a6af39c473ad37b13126ac2eb91d99b8f5da2cb76ac44d2ed79fdafc1b62a2"
+    },
+    {
+      "path": "assets/modules/ruler.svg",
+      "bytes": 472,
+      "sha256": "50b7be3b65f1afe73a429fbe7c96a7eb5dd94b9f18080f05b90ceab27c2377af"
+    },
+    {
+      "path": "assets/modules/sticky-note.svg",
+      "bytes": 381,
+      "sha256": "b2eba15f4e3bf4e6fe0756cc969576ca490117a525bdf3b70cd4c9a4fad33610"
+    },
+    {
+      "path": "assets/modules/users.svg",
+      "bytes": 394,
+      "sha256": "8383eb380db07a376cd8a09b7b038c74288eb642a96b55231615f4d65f7199c8"
+    },
+    {
+      "path": "assets/modules/video.svg",
+      "bytes": 355,
+      "sha256": "b0b5fdeb89d2144273ad2a1caf262198f2b243fe08a465c3fb1655f5ce4137d2"
+    },
+    {
+      "path": "assets/modules/workflow.svg",
+      "bytes": 358,
+      "sha256": "e962cdf8c2d36f804184c1183e32be32dada243270d1a508e09ef96faaed18e3"
+    },
+    {
+      "path": "assets/newsletter-earth.svg",
+      "bytes": 3484,
+      "sha256": "451880372624c549729eb57e433895a435aee8cad41e4a3ac94798353fcfbc1f"
+    },
+    {
+      "path": "assets/running-landscape.svg",
+      "bytes": 6677,
+      "sha256": "55dd69590a60041199055fad1db737855165c43fd2dfd32bb0adedce46dc4fbc"
+    },
+    {
+      "path": "assets/study-room.svg",
+      "bytes": 22009,
+      "sha256": "e428e79bd70d11d4cccb8cb4dcf2f8a705aa43b4aeeb090b2bc60d7c5eda9670"
+    },
+    {
+      "path": "identity-widgets.css",
+      "bytes": 6752,
+      "sha256": "6e6528d83a184439fe86268c9cb5b13bb326ab55c84e7501dbccd741e64439f3"
+    },
+    {
+      "path": "identity-widgets.js",
+      "bytes": 7759,
+      "sha256": "010922730e50e4cab367e6d9ee645ba9efc5f742773d1953e5147f988bc86926"
+    },
+    {
+      "path": "index.html",
+      "bytes": 26323,
+      "sha256": "8b44a0337f01546065d31e963fbf5d0ab95cf1465d3f2349584d13daf5a32237"
+    },
+    {
+      "path": "main.js",
+      "bytes": 44314,
+      "sha256": "cf1a7c8fda4e27e82c0b9313900213fc09d1d68976786abc805391befab6e052"
+    },
+    {
+      "path": "site-home.css",
+      "bytes": 9149,
+      "sha256": "fd193794b01a519883fce8fad3f30b453cb9e74c9d5056eb4a69b11190177aae"
+    },
+    {
+      "path": "site-home.js",
+      "bytes": 6795,
+      "sha256": "41140b74ebecb0f9d537170ba64225d88ee1cb662e647b4b1092760625fa8ca5"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 46739,
+      "sha256": "fc937736f2d1eac257474057672e442a45731b7850d0a6f2729062a755c51578"
+    },
+    {
+      "path": "theme.js",
+      "bytes": 300,
+      "sha256": "8712a86984dad0c2b5ec5089654f07b169bcfca37a60d23869e980f060cf588c"
+    }
+  ]
+}

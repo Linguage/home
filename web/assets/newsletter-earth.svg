@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" fill="none">
+  <title>地球弧面 · 抽象插画</title>
+  <defs>
+    <linearGradient id="space" x2="800" y2="1200" gradientUnits="userSpaceOnUse"><stop stop-color="#0b1719"/><stop offset="1" stop-color="#102635"/></linearGradient>
+    <radialGradient id="sea" cx=".2" cy=".12" r=".95"><stop stop-color="#427f9d"/><stop offset=".4" stop-color="#205873"/><stop offset="1" stop-color="#102c42"/></radialGradient>
+    <linearGradient id="land" x1="280" y1="360" x2="780" y2="1050" gradientUnits="userSpaceOnUse"><stop stop-color="#a7b7aa"/><stop offset=".45" stop-color="#72918c"/><stop offset="1" stop-color="#385c65"/></linearGradient>
+    <linearGradient id="night" x1="130" y1="450" x2="700" y2="1100" gradientUnits="userSpaceOnUse"><stop stop-color="#07161c" stop-opacity="0"/><stop offset=".5" stop-color="#07161c" stop-opacity=".08"/><stop offset="1" stop-color="#07161c" stop-opacity=".8"/></linearGradient>
+    <clipPath id="globe"><circle cx="820" cy="1120" r="850"/></clipPath>
+  </defs>
+  <path fill="url(#space)" d="M0 0h800v1200H0z"/>
+  <circle cx="820" cy="1120" r="859" stroke="#4c9bcc" stroke-opacity=".12" stroke-width="24"/>
+  <circle cx="820" cy="1120" r="854" stroke="#75c9ef" stroke-opacity=".35" stroke-width="8"/>
+  <circle cx="820" cy="1120" r="850" fill="url(#sea)" stroke="#a8e3f2" stroke-width="3"/>
+  <g clip-path="url(#globe)">
+    <g fill="url(#land)">
+      <path d="m800 293-65 19-33 36-46 8-24 32 24 18 35-17 34 12-14 33-35 14-18 39-45 4-30 35-44 5-24 28 13 30 40 3 24-18 30 10 25-18 21 24 31-4 24 20 27-16 19 24 36-7V293Z"/>
+      <path d="m558 442-20 25-5 28-19 13 7 21 25-13 15-29 15-19-3-21Z"/>
+      <path d="m487 505-13 19 9 18 15-4 5-23Z"/>
+      <path d="m452 541-11 16 5 20 17-12 1-19Z"/>
+      <path d="m500 579 23-13 25 9 12 29 30 9 25-14 26 22 34 5 19 37 23 18-7 30-31 7-24 44-7 50-26 23-13 44-28 19-23-10-14-40-28-23-10-31-24-16-5-40-24-15-12-42 7-40 27-33Z"/>
+      <path d="m729 765 13 12-8 48-15 22-7-18 4-35Z"/>
+      <path d="m382 411-45 19-25 37 2 40 28 20 32-15 20-40 6-42Z"/>
+      <path d="m174 584 41-20 22 15 15 35 33 12 11 41-18 36 12 29-24 30-29-15-18-38-30-8-12-43-26-20Z"/>
+      <path d="m220 798 28-10 32 20 8 38 31 30 3 51-18 36-7 39-24 35-12-18 2-57-25-35 2-44-17-32Z"/>
+    </g>
+    <g stroke="#d6ebe9" stroke-linecap="round">
+      <path d="M273 520c73-120 235-181 395-176" stroke-width="18" stroke-opacity=".4"/>
+      <path d="M224 596c27-32 56-46 91-52m290-155c57-10 117-7 172 4" stroke-width="8" stroke-opacity=".65"/>
+      <path d="M159 724c49-34 105-39 151-22s82 13 112-11" stroke-width="23" stroke-opacity=".28"/>
+      <path d="M91 842c74-49 144-37 203-3m430-316c60-12 104-5 146 22" stroke-width="12" stroke-opacity=".32"/>
+      <path d="M357 921c66-36 108-30 162-6s124 23 175-6" stroke-width="20" stroke-opacity=".22"/>
+      <path d="M98 1014c95-31 139-2 205 19" stroke-width="9" stroke-opacity=".35"/>
+    </g>
+    <path fill="url(#night)" d="M0 0h800v1200H0z"/>
+    <g fill="#eed79c" opacity=".7">
+      <circle cx="508" cy="548" r="2"/><circle cx="533" cy="536" r="2.5"/><circle cx="545" cy="552" r="2"/><circle cx="566" cy="541" r="1.8"/><circle cx="584" cy="552" r="2.2"/><circle cx="601" cy="561" r="1.5"/><circle cx="618" cy="543" r="2"/><circle cx="637" cy="566" r="2.3"/><circle cx="659" cy="552" r="1.6"/><circle cx="560" cy="586" r="1.7"/><circle cx="591" cy="603" r="2"/><circle cx="681" cy="669" r="1.8"/>
+    </g>
+  </g>
+</svg>

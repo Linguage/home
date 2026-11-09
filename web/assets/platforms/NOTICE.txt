@@ -1,0 +1,4 @@
+Notion icon: Simple Icons v11, CC0 1.0 Universal.
+Source: https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/notion.svg
+License: https://github.com/simple-icons/simple-icons/blob/11.15.0/LICENSE.md
+Bearblog uses the same text mark as the existing AlpacaNotes SiteLinks component.
