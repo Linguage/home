@@ -6,11 +6,15 @@
   <meta name="theme-color" content="#191c1d">
   <meta name="description" content="Linguista，所读、所思、所想。精选阅读、个人笔记与学习记录。">
   <meta name="robots" content="noindex, follow">
-  <title>Linguista · 所读 · 所思 · 所想</title>
+  <title>Linguista 阅读工作台</title>
   <link rel="icon" type="image/svg+xml" href="./assets/linguista/rosetta-icon.svg">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./host.css">
+  <link rel="stylesheet" href="./rss.css">
   <script src="./theme.js"></script>
   <script defer src="./main.js"></script>
+  <script defer src="./shell.js"></script>
+  <script type="module" src="./rss.js"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -136,10 +140,43 @@
   </main>
   <footer class="dock">
     <nav class="dock-apps" aria-label="主导航">
-<a href="#featured" class="dock-item dock-home is-active" id="home-button" data-card-group="home" aria-label="Linguista 主站模块" aria-current="page"><span class="site-mark"><img src="./assets/linguista/rosetta-icon.svg" width="30" height="40" alt=""></span></a><a href="#alpaca" class="dock-item" data-card-group="alpaca" aria-label="AlpacaNotes"><span class="site-mark"><img src="./assets/linguista/dock-alpaca.svg" width="32" height="32" alt=""></span></a><a href="#library" class="dock-item" data-card-group="library" aria-label="Library"><span class="site-mark dock-library-mark" aria-hidden="true"></span></a><a href="#hinbox" class="dock-item" data-card-group="hinbox" aria-label="Hinbox"><span class="site-mark"><img src="./assets/linguista/dock-hinbox.svg" width="32" height="32" alt=""></span></a><a href="#science" class="dock-item dock-science" data-card-group="science" aria-label="what’s old"><span class="site-mark"><img src="./assets/linguista/dock-whats-old.svg" width="32" height="32" alt=""></span></a><button type="button" class="dock-item theme-button" id="theme-button" aria-label="切换为浅色主题" hidden><svg class="icon sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="icon moon" aria-hidden="true"><use href="#i-moon"/></svg></button>
-    </nav>
+<a href="#featured" class="dock-item dock-home is-active" id="home-button" data-card-group="home" aria-label="Linguista 主站模块" aria-current="page"><span class="site-mark"><img src="./assets/linguista/rosetta-icon.svg" width="30" height="40" alt=""></span></a><a href="#alpaca" class="dock-item" data-card-group="alpaca" aria-label="AlpacaNotes"><span class="site-mark"><img src="./assets/linguista/dock-alpaca.svg" width="32" height="32" alt=""></span></a><a href="#library" class="dock-item" data-card-group="library" aria-label="Library"><span class="site-mark dock-library-mark" aria-hidden="true"></span></a><a href="#hinbox" class="dock-item" data-card-group="hinbox" aria-label="Hinbox"><span class="site-mark"><img src="./assets/linguista/dock-hinbox.svg" width="32" height="32" alt=""></span></a><a href="#science" class="dock-item dock-science" data-card-group="science" aria-label="what’s old"><span class="site-mark"><img src="./assets/linguista/dock-whats-old.svg" width="32" height="32" alt=""></span></a>
+    <a href="#notion" class="dock-item" data-card-group="notion" aria-label="Notion"><span class="site-mark dock-notion-mark" aria-hidden="true"></span></a><a href="#bearblog" class="dock-item" data-card-group="bearblog" aria-label="bearblog"><span class="dock-bear-mark" aria-hidden="true">ʕ•ᴥ•ʔ</span></a></nav>
 
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title"><div class="dialog-heading"><h2 id="search-title">找点什么</h2><button class="icon-button" id="close-search" aria-label="关闭搜索"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><label class="search-field" for="search-input"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">搜索文章、人物与栏目</span><input type="search" id="search-input" placeholder="文章、人物、栏目…" autocomplete="off"></label><p class="search-scope">搜索首页收录的栏目与选读文章</p><p id="search-status" role="status" aria-live="polite"></p><ul id="search-results"></ul></dialog>
+  <div class="view-switch" role="group" aria-label="浏览模式">
+    <button type="button" data-view="home" aria-pressed="true">首页</button>
+    <button type="button" data-view="rss" aria-pressed="false"><span class="rss-dot" aria-hidden="true"></span>RSS</button>
+  </div>
+  <template id="rss-sidebar-template">
+    <section class="rss-sidebar" aria-label="RSS 文章列表">
+      <header class="rss-list-heading">
+        <div class="rss-heading-line"><h2><a id="rss-site-title" target="_blank" rel="noopener noreferrer">Linguista</a></h2><button type="button" id="rss-refresh" class="icon-button" aria-label="刷新当前站点订阅"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.1 8a7 7 0 0 1 11.55-3.1L20 8M4 16l3.35 3.1A7 7 0 0 0 18.9 16"/></svg></button></div>
+        <p class="rss-description" id="rss-site-description"></p>
+        <nav class="rss-sources" id="rss-sources" aria-label="Notion 知识库" hidden></nav>
+        <label class="rss-search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="rss-search" aria-label="筛选当前站点的 RSS 文章" placeholder="搜索标题、摘要…" autocomplete="off"></label>
+        <div class="rss-list-meta"><span id="rss-count"></span><div class="rss-filter" id="rss-filter"><button type="button" id="rss-filter-button" aria-label="文章阅读状态" aria-haspopup="menu" aria-expanded="false" aria-controls="rss-filter-menu"><span id="rss-filter-label">未读</span><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button><div id="rss-filter-menu" role="menu" aria-label="文章阅读状态" hidden><button type="button" role="menuitemradio" aria-checked="true" data-read-filter="unread">未读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="read">已读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="all">全部</button></div></div></div>
+      </header>
+      <p class="rss-sync-status" id="rss-sync-status" role="status" aria-live="polite"></p>
+      <ol class="rss-article-list" id="rss-article-list" aria-label="文章"></ol>
+      <div class="rss-list-empty" id="rss-list-empty" hidden></div>
+    </section>
+  </template>
+  <template id="rss-stage-template">
+    <section class="rss-stage" aria-label="RSS 阅读区">
+      <div class="rss-welcome" id="rss-welcome" hidden></div>
+      <article class="rss-reader" id="rss-reader" aria-labelledby="rss-article-title" hidden>
+        <div class="rss-reader-top"><span class="rss-eyebrow" id="rss-reader-site"></span><button type="button" id="rss-close" class="icon-button" aria-label="关闭摘要，返回文章列表"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+        <p class="rss-reader-date" id="rss-article-meta"></p>
+        <h2 id="rss-article-title" tabindex="-1"></h2>
+        <div class="rss-categories" id="rss-article-categories"></div>
+        <div class="rss-summary-label"><span>RSS 摘要</span><span class="rss-summary-rule"></span></div>
+        <p class="rss-excerpt" id="rss-article-summary"></p>
+        <footer class="rss-reader-footer"><a class="rss-original" id="rss-original" target="_blank" rel="noopener noreferrer"><span>阅读全文</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></footer>
+      </article>
+    </section>
+  </template>
+
 </body>
 </html>

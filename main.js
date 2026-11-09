@@ -442,6 +442,15 @@ const shelfLinks = {
 };
 // sync:modules:end
 
+const extraModules = {"notion":{"title":"Notion","href":"https://linguista.notion.site/linguista-hub","description":"Linguista 与 Bullets 知识库。","items":[{"id":"linguista","title":"Linguista","href":"https://linguista.notion.site/linguista-hub","meta":"Linguista 知识库","icon":"book-open","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"},{"id":"bullets","title":"Bullets","href":"https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648","meta":"Bullets 知识库","icon":"file-text","palette":["#3d6865","#f2ead8","#9ec8bb"],"motif":"grid"}]},"bearblog":{"title":"bearblog","href":"https://linguista.bearblog.dev/","description":"日常内容更新。","items":[{"id":"blog","title":"bearblog","href":"https://linguista.bearblog.dev/","meta":"Linguista 的 bearblog","icon":"sticky-note","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"}]}};
+for (const [group, source] of Object.entries(extraModules)) {
+  sites[group] = {title: source.title, href: source.href, description: source.description};
+  groupLabels[group] = source.title;
+  cardGroups[group] = moduleItems(group, source.items).map(item => ({...item, action: group === 'notion' ? '打开知识库' : '打开博客'}));
+  shelfLinks[group] = [];
+}
+
+
 function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'icon');
@@ -552,6 +561,8 @@ triggers.forEach(trigger => {
   trigger.setAttribute('aria-expanded', 'false');
 });
 function updateNavigation() {
+  if (root.dataset.viewMode === 'rss' && window.LinguistaHome) {window.LinguistaHome.setDock(root.dataset.rssSite || 'home'); return;}
+
   dockButtons.forEach(button => {
     const group = button.dataset.cardGroup;
     button.setAttribute('aria-expanded', String(shelfGroup === group));
@@ -803,7 +814,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (reducedMotion.matches || document.hidden || pointerReading || keyboardReading || carouselDragging || currentPanel || shelfGroup || document.querySelector('#search-dialog').open) return;
+  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || keyboardReading || carouselDragging || currentPanel || shelfGroup || document.querySelector('#search-dialog').open) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -884,7 +895,7 @@ setSlide(0, false);
 trackDrag(feature, {
   axis: 'x',
   canStart: event => {
-    const allowed = !currentPanel && !shelfGroup && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
+    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !shelfGroup && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
     if (allowed) { carouselDragging = true; syncPlayback(); }
     return allowed;
   },
@@ -904,7 +915,7 @@ trackDrag(feature, {
 let wheelDistance = 0;
 let lastWheelTime = 0;
 feature.addEventListener('wheel', event => {
-  if (currentPanel || shelfGroup || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
+  if (root.dataset.viewMode === 'rss' || currentPanel || shelfGroup || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
   event.preventDefault();
   if (event.timeStamp - lastWheelTime > 200) wheelDistance = 0;
   lastWheelTime = event.timeStamp;
@@ -914,22 +925,6 @@ feature.addEventListener('wheel', event => {
     wheelDistance = 0;
   }
 }, { passive: false });
-
-const themeButton = document.querySelector('#theme-button');
-themeButton.hidden = false;
-function updateThemeControl() {
-  const dark = root.dataset.theme === 'dark';
-  themeButton.setAttribute('aria-label', dark ? '切换为浅色主题' : '切换为深色主题');
-  themeButton.title = dark ? '切换为浅色主题' : '切换为深色主题';
-  themeButton.setAttribute('aria-pressed', String(!dark));
-  document.querySelector('meta[name="theme-color"]').content = dark ? '#191c1d' : '#f3f2eb';
-}
-themeButton.addEventListener('click', () => {
-  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-  try { localStorage.setItem('linguista-home-theme', root.dataset.theme); } catch { /* Optional storage. */ }
-  updateThemeControl();
-});
-updateThemeControl();
 
 const searchButton = document.querySelector('#search-button');
 let searchReturnFocus = searchButton;
@@ -1021,3 +1016,21 @@ function readHash() {
 }
 window.addEventListener('hashchange', readHash);
 readHash();
+
+window.LinguistaHome = {
+  suspend() {
+    closeShelf({restoreFocus: false}); closePanel({restoreFocus: false, immediate: true});
+    if (searchDialog.open) searchDialog.close();
+    clearTimeout(playbackTimer);
+  },
+  resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); updateNavigation(); syncPlayback();},
+  setDock(id) {
+    dockButtons.forEach(button => {
+      const active = button.dataset.cardGroup === id;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-expanded', 'false'); button.setAttribute('aria-controls', 'rss-article-list');
+      if (active) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current');
+    });
+    updateDockIndicator();
+  },
+};

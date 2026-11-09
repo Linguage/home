@@ -1,0 +1,103 @@
+[
+  {
+    "id": "home",
+    "title": "Linguista",
+    "url": "https://linguista.cn/rss.xml",
+    "home": "https://linguista.cn/",
+    "description": "Weekly · 科技剪报 · HN 热点"
+  },
+  {
+    "id": "alpaca",
+    "title": "AlpacaNotes",
+    "url": "https://linguista.cn/alpacanotes/rss.xml",
+    "home": "https://linguista.cn/alpacanotes/",
+    "description": "Essay · Notes"
+  },
+  {
+    "id": "library",
+    "title": "Library",
+    "url": "https://linguista.cn/library/rss.xml",
+    "home": "https://linguista.cn/library/",
+    "description": "文库更新介绍"
+  },
+  {
+    "id": "hinbox",
+    "title": "Hinbox",
+    "url": "https://linguista.cn/hinbox/rss.xml",
+    "home": "https://linguista.cn/hinbox/",
+    "description": "文章 · 访谈 · 阅读摘录"
+  },
+  {
+    "id": "science",
+    "title": "what’s old",
+    "url": "https://linguista.cn/sci-notes/rss.xml",
+    "home": "https://linguista.cn/sci-notes/",
+    "description": "科学 · 技术 · 实践"
+  },
+  {
+    "id": "notion",
+    "title": "Notion",
+    "url": null,
+    "home": "https://linguista.notion.site/linguista-hub",
+    "description": "Linguista · Bullets",
+    "links": [
+      {
+        "title": "Linguista 知识库",
+        "url": "https://linguista.notion.site/linguista-hub"
+      },
+      {
+        "title": "Bullets 知识库",
+        "url": "https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648"
+      }
+    ],
+    "sources": [
+      "notion-linguista",
+      "notion-bullets"
+    ]
+  },
+  {
+    "id": "bearblog",
+    "title": "bearblog",
+    "url": "https://linguista.bearblog.dev/feed/?type=rss",
+    "home": "https://linguista.bearblog.dev/",
+    "description": "日常内容更新"
+  },
+  {
+    "id": "notion-linguista",
+    "group": "notion",
+    "title": "Linguista",
+    "url": "https://linguista.cn/feeds/notion-linguista.xml",
+    "pendingUrl": "https://linguista.cn/feeds/notion-linguista.xml",
+    "home": "https://linguista.notion.site/linguista-hub",
+    "description": "Notion 知识库",
+    "links": [
+      {
+        "title": "Linguista 知识库",
+        "url": "https://linguista.notion.site/linguista-hub"
+      },
+      {
+        "title": "Bullets 知识库",
+        "url": "https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648"
+      }
+    ]
+  },
+  {
+    "id": "notion-bullets",
+    "group": "notion",
+    "title": "Bullets",
+    "url": "https://linguista.cn/feeds/notion-bullets.xml",
+    "pendingUrl": "https://linguista.cn/feeds/notion-bullets.xml",
+    "home": "https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648",
+    "description": "Notion 知识库",
+    "links": [
+      {
+        "title": "Linguista 知识库",
+        "url": "https://linguista.notion.site/linguista-hub"
+      },
+      {
+        "title": "Bullets 知识库",
+        "url": "https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648"
+      }
+    ]
+  }
+]

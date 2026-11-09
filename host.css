@@ -1,0 +1,7 @@
+/* Layout for the two added platforms; Home's original color rules are untouched. */
+.dock-apps { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.dock-notion-mark::before {
+  content: ''; width: 26px; height: 28px; background: currentColor;
+  mask: url('./assets/platforms/notion.svg') center / contain no-repeat;
+}
+.dock-bear-mark { font: 600 clamp(12px, 2vw, 16px)/1 Georgia, serif; letter-spacing: -1px; }
