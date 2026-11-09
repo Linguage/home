@@ -112,6 +112,7 @@ function renderList() {
   $('rss-refresh').disabled = !feed.url || requests.has(activeSite);
   if (snapshot?.loading) $('rss-sync-status').textContent = all.length ? '正在同步…' : '正在读取订阅…';
   else if (snapshot?.error) $('rss-sync-status').textContent = all.length ? `同步未完成 · 显示 ${syncLabel(snapshot.checkedAt)} 的缓存` : '同步失败';
+  else if (snapshot?.mirrored) $('rss-sync-status').textContent = '站点快照';
   else $('rss-sync-status').textContent = snapshot?.checkedAt ? `已同步 · ${syncLabel(snapshot.checkedAt)}` : feed.url ? '等待同步' : '尚未配置公开 RSS';
   empty.replaceChildren();
   if (!feed.url) {
@@ -134,12 +135,14 @@ async function loadFeed(site, { refresh = false } = {}) {
       if (!response.ok) throw Error('订阅暂时不可用。');
       const items = parseFeed(await response.text(), feed);
       // An item falling out of a bounded feed is not a deletion notice.
-      const stale = response.headers.get('x-linguista-stale') === '1';
+      const mirrored = response.headers.get('x-linguista-snapshot') === '1';
+      const stale = response.headers.get('x-linguista-stale') === '1' ||
+        (mirrored && previous?.items?.length > 0 && !previous.mirrored);
       const merged = mergeArticles(previous?.items || [], stale && previous?.items?.length ? [] : items);
       readIds = new Set([...readIds].map(id => merged.aliases.get(id) || id));
       remember('linguista-rss-read', [...readIds]);
       const snapshot = { site, items: merged.items,
-        checkedAt: (stale && previous?.checkedAt) || Number(response.headers.get('x-linguista-checked-at')) || Date.now(), error: stale, loading: false };
+        checkedAt: (stale && previous?.checkedAt) || Number(response.headers.get('x-linguista-checked-at')) || Date.now(), error: stale, mirrored: stale && previous?.items?.length ? previous.mirrored : mirrored, loading: false };
       snapshots.set(site, snapshot);
       if (!stale) await cacheWrite(snapshot);
       if (mode === 'rss' && activeSite === site && activeArticle) {

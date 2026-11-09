@@ -145,9 +145,15 @@
 
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title"><div class="dialog-heading"><h2 id="search-title">找点什么</h2><button class="icon-button" id="close-search" aria-label="关闭搜索"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><label class="search-field" for="search-input"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">搜索文章、人物与栏目</span><input type="search" id="search-input" placeholder="文章、人物、栏目…" autocomplete="off"></label><p class="search-scope">搜索首页收录的栏目与选读文章</p><p id="search-status" role="status" aria-live="polite"></p><ul id="search-results"></ul></dialog>
-  <div class="view-switch" role="group" aria-label="浏览模式">
-    <button type="button" data-view="home" aria-pressed="true">首页</button>
-    <button type="button" data-view="rss" aria-pressed="false"><span class="rss-dot" aria-hidden="true"></span>RSS</button>
+  <div class="workbench-controls">
+    <div class="view-switch" role="group" aria-label="浏览模式">
+      <button type="button" data-view="home" aria-pressed="true">首页</button>
+      <button type="button" data-view="rss" aria-pressed="false"><span class="rss-dot" aria-hidden="true"></span>RSS</button>
+    </div>
+    <button type="button" id="workbench-theme" aria-label="切换主题">
+      <svg class="icon theme-sun" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-sun"/></svg>
+      <svg class="icon theme-moon" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-moon"/></svg>
+    </button>
   </div>
   <template id="rss-sidebar-template">
     <section class="rss-sidebar" aria-label="RSS 文章列表">

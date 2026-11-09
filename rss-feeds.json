@@ -59,6 +59,7 @@
     "id": "bearblog",
     "title": "bearblog",
     "url": "https://linguista.bearblog.dev/feed/?type=rss",
+    "webSnapshot": "bearblog.xml",
     "home": "https://linguista.bearblog.dev/",
     "description": "日常内容更新"
   },

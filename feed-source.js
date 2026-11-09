@@ -3,7 +3,7 @@ export function listFeeds() {
 }
 
 export async function getFeed(feed, { refresh }) {
-  const response = await fetch(feed.url, {
+  const response = await fetch(feed.webSnapshot ? new URL(feed.webSnapshot, import.meta.url) : feed.url, {
     cache: refresh ? 'reload' : 'no-cache',
     credentials: 'omit',
     signal: AbortSignal.timeout(15000),
@@ -28,5 +28,7 @@ export async function getFeed(feed, { refresh }) {
     }
     chunks.push(value);
   }
-  return new Response(new Blob(chunks));
+  return new Response(new Blob(chunks), {
+    headers: feed.webSnapshot ? { 'x-linguista-snapshot': '1' } : undefined,
+  });
 }

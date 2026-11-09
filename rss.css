@@ -1,8 +1,14 @@
 /* Home's palette, illustrations and existing cards remain in styles.css. */
-.view-switch { position: fixed; top: max(20px, env(safe-area-inset-top)); right: 24px; z-index: 30; display: flex; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 40px; color: var(--ink); background: var(--glass); backdrop-filter: var(--control-filter); -webkit-backdrop-filter: var(--control-filter); box-shadow: 0 4px 20px #0000000d; }
+.workbench-controls { position: fixed; top: max(20px, env(safe-area-inset-top)); right: 24px; z-index: 30; display: flex; gap: 8px; align-items: center; }
+.view-switch { display: flex; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 40px; color: var(--ink); background: var(--glass); backdrop-filter: var(--control-filter); -webkit-backdrop-filter: var(--control-filter); box-shadow: 0 4px 20px #0000000d; }
 .view-switch button { display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 70px; min-height: 34px; padding: 6px 14px; border-radius: 30px; font: 500 12px/1.4 var(--sans); color: var(--muted); transition: background 160ms, color 160ms; }
 .view-switch button[aria-pressed="true"] { background: var(--surface-raised); color: var(--ink); box-shadow: 0 1px 5px #00000012; }
 .view-switch button:focus-visible { outline-offset: 1px; }
+#workbench-theme { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--glass); backdrop-filter: var(--control-filter); -webkit-backdrop-filter: var(--control-filter); }
+#workbench-theme:hover { background: var(--surface-raised); }
+#workbench-theme .icon { width: 17px; height: 17px; }
+#workbench-theme .theme-moon, [data-theme="light"] #workbench-theme .theme-sun { display: none; }
+[data-theme="light"] #workbench-theme .theme-moon { display: block; }
 .rss-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .rss-sidebar, .rss-stage { display: none; }
 html[data-view-mode="rss"] .dashboard { display: grid; grid-template-columns: clamp(270px, 27vw, 360px) minmax(0, 1fr); height: calc(100svh - var(--dock-height) - env(safe-area-inset-bottom)); min-height: 0; }
@@ -63,8 +69,9 @@ html[data-view-mode="rss"] .rss-stage { display: flex; }
 .rss-reader-footer > span { color: var(--muted); font: 10px/1.7 var(--sans); }
 @media (min-width: 701px) and (max-width: 1050px) { .rss-stage { padding: 90px 22px 28px; }.rss-reader { padding: 28px 26px; }.rss-list-heading { padding-left: 20px; padding-right: 20px; } }
 @media (max-width: 700px) {
-  .view-switch { top: max(12px, env(safe-area-inset-top)); right: 13px; padding: 3px; gap: 1px; }.view-switch button { min-width: 55px; min-height: 30px; padding: 5px 10px; font-size: 11px; }
-  html[data-view-mode="home"] .newsletter-cover-title { max-width: calc(100% - 110px); font-size: 25px; }
+  .workbench-controls { top: max(12px, env(safe-area-inset-top)); right: 13px; gap: 6px; }
+  .view-switch { padding: 3px; gap: 1px; }.view-switch button { min-width: 55px; min-height: 30px; padding: 5px 10px; font-size: 11px; }
+  html[data-view-mode="home"] .newsletter-cover-title { max-width: calc(100% - 155px); font-size: 25px; }
   html[data-view-mode="rss"] .dashboard { display: block; position: relative; }
   html[data-view-mode="rss"] .sidebar { border-right: 0; }
   .rss-list-heading { padding: 23px 20px 15px; }.rss-list-heading .rss-eyebrow { max-width: calc(100% - 120px); font-size: 9px; }
@@ -76,7 +83,7 @@ html[data-view-mode="rss"] .rss-stage { display: flex; }
   .rss-reader { max-height: 100%; padding: 25px 23px 28px; }.rss-reader h2 { font-size: 27px; }.rss-excerpt { font-size: 16px; }
   .rss-welcome { display: none; }.rss-reader-top { margin-bottom: 24px; }
 }
-@media (prefers-reduced-transparency: reduce) { .view-switch, .rss-sidebar, .rss-reader, .rss-welcome { background: var(--surface); } }
+@media (prefers-reduced-transparency: reduce) { .view-switch, #workbench-theme, .rss-sidebar, .rss-reader, .rss-welcome { background: var(--surface); } }
 
 /* An unselected article leaves the room scene clear. */
 .rss-welcome { display: none; }
