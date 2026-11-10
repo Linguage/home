@@ -216,6 +216,31 @@
       "sha256": "311315f8b4cdf595e0cacdd5219281f03857d3344ce0d59c4dd4150d8a1bfe6f"
     },
     {
+      "path": "assets/modules/alpaca-notes.svg",
+      "bytes": 349,
+      "sha256": "10d7a28d6761e87b30a1387066bfa05aaa910703f1c78aaa637ea3380dae2bb6"
+    },
+    {
+      "path": "assets/modules/alpaca-prompts.svg",
+      "bytes": 356,
+      "sha256": "59e7836360954187e44494dc0fc618dc79e9f352aba4ed2d5671fcc11320bec7"
+    },
+    {
+      "path": "assets/modules/alpaca-readings.svg",
+      "bytes": 438,
+      "sha256": "86a951b30c2a9df3462a5606d410ebb4aa0e3b282493b2de71c4515e41d05ac5"
+    },
+    {
+      "path": "assets/modules/alpaca-topics.svg",
+      "bytes": 404,
+      "sha256": "19ebb2bed8056c02da58ca61df94f0ee8caaf519ad213c6bc4679af6d2178e68"
+    },
+    {
+      "path": "assets/modules/bearblog-blog.svg",
+      "bytes": 471,
+      "sha256": "9ac6d538b6fb9cc9e18a6985774dc222ccef9ddc6e6e62d280da4e7820032237"
+    },
+    {
       "path": "assets/modules/book-open.svg",
       "bytes": 383,
       "sha256": "6449984fd714d29aab86967ba55e14b4e495c8c5ff1b0d1e561acc7177534a68"
@@ -241,9 +266,39 @@
       "sha256": "ed374c748a7a6b7bd503033198a294b8e6f6cfe8944b8863f971befc303c8399"
     },
     {
+      "path": "assets/modules/hinbox-essays.svg",
+      "bytes": 362,
+      "sha256": "29bd97866e75eaac47c4d0d9f8cc42229355aa266ad8b6d8909831d0ae2d0153"
+    },
+    {
+      "path": "assets/modules/hinbox-reports.svg",
+      "bytes": 508,
+      "sha256": "9d4fab2915084beb52f850054d76504a467853cd5779db66e6a69a94608a174a"
+    },
+    {
+      "path": "assets/modules/hinbox-talks.svg",
+      "bytes": 355,
+      "sha256": "7f5c93df563209a8f25aacff5f4384217a5b6613ea510f41cf7237d361305cce"
+    },
+    {
       "path": "assets/modules/layers.svg",
       "bytes": 517,
       "sha256": "99f4edbb4ee83101fc3ddc1354158ef767584c1cb08ed6502ba9ffe1a0f52fad"
+    },
+    {
+      "path": "assets/modules/library-channels.svg",
+      "bytes": 398,
+      "sha256": "2b3ebcff999003a88a8ebf5b9fe46bcd776b1679e59fc5a170fb7a21e27d8a92"
+    },
+    {
+      "path": "assets/modules/library-courses.svg",
+      "bytes": 362,
+      "sha256": "4303ddeebcdce37057d172fba98fdef2c71c2274c37c129946332269c8f891a5"
+    },
+    {
+      "path": "assets/modules/library-persons.svg",
+      "bytes": 450,
+      "sha256": "1cac8591bea6c85b8da724572944cfae5c21e296dfd0baf74dd2a9d41f9c4795"
     },
     {
       "path": "assets/modules/library.svg",
@@ -256,6 +311,16 @@
       "sha256": "c1cc13582e5211361e4c466840384758cf6bd9d709af2792887f080aba3d54f2"
     },
     {
+      "path": "assets/modules/notion-bullets.svg",
+      "bytes": 427,
+      "sha256": "4099a8b60051a52785551c32064d3945be8714548c08793a8c7d09dfb7297de6"
+    },
+    {
+      "path": "assets/modules/notion-linguista.svg",
+      "bytes": 327,
+      "sha256": "89d321184f02d97a06c1261d9757b3a2e817f1252f94ca690311d3e5f3118e03"
+    },
+    {
       "path": "assets/modules/radio.svg",
       "bytes": 450,
       "sha256": "98a6af39c473ad37b13126ac2eb91d99b8f5da2cb76ac44d2ed79fdafc1b62a2"
@@ -264,6 +329,31 @@
       "path": "assets/modules/ruler.svg",
       "bytes": 472,
       "sha256": "50b7be3b65f1afe73a429fbe7c96a7eb5dd94b9f18080f05b90ceab27c2377af"
+    },
+    {
+      "path": "assets/modules/science-algorithms.svg",
+      "bytes": 372,
+      "sha256": "41a90525a83b3f45f451e48b2ddfbfe158ad61d32c0ec121b17c31a516df08cf"
+    },
+    {
+      "path": "assets/modules/science-dynamics.svg",
+      "bytes": 299,
+      "sha256": "581f0e68e4d625c7c264e1d503cd9d781e05e8d5aff62258f201c1b1e12c6a33"
+    },
+    {
+      "path": "assets/modules/science-engineering.svg",
+      "bytes": 425,
+      "sha256": "1e01bc75f8c038be479564fd58c676aee02c589d24486153f6951906d15e85af"
+    },
+    {
+      "path": "assets/modules/science-reports.svg",
+      "bytes": 476,
+      "sha256": "6da098d0bd02094351c77e77d3b201c53a4911f93f0556e5e5b21c4590f200ec"
+    },
+    {
+      "path": "assets/modules/science-status.svg",
+      "bytes": 359,
+      "sha256": "8709bfe956b5aa9b899cfa43fdd6db34604e017e35c6245684c82fd23be6a5e9"
     },
     {
       "path": "assets/modules/sticky-note.svg",
@@ -317,8 +407,8 @@
     },
     {
       "path": "main.js",
-      "bytes": 44191,
-      "sha256": "69d7f1942f3bdabfef0e0007180dc0c8ed903d79154a71785fc4ffa42df19b03"
+      "bytes": 44302,
+      "sha256": "479c54f4e80a85f5c79eee8e5e0a5a575286a29da0636abf261105531467cdf1"
     },
     {
       "path": "site-home.css",
@@ -332,8 +422,8 @@
     },
     {
       "path": "styles.css",
-      "bytes": 46789,
-      "sha256": "64201f99eb961a35ffaa8da29550e728a9b23607ea623d2302692c64f36943e3"
+      "bytes": 47953,
+      "sha256": "9553e9cbd3ccb5341458fc4ae1c9fdedcf5ab850a7003b2bc687341f34c82976"
     },
     {
       "path": "theme.js",
