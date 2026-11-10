@@ -19,8 +19,8 @@
   <script defer src="./main.js"></script>
   <script defer src="./shell.js"></script>
   <script type="module" src="./rss.js?v=47cfe1dace8336ba"></script>
-  <link rel="stylesheet" href="./home-subscriptions.css?v=2">
-  <script defer src="./home-subscriptions.js?v=2"></script>
+  <link rel="stylesheet" href="./home-subscriptions.css?v=3">
+  <script defer src="./home-subscriptions.js?v=3"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -133,7 +133,7 @@
       <button type="button" data-view="rss" aria-pressed="false" aria-label="RSS"><svg class="view-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="5" cy="19" r="1"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg><span class="rss-dot" aria-hidden="true"></span><span class="view-label">RSS</span></button>
     </div>
     <button type="button" id="home-subscribe" aria-label="RSS 订阅" aria-haspopup="dialog" aria-controls="home-subscriptions" hidden>
-      <img src="./assets/brand/home-logo.svg?v=5" width="25" height="25" alt="">
+      <img src="./assets/brand/home-logo.svg?v=5" width="44" height="44" alt="">
     </button>
     <button type="button" id="workbench-theme" aria-label="切换主题">
       <svg class="icon theme-sun" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-sun"/></svg>
@@ -189,6 +189,10 @@
         <img src="./assets/brand/home-logo.svg?v=5" width="29" height="29" alt="">
         <h2 id="subscriptions-title">RSS 订阅</h2>
       </div>
+      <a class="subscription-plugin" href="/workshop/linguista-reader/" aria-label="DSH 插件下载">
+        <span class="subscription-plugin-mark" aria-hidden="true"></span>
+        DSH
+      </a>
       <form method="dialog">
         <button class="icon-button" aria-label="关闭订阅列表" autofocus><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
       </form>

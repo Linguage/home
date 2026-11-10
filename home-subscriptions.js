@@ -3,15 +3,25 @@ const dialog = document.querySelector('#home-subscriptions');
 const status = dialog.querySelector('.subscription-status');
 let copiedButton;
 
-trigger.hidden = false;
-trigger.addEventListener('click', () => {
+function openSubscriptions() {
   copiedButton?.removeAttribute('data-copied');
   copiedButton = null;
   status.textContent = '';
   status.classList.add('sr-only');
   dialog.showModal();
+}
+
+trigger.hidden = false;
+trigger.addEventListener('click', openSubscriptions);
+if (new URLSearchParams(location.search).get('subscribe') === '1') openSubscriptions();
+dialog.addEventListener('close', () => {
+  const url = new URL(location.href);
+  if (url.searchParams.get('subscribe') === '1') {
+    url.searchParams.delete('subscribe');
+    history.replaceState(history.state, '', url);
+  }
+  trigger.focus({ preventScroll: true });
 });
-dialog.addEventListener('close', () => trigger.focus({ preventScroll: true }));
 dialog.addEventListener('keydown', event => {
   // Leave Escape to the native dialog and keep Home's global search shortcut out.
   if (event.key === 'Escape' || event.key === '/') event.stopPropagation();
