@@ -694,9 +694,6 @@ function openShelf(group, trigger = homeButton) {
   shelfTrack.append(indexNav);
   shelf.hidden = false;
   document.querySelector('.feature').classList.add('has-shelf');
-  if (mobile.matches && shelf.getBoundingClientRect().top < 0) {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }
   reserveShelfSpace();
   shelfTrack.scrollLeft = 0;
   updateNavigation();

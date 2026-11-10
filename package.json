@@ -1,6 +1,6 @@
 {
   "name": "dsh-linguista",
-  "version": "0.3.0-dev.3",
+  "version": "0.3.0-dev.4",
   "private": true,
   "type": "module",
   "description": "Linguista 阅读工作台：跨站 RSS 正文阅读与 DSH 原生 AI 伴读。",

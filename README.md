@@ -6,7 +6,9 @@ Linguista 的 DeepSeek Harness 插件。打开 **Linguista**，用右上角在�
 
 ## 安装
 
-从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.3.0-dev.3)下载 `dsh-linguista-0.3.0-dev.3.tgz`。在 DeepSeek Harness 0.2 系列的插件管理中选择添加插件，输入下载文件的本地绝对路径，安装后启用。点击左侧 **Linguista**。宿主需要 Node.js 22.19 或以上。
+在 DeepSeek Harness 0.2 系列的插件管理中选择添加插件，在「包名或地址」填入 `https://github.com/Linguage/home`。安装并启用后，从左侧打开 **Linguista**。宿主需要 Node.js 22.19 或以上。
+
+也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.3.0-dev.4)下载 `dsh-linguista-0.3.0-dev.4.tgz`，在同一个字段中填入文件的本地绝对路径。
 
 ## 开始阅读
 
@@ -20,7 +22,7 @@ Linguista 的 DeepSeek Harness 插件。打开 **Linguista**，用右上角在�
 
 Notion 入口可以在 Linguista 和 Bullets 两路公开摘要之间切换。只改 Notion 页面时，需要等主站重新发布 RSS 后才能在插件里刷新。订阅失败时，已有缓存仍可阅读。
 
-手机端顶部保留 Newsletter。点击底栏站点，在 Newsletter 下方展开模块卡片，再次点击收起，封面位置保持不动。默认主屏展示可滑动的软件卡片，优先排列 DSH 插件，子站主屏展示对应封面。桌面模块入口统一为两列两行，显示图标、名称与简短说明，超过四项用底部箭头翻页。
+窄窗的 RSS 搜索紧接 Newsletter。点击底栏站点，在底栏上方展开模块卡片，再次点击收起，封面位置保持不动。默认主屏展示可滑动的软件卡片，优先排列 DSH 插件，子站主屏展示对应封面。宽窗模块入口统一为两列两行，显示图标、名称与简短说明，超过四项用底部箭头翻页。
 
 ## 来源与许可
 

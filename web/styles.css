@@ -390,7 +390,7 @@ body:has(dialog[open]) { overflow: hidden; }
 }
 @media (max-width: 900px) {
   .feature { --mobile-shelf-height: 132px; }
-  .card-shelf { position: absolute; inset: 0 0 auto; height: var(--mobile-shelf-height); padding: 4px 8px 0; overflow-anchor: none; }
+  .card-shelf { position: fixed; inset: auto 0 calc(var(--dock-height) + env(safe-area-inset-bottom)); height: var(--mobile-shelf-height); padding: 4px 8px 0; overflow-anchor: none; }
   .shelf-heading { height: 34px; gap: 8px; }
   .shelf-heading h2 { font-size: 12px; }.shelf-description { font-size: 10px; }
   .feature.has-shelf .feature-bottom { display: none; }

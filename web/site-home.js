@@ -29,10 +29,14 @@
       const identities = new Map();
       const compact = matchMedia('(max-width: 900px)');
       const feature = document.querySelector('.feature');
+      const newsletter = sidebar.querySelector('.newsletter');
+      const search = feature.querySelector('#search-button');
       const syncStage = () => {
         const isHome = root.dataset.homeSite === 'home';
         const parent = compact.matches && !isHome ? feature : section;
         if (art.parentElement !== parent) parent.prepend(art);
+        if (compact.matches && search.parentElement !== sidebar) newsletter.after(search);
+        if (!compact.matches && search.parentElement !== feature) feature.prepend(search);
         original.filter(child => !child.classList.contains('rss-sidebar')).forEach(child => {
           const visible = child.classList.contains('newsletter') && compact.matches || isHome;
           child.hidden = !visible; child.inert = !visible;
