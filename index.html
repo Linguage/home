@@ -7,7 +7,7 @@
   <meta name="description" content="Linguista，所读、所思、所想。精选阅读、个人笔记与学习记录。">
   <meta name="robots" content="noindex, follow">
   <title>Linguista Home</title>
-  <link rel="icon" type="image/svg+xml" href="./assets/brand/home-favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="./assets/brand/home-favicon.svg?v=2">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./host.css">
   <link rel="stylesheet" href="./rss.css">
@@ -19,8 +19,8 @@
   <script defer src="./main.js"></script>
   <script defer src="./shell.js"></script>
   <script type="module" src="./rss.js?v=47cfe1dace8336ba"></script>
-  <link rel="stylesheet" href="./home-subscriptions.css">
-  <script defer src="./home-subscriptions.js"></script>
+  <link rel="stylesheet" href="./home-subscriptions.css?v=2">
+  <script defer src="./home-subscriptions.js?v=2"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -132,8 +132,8 @@
       <button type="button" data-view="home" aria-pressed="true" aria-label="首页"><svg class="view-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></svg><span class="view-label">首页</span></button>
       <button type="button" data-view="rss" aria-pressed="false" aria-label="RSS"><svg class="view-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="5" cy="19" r="1"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg><span class="rss-dot" aria-hidden="true"></span><span class="view-label">RSS</span></button>
     </div>
-    <button type="button" id="home-subscribe" aria-haspopup="dialog" aria-controls="home-subscriptions" hidden>
-      <img src="./assets/brand/home-favicon.svg" width="22" height="22" alt="">订阅
+    <button type="button" id="home-subscribe" aria-label="RSS 订阅" aria-haspopup="dialog" aria-controls="home-subscriptions" hidden>
+      <img src="./assets/brand/home-logo.svg?v=2" width="25" height="25" alt="">
     </button>
     <button type="button" id="workbench-theme" aria-label="切换主题">
       <svg class="icon theme-sun" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-sun"/></svg>
@@ -185,57 +185,80 @@
 
   <dialog id="home-subscriptions" aria-labelledby="subscriptions-title">
     <header class="subscription-heading">
-      <img src="./assets/brand/home-logo.svg" width="145" height="42" alt="Linguista Home">
+      <div class="subscription-title">
+        <img src="./assets/brand/home-logo.svg?v=2" width="29" height="29" alt="">
+        <h2 id="subscriptions-title">RSS 订阅</h2>
+      </div>
       <form method="dialog">
         <button class="icon-button" aria-label="关闭订阅列表" autofocus><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
       </form>
     </header>
-    <div class="subscription-content">
-      <h2 id="subscriptions-title">RSS 订阅</h2>
-      <p class="subscription-intro">复制地址，粘贴到你的 RSS 阅读器。</p>
-      <ul class="subscription-feeds">
+    <ul class="subscription-feeds">
       <li class="subscription-feed">
         <strong>Linguista</strong>
         <a class="subscription-url" href="https://linguista.cn/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>rss.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 Linguista 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 Linguista 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>AlpacaNotes</strong>
         <a class="subscription-url" href="https://linguista.cn/alpacanotes/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>alpacanotes/<wbr>rss.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 AlpacaNotes 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 AlpacaNotes 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>Library</strong>
         <a class="subscription-url" href="https://linguista.cn/library/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>library/<wbr>rss.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 Library 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 Library 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>Hinbox</strong>
         <a class="subscription-url" href="https://linguista.cn/hinbox/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>hinbox/<wbr>rss.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 Hinbox 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 Hinbox 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>what’s old</strong>
         <a class="subscription-url" href="https://linguista.cn/sci-notes/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>sci-notes/<wbr>rss.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 what’s old 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 what’s old 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
-        <strong>bearblog</strong> <small>镜像</small>
-        <a class="subscription-url" href="https://linguista.cn/home/bearblog.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>home/<wbr>bearblog.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 bearblog 的 RSS 地址">复制</button>
+        <strong>bearblog</strong>
+        <a class="subscription-url" href="https://linguista.cn/home/bearblog.xml" target="_blank" rel="noopener noreferrer" title="RSS 摘要镜像">https://linguista.cn/<wbr>home/<wbr>bearblog.xml</a>
+        <button class="subscription-copy" type="button" aria-label="复制 bearblog 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>Notion · Linguista</strong>
         <a class="subscription-url" href="https://linguista.cn/feeds/notion-linguista.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>feeds/<wbr>notion-linguista.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 Notion · Linguista 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 Notion · Linguista 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
       <li class="subscription-feed">
         <strong>Notion · Bullets</strong>
         <a class="subscription-url" href="https://linguista.cn/feeds/notion-bullets.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>feeds/<wbr>notion-bullets.xml</a>
-        <button class="subscription-copy" type="button" aria-label="复制 Notion · Bullets 的 RSS 地址">复制</button>
+        <button class="subscription-copy" type="button" aria-label="复制 Notion · Bullets 的 RSS 地址">
+          <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+        </button>
       </li>
-      </ul>
-    </div>
+    </ul>
     <p class="subscription-status sr-only" role="status"></p>
   </dialog>
 

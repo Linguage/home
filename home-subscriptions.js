@@ -5,7 +5,7 @@ let copiedButton;
 
 trigger.hidden = false;
 trigger.addEventListener('click', () => {
-  if (copiedButton) copiedButton.textContent = '复制';
+  copiedButton?.removeAttribute('data-copied');
   copiedButton = null;
   status.textContent = '';
   status.classList.add('sr-only');
@@ -28,9 +28,9 @@ dialog.addEventListener('click', async event => {
   const link = row.querySelector('.subscription-url');
   try {
     await navigator.clipboard.writeText(link.getAttribute('href'));
-    if (copiedButton) copiedButton.textContent = '复制';
+    copiedButton?.removeAttribute('data-copied');
     copiedButton = button;
-    button.textContent = '已复制';
+    button.setAttribute('data-copied', '');
     status.classList.add('sr-only');
     status.textContent = `已复制 ${row.querySelector('strong').textContent} 的 RSS 地址。`;
   } catch {
