@@ -211,7 +211,7 @@ const cardGroups = {
     "title": "Writes",
     "href": "https://linguista.cn/alpacanotes/notes",
     "meta": "Essay 与 Notes：文章、评论和日常笔记。",
-    "icon": "sticky-note",
+    "icon": "alpaca-notes",
     "palette": [
       "#e0d2b4",
       "#51432d",
@@ -225,7 +225,7 @@ const cardGroups = {
     "title": "Reads",
     "href": "https://linguista.cn/alpacanotes/readings",
     "meta": "阅读近况、已读归档与书评。",
-    "icon": "book-open",
+    "icon": "alpaca-readings",
     "palette": [
       "#c9d8e5",
       "#28465b",
@@ -239,7 +239,7 @@ const cardGroups = {
     "title": "Topics",
     "href": "https://linguista.cn/alpacanotes/topics",
     "meta": "赛事、工作流与项目记录的专题目录。",
-    "icon": "layers",
+    "icon": "alpaca-topics",
     "palette": [
       "#3d6865",
       "#f2ead8",
@@ -253,7 +253,7 @@ const cardGroups = {
     "title": "Prompts",
     "href": "https://linguista.cn/alpacanotes/prompts",
     "meta": "A collection of AI art prompts and experiments.",
-    "icon": "folder-open",
+    "icon": "alpaca-prompts",
     "palette": [
       "#65455c",
       "#fbebdd",
@@ -269,7 +269,7 @@ const cardGroups = {
     "title": "人物文集",
     "href": "https://linguista.cn/library/#persons",
     "meta": "按作者浏览文集",
-    "icon": "users",
+    "icon": "library-persons",
     "palette": [
       "#294763",
       "#f4ead2",
@@ -283,7 +283,7 @@ const cardGroups = {
     "title": "图书与课程",
     "href": "https://linguista.cn/library/#courses",
     "meta": "图书与课程书架",
-    "icon": "library",
+    "icon": "library-courses",
     "palette": [
       "#e2cf9f",
       "#5a4433",
@@ -297,7 +297,7 @@ const cardGroups = {
     "title": "频道精选",
     "href": "https://linguista.cn/library/#channels",
     "meta": "按频道浏览阅读内容",
-    "icon": "radio",
+    "icon": "library-channels",
     "palette": [
       "#4d6653",
       "#f4efda",
@@ -313,7 +313,7 @@ const cardGroups = {
     "title": "Essays",
     "href": "https://linguista.cn/hinbox/?label=Essays",
     "meta": "Essays 收录偏思想、方法与个人判断的文章。这里的内容不追求新闻速度，更关注一个观点如何被组织、一个问题如何被拆开，以及技术、学习、写作和社会之间的长线关系。",
-    "icon": "book-open",
+    "icon": "hinbox-essays",
     "palette": [
       "#503e58",
       "#f8ead9",
@@ -327,7 +327,7 @@ const cardGroups = {
     "title": "Talks",
     "href": "https://linguista.cn/hinbox/?label=Talks",
     "meta": "Talks 收录访谈、演讲、课堂与长视频整理。这里保留视频入口，也把核心脉络整理成可阅读文本，方便在人物、主题和时间之间回看思想如何被说出来。",
-    "icon": "video",
+    "icon": "hinbox-talks",
     "palette": [
       "#844f3e",
       "#fff0dc",
@@ -341,7 +341,7 @@ const cardGroups = {
     "title": "Reports",
     "href": "https://linguista.cn/hinbox/?label=Reports",
     "meta": "Reports 收录围绕人工智能、计算系统、科学研究与技术社会影响的长文和研究笔记。这里的条目通常来自论文、机构博客、工程报告或高密度技术评论，更适合做主题追踪、概念索引和后续精读。",
-    "icon": "file-text",
+    "icon": "hinbox-reports",
     "palette": [
       "#d8e1ed",
       "#294362",
@@ -357,7 +357,7 @@ const cardGroups = {
     "title": "调研",
     "href": "https://linguista.cn/sci-notes/articles/?category=%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A",
     "meta": "长篇综述与调研报告",
-    "icon": "file-text",
+    "icon": "science-reports",
     "palette": [
       "#c9d8e5",
       "#28465b",
@@ -371,7 +371,7 @@ const cardGroups = {
     "title": "动力系统",
     "href": "https://linguista.cn/sci-notes/articles/?category=%E5%8A%A8%E5%8A%9B%E7%B3%BB%E7%BB%9F",
     "meta": "动力系统的学习和实践",
-    "icon": "chart-spline",
+    "icon": "science-dynamics",
     "palette": [
       "#325859",
       "#f3edd7",
@@ -385,7 +385,7 @@ const cardGroups = {
     "title": "工程设计",
     "href": "https://linguista.cn/sci-notes/articles/?category=%E5%B7%A5%E7%A8%8B%E8%AE%BE%E8%AE%A1",
     "meta": "工程设计的学习和实践",
-    "icon": "ruler",
+    "icon": "science-engineering",
     "palette": [
       "#d9bf92",
       "#4f3d2a",
@@ -399,7 +399,7 @@ const cardGroups = {
     "title": "算法理论",
     "href": "https://linguista.cn/sci-notes/articles/?category=%E7%AE%97%E6%B3%95%E7%90%86%E8%AE%BA",
     "meta": "算法理论的学习和实践",
-    "icon": "workflow",
+    "icon": "science-algorithms",
     "palette": [
       "#534f76",
       "#f0e8fa",
@@ -413,7 +413,7 @@ const cardGroups = {
     "title": "随手记",
     "href": "https://linguista.cn/sci-notes/status/",
     "meta": "随手记录与更新",
-    "icon": "messages",
+    "icon": "science-status",
     "palette": [
       "#e0c4bd",
       "#653f42",
@@ -427,7 +427,7 @@ const cardGroups = {
 const shelfLinks = {};
 // sync:modules:end
 
-const extraModules = {"notion":{"title":"Notion","href":"https://linguista.notion.site/linguista-hub","description":"Linguista 与 Bullets 知识库。","items":[{"id":"linguista","title":"Linguista","href":"https://linguista.notion.site/linguista-hub","meta":"Linguista 知识库","icon":"book-open","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"},{"id":"bullets","title":"Bullets","href":"https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648","meta":"Bullets 知识库","icon":"file-text","palette":["#3d6865","#f2ead8","#9ec8bb"],"motif":"grid"}]},"bearblog":{"title":"bearblog","href":"https://linguista.bearblog.dev/","description":"日常内容更新。","items":[{"id":"blog","title":"bearblog","href":"https://linguista.bearblog.dev/","meta":"Linguista 的 bearblog","icon":"sticky-note","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"}]}};
+const extraModules = {"notion":{"title":"Notion","href":"https://linguista.notion.site/linguista-hub","description":"Linguista 与 Bullets 知识库。","items":[{"id":"linguista","title":"Linguista","href":"https://linguista.notion.site/linguista-hub","meta":"Linguista 知识库","icon":"notion-linguista","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"},{"id":"bullets","title":"Bullets","href":"https://app.notion.com/p/40cd1a1385bf80fda58de79dc91cc648","meta":"Bullets 知识库","icon":"notion-bullets","palette":["#3d6865","#f2ead8","#9ec8bb"],"motif":"grid"}]},"bearblog":{"title":"bearblog","href":"https://linguista.bearblog.dev/","description":"日常内容更新。","items":[{"id":"blog","title":"bearblog","href":"https://linguista.bearblog.dev/","meta":"Linguista 的 bearblog","icon":"bearblog-blog","palette":["#e0d2b4","#51432d","#a78c59"],"motif":"lines"}]}};
 for (const [group, source] of Object.entries(extraModules)) {
   sites[group] = {title: source.title, href: source.href, description: source.description};
   groupLabels[group] = source.title;
@@ -499,9 +499,11 @@ function miniCover(item, group) {
   cover.style.setProperty('--cover-invert', ink.startsWith('#f') || ink.startsWith('#d6') ? '1' : '0');
   if (imageSource) {
     if (item.isModule && source.imageStyle === 'icon') {
-      const glyph = document.createElement('span');
+      const glyph = document.createElement('img');
       glyph.className = 'module-glyph';
-      glyph.style.setProperty('--module-image', `url("${imageSource}")`);
+      glyph.src = imageSource;
+      glyph.alt = '';
+      glyph.draggable = false;
       cover.append(glyph);
     } else {
       const image = document.createElement('img');
