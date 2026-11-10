@@ -66,7 +66,15 @@
   padding: 8px 0;
 }
 .subscription-feed + .subscription-feed { border-top: 1px solid var(--line); }
-.subscription-feed strong { grid-area: 1 / 1; font-size: 13px; }
+.subscription-feed-heading {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1px 8px;
+  font-size: 13px;
+}
+.subscription-feed-description { color: var(--muted); font-size: 12px; line-height: 1.4; }
 .subscription-url {
   grid-area: 2 / 1;
   color: var(--accent);
