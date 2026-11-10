@@ -364,23 +364,35 @@ body:has(dialog[open]) { overflow: hidden; }
 [data-cover-kind="module"][data-motif="grid"] { --module-pattern: repeating-linear-gradient(0deg, transparent 0 15px, color-mix(in srgb, var(--cover-accent) 16%, transparent) 15px 16px), repeating-linear-gradient(90deg, transparent 0 15px, color-mix(in srgb, var(--cover-accent) 16%, transparent) 15px 16px); }
 [data-cover-kind="module"][data-motif="arch"] { --module-pattern: radial-gradient(circle at 85% 8%, transparent 0 24%, color-mix(in srgb, var(--cover-accent) 22%, transparent) 24.5% 43%, transparent 43.5%); }
 [data-cover-kind="module"][data-motif="diagonal"] { --module-pattern: linear-gradient(125deg, transparent 0 58%, color-mix(in srgb, var(--cover-accent) 22%, transparent) 58% 79%, transparent 79%); }
-.mini-book[data-cover-kind="module"] { justify-content: flex-end; padding: 10px 9px 11px 13px; }
+.mini-book[data-cover-kind="module"] { justify-content: flex-end; padding: 10px 10px 11px 12px; box-shadow: none; }
+.mini-book[data-cover-kind="module"]::after { display: none; }
+.mini-book[data-cover-kind="module"] .mini-book-title { font: 600 13px/1.35 var(--sans); text-wrap: pretty; }
 .mini-book-icon[data-cover-kind="module"] {
-  align-items: center;
-  justify-content: flex-start;
-  gap: 3px;
-  padding: 7px 6px;
-  color: #293730;
-  text-align: center;
-  background: color-mix(in srgb, #f4ebd7 86%, var(--cover-bg));
-  box-shadow: inset 3px 0 color-mix(in srgb, var(--cover-accent) 30%, transparent);
+  color: #252525;
+  background: #f3f3f37a;
 }
-.mini-book-icon[data-cover-kind="module"]::after { display: none; }
-.mini-book[data-cover-kind="module"] .mini-book-shade { background: none; }
+[data-theme="dark"] .mini-book-icon[data-cover-kind="module"] {
+  color: #f3efe4;
+  background: #a0a0a040;
+}
+.mini-book-icon[data-cover-kind="module"] .mini-book-title { font: 600 14px/1.3 var(--serif); }
+.mini-book-icon[data-cover-kind="module"] .mini-book-shade {
+  background: none;
+}
 .mini-book-photo[data-cover-kind="module"] .mini-book-shade { background: linear-gradient(0deg, color-mix(in srgb, var(--cover-bg) 96%, transparent), color-mix(in srgb, var(--cover-bg) 40%, transparent)); }
-.mini-book[data-cover-kind="module"] .mini-book-title { font-size: 13px; line-height: 1.35; text-wrap: pretty; }
-.mini-book-icon[data-cover-kind="module"] .mini-book-title { margin-block: auto 0; }
-.module-glyph { width: 40px; height: 40px; flex: none; }
+.module-glyph {
+  position: absolute;
+  top: -16px;
+  right: -24px;
+  z-index: -1;
+  width: 124px;
+  height: 124px;
+  max-width: none;
+  opacity: .18;
+  filter: grayscale(1);
+  pointer-events: none;
+}
+[data-theme="dark"] .module-glyph { opacity: .52; filter: grayscale(1) brightness(.64); }
 .mini-card-cover[aria-pressed="true"]::after { z-index: 1; }
 .feature.has-shelf .feature-bottom { visibility: hidden; pointer-events: none; }
 .feature.has-detail .feature-slide, .feature.has-detail .feature-bottom { visibility: hidden; pointer-events: none; }
@@ -400,30 +412,28 @@ body:has(dialog[open]) { overflow: hidden; }
   .js .app-panel { left: 24px; right: 24px; }
 }
 @media (max-width: 900px) {
-  :root {
-    --dock-shelf-fill: color-mix(in srgb, var(--surface) 86%, var(--accent));
-    --dock-shelf-line: color-mix(in srgb, var(--accent) 72%, var(--dock-shelf-fill));
-  }
+  :root { --dock-shelf-fill: #80808012; }
   .feature { --mobile-shelf-height: 132px; }
   .card-shelf {
     position: fixed;
     inset: auto 6px calc(var(--dock-height) + env(safe-area-inset-bottom));
     height: var(--mobile-shelf-height);
-    padding: 4px 8px 0;
+    padding: 5px 9px 1px;
     overflow-anchor: none;
-    border-color: var(--dock-shelf-line);
+    border: 0;
     border-radius: 8px 8px 0 0;
     background: var(--dock-shelf-fill);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: none;
   }
+  .dock:has(.dock-item[aria-expanded="true"]) { border-top-color: transparent; }
   .dock-item[aria-expanded="true"] { isolation: isolate; background: none; }
   .dock-item[aria-expanded="true"]::before {
     content: '';
     position: absolute;
-    /* Bridge the dock's top padding and the two borders at the seam. */
-    inset: calc(-2px - var(--dock-top-padding)) 0 0;
+    inset: calc(-1px - var(--dock-top-padding)) 0 0;
     z-index: -1;
-    border: 1px solid var(--dock-shelf-line);
-    border-top: 0;
     border-radius: 0 0 8px 8px;
     background: var(--dock-shelf-fill);
     pointer-events: none;
