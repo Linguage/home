@@ -151,7 +151,8 @@ const cardGroups = {
     "href": "https://linguista.cn/newsletter/",
     "description": "每周精选与每日剪报，按期阅读。",
     "action": "进入Newsletter",
-    "image": "./assets/linguista/newsletter-geometric.svg",
+    "image": "./assets/modules/home-newsletter.svg",
+    "imageStyle": "icon",
     "palette": [
       "#efe0bc",
       "#4d4930",
@@ -166,7 +167,8 @@ const cardGroups = {
     "href": "https://linguista.cn/workshop/",
     "description": "浏览原创项目的用途、实现方式与技术更新，并进入公开仓库。",
     "action": "进入工坊",
-    "image": "./assets/linguista/woz-jobs.webp",
+    "image": "./assets/modules/home-workshop.svg",
+    "imageStyle": "icon",
     "palette": [
       "#5d735d",
       "#fff3d9",
@@ -181,7 +183,8 @@ const cardGroups = {
     "href": "https://linguista.cn/bookmarks",
     "description": "精心整理的阅读清单与个人知识库，涵盖技术探索与设计美学的珍贵碎片。",
     "action": "浏览收藏",
-    "image": "./assets/linguista/Einstein-office.png",
+    "image": "./assets/modules/home-bookmarks.svg",
+    "imageStyle": "icon",
     "palette": [
       "#b7cad4",
       "#28444b",
@@ -196,7 +199,8 @@ const cardGroups = {
     "href": "https://linguista.cn/about",
     "description": "分享个人的所读、所思与所想。通过跨学科的视角，观察数字时代的极简主义与结构化表达。致力于知识边界的无缝对接。",
     "action": "了解本站",
-    "image": "./assets/linguista/Apollo-console.jpg",
+    "image": "./assets/modules/home-about.svg",
+    "imageStyle": "icon",
     "palette": [
       "#6c4149",
       "#f9e7d8",
@@ -553,8 +557,8 @@ function updateNavigation() {
 
   dockButtons.forEach(button => {
     const group = button.dataset.cardGroup;
-    button.setAttribute('aria-controls', mobile.matches || group === 'home' ? 'card-shelf' : 'site-sidebar');
-    button.setAttribute('aria-expanded', String(mobile.matches || group === 'home' ? shelfGroup === group : root.dataset.homeSite === group));
+    button.setAttribute('aria-controls', mobile.matches ? 'card-shelf' : group === 'home' ? 'home-modules' : 'site-sidebar');
+    button.setAttribute('aria-expanded', String(mobile.matches ? shelfGroup === group : root.dataset.homeSite === group));
     button.classList.toggle('is-active', group === (root.dataset.homeSite || shelfGroup || contentGroup));
     if (group === (root.dataset.homeSite || contentGroup)) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
@@ -655,10 +659,10 @@ function closeShelf({ restoreFocus = true } = {}) {
   if (restoreFocus) shelfReturnFocus.focus({ preventScroll: true });
 }
 function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
-  if (shelfGroup === group) { if (group === 'home') closeShelf(); return; }
+  if (shelfGroup === group) return;
   if (selectSite && window.LinguistaSiteUI?.select) {
     window.LinguistaSiteUI.select(group);
-    if (!mobile.matches && group !== 'home') return;
+    if (!mobile.matches) return;
   }
   shelfGroup = group;
   syncPlayback();
@@ -666,8 +670,8 @@ function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
   const siteLink = document.querySelector('#shelf-site');
   siteLink.textContent = sites[group].title;
   siteLink.href = sites[group].href;
-  shelf.toggleAttribute('data-module-icons', group !== 'home');
-  document.querySelector('#shelf-close').hidden = group !== 'home';
+  shelf.setAttribute('data-module-icons', '');
+  document.querySelector('#shelf-close').hidden = true;
   const links = shelfLinks[group] || [];
   const indexNav = document.querySelector('#shelf-links');
   indexNav.replaceChildren(...links.map(item => {
@@ -703,11 +707,11 @@ function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
   updateShelfArrows();
   move(shelf, mobile.matches ? [{ opacity: 0 }, { opacity: 1 }] :
     [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }]);
-  // Subsite modules remain pinned; only the Home shelf can be folded.
+  // Every selected site's modules remain pinned.
 }
 function restoreSiteShelf() {
   const group = root.dataset.homeSite;
-  if (mobile.matches && root.dataset.viewMode !== 'rss' && group && group !== 'home') {
+  if (mobile.matches && root.dataset.viewMode !== 'rss' && group) {
     openShelf(group, dockButtons.find(button => button.dataset.cardGroup === group), { selectSite: false });
   }
 }
@@ -765,7 +769,7 @@ dockButtons.forEach(button => button.addEventListener('keydown', event => {
   if (event.key !== 'ArrowUp') return;
   event.preventDefault();
   if (shelfGroup !== button.dataset.cardGroup) openShelf(button.dataset.cardGroup, button);
-  if (!mobile.matches && root.dataset.homeSite !== 'home') window.LinguistaSiteUI?.focus();
+  if (!mobile.matches) window.LinguistaSiteUI?.focus();
   else shelfTrack.querySelector('button')?.focus({ preventScroll: true });
 }));
 panels.forEach(panel => panel.querySelector('.panel-close').addEventListener('click', () => closePanel()));
@@ -788,9 +792,6 @@ shelfTrack.addEventListener('keydown', event => {
   event.preventDefault(); event.stopPropagation();
   buttons[next].focus({ preventScroll: true });
   buttons[next].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
-});
-document.addEventListener('click', event => {
-  if (shelfGroup === 'home' && !event.target.closest('#card-shelf, .app-panel, .dock, #search-dialog, .workbench-controls')) closeShelf({ restoreFocus: false });
 });
 mobile.addEventListener('change', () => {
   updateNavigation();
@@ -822,7 +823,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && root.dataset.homeSite && root.dataset.homeSite !== 'home') || keyboardReading || carouselDragging || currentPanel || shelfGroup || root.hasAttribute('data-home-search')) return;
+  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && (root.dataset.homeSite && root.dataset.homeSite !== 'home' || root.dataset.homeCover === 'newsletter')) || keyboardReading || carouselDragging || currentPanel || root.hasAttribute('data-home-search')) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -903,7 +904,7 @@ setSlide(0, false);
 trackDrag(feature, {
   axis: 'x',
   canStart: event => {
-    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !shelfGroup && !(mobile.matches && root.dataset.homeSite !== 'home') && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
+    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !feature.classList.contains('has-site-cover') && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
     if (allowed) { carouselDragging = true; syncPlayback(); }
     return allowed;
   },
@@ -923,7 +924,7 @@ trackDrag(feature, {
 let wheelDistance = 0;
 let lastWheelTime = 0;
 feature.addEventListener('wheel', event => {
-  if (root.dataset.viewMode === 'rss' || currentPanel || shelfGroup || (mobile.matches && root.dataset.homeSite !== 'home') || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
+  if (root.dataset.viewMode === 'rss' || currentPanel || feature.classList.contains('has-site-cover') || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
   event.preventDefault();
   if (event.timeStamp - lastWheelTime > 200) wheelDistance = 0;
   lastWheelTime = event.timeStamp;
@@ -942,9 +943,11 @@ const list = document.querySelector('#search-results');
 const searchStatus = document.querySelector('#search-status');
 const searchMatches = searchDialog.querySelector('.search-matches');
 const channels = document.querySelector('.newsletter-channels');
-document.querySelector('.view-switch')?.prepend(searchButton);
+const searchQueries = { home: '', rss: '' };
+let searchMode = 'home';
+
 function renderResults() {
-  searchMatches.hidden = !input.value.trim();
+  searchMatches.hidden = root.dataset.viewMode === 'rss' || !root.hasAttribute('data-home-search') || !input.value.trim();
   if (searchMatches.hidden) { searchStatus.textContent = ''; list.replaceChildren(); return; }
   const result = window.LinguistaRSS?.search(input.value);
   if (!result) { searchStatus.textContent = '正在读取订阅…'; list.replaceChildren(); return; }
@@ -967,22 +970,48 @@ function renderResults() {
   }));
 }
 function syncSearchLayout() {
-  const inline = mobile.matches;
-  if (inline) channels.after(searchDialog);
-  else (document.querySelector('.workbench-controls') || document.body).prepend(searchDialog);
-  searchButton.hidden = !inline;
-  searchDialog.hidden = inline && !root.hasAttribute('data-home-search');
-  channels.hidden = inline && root.hasAttribute('data-home-search');
+  const host = mobile.matches ? document.querySelector('.home-mobile-header') : document.querySelector('.workbench-controls');
+  if (host && searchDialog.parentElement !== host) {
+    if (mobile.matches) host.append(searchDialog); else host.prepend(searchDialog);
+  }
+  searchButton.hidden = true;
+  searchDialog.hidden = false;
+  channels.hidden = false;
+}
+function syncSearchMode() {
+  const next = root.dataset.viewMode === 'rss' ? 'rss' : 'home';
+  if (next !== searchMode) {
+    searchQueries[searchMode] = input.value;
+    searchMode = next;
+    input.value = searchQueries[next];
+    root.removeAttribute('data-home-search');
+    searchButton.setAttribute('aria-expanded', 'false');
+  }
+  const label = next === 'rss' ? '搜索 ' + (document.querySelector('#rss-site-title')?.textContent || '当前站点') + ' 的文章' : '搜索各站内容';
+  input.placeholder = label + '…';
+  input.setAttribute('aria-label', label);
+  searchDialog.setAttribute('aria-label', label);
+  searchDialog.dataset.searchMode = next;
+  searchDialog.toggleAttribute('data-has-query', !!input.value);
+  renderResults();
+  syncSearchLayout();
 }
 function closeSearch({ restoreFocus = true } = {}) {
+  if (root.dataset.viewMode === 'rss') {
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    if (restoreFocus) input.focus({ preventScroll: true });
+    return;
+  }
   if (!root.hasAttribute('data-home-search')) return;
   root.removeAttribute('data-home-search');
   searchButton.setAttribute('aria-expanded', 'false');
-  input.value = '';
+  input.value = ''; searchQueries.home = '';
+  searchDialog.removeAttribute('data-has-query');
   renderResults();
   syncSearchLayout();
   if (restoreFocus) {
-    const target = mobile.matches ? searchReturnFocus : document.querySelector('[data-view="home"]');
+    const target = mobile.matches ? document.querySelector('#home-site-name') : document.querySelector('[data-view="home"]');
     (target || searchButton).focus({ preventScroll: true });
   }
   syncPlayback();
@@ -990,7 +1019,7 @@ function closeSearch({ restoreFocus = true } = {}) {
 function openSearch(trigger = searchButton) {
   if (root.hasAttribute('data-home-search')) { input.focus({ preventScroll: true }); return; }
   searchReturnFocus = trigger;
-  if (root.dataset.viewMode === 'rss') document.querySelector('[data-view="home"]')?.click();
+  if (root.dataset.viewMode === 'rss') { input.focus({ preventScroll: true }); return; }
   root.setAttribute('data-home-search', '');
   searchButton.setAttribute('aria-expanded', 'true');
   syncSearchLayout();
@@ -1000,21 +1029,26 @@ function openSearch(trigger = searchButton) {
   input.focus({ preventScroll: true });
 }
 window.addEventListener('linguista-rss-update', () => { if (root.hasAttribute('data-home-search')) renderResults(); });
-mobile.addEventListener('change', () => { closeSearch({ restoreFocus: false }); syncSearchLayout(); });
-syncSearchLayout();
+mobile.addEventListener('change', () => { if (root.dataset.viewMode !== 'rss') closeSearch({ restoreFocus: false }); syncSearchLayout(); });
+syncSearchMode();
 searchButton.addEventListener('click', () => root.hasAttribute('data-home-search') ? closeSearch() : openSearch(searchButton));
-input.addEventListener('focus', () => { if (!mobile.matches) openSearch(input); });
+input.addEventListener('focus', () => openSearch(input));
 document.querySelector('#close-search').addEventListener('click', () => closeSearch());
 document.addEventListener('keydown', event => {
   if (event.key !== 'Escape' || !root.hasAttribute('data-home-search') || document.querySelector('dialog[open]')) return;
   event.preventDefault(); event.stopImmediatePropagation(); closeSearch();
 }, { capture: true });
-input.addEventListener('input', renderResults);
+input.addEventListener('input', () => {
+  searchQueries[searchMode] = input.value;
+  searchDialog.toggleAttribute('data-has-query', !!input.value);
+  if (searchMode === 'rss') window.LinguistaRSS?.filter();
+  else { openSearch(input); renderResults(); }
+});
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !root.hasAttribute('data-home-search')) {
     event.preventDefault();
     if (currentPanel) closePanel();
-    else if (shelfGroup === 'home') closeShelf();
+
   }
   const typing = event.target.closest('input, textarea, [contenteditable="true"]');
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
@@ -1035,6 +1069,7 @@ function readHash() {
 window.LinguistaSiteUI?.init({ sites, cardGroups, shelfLinks, miniCover, showItem,
   collapseShelf() { closeShelf({ restoreFocus: false }); },
   restoreShelf: restoreSiteShelf,
+  showCover() { closePanel({ restoreFocus: false, immediate: true }); },
   clear() { closeSearch({ restoreFocus: false }); closeShelf({ restoreFocus: false }); closePanel({ restoreFocus: false, immediate: true }); },
   update() { updateNavigation(); syncPlayback(); }
 });
@@ -1042,9 +1077,9 @@ window.addEventListener('hashchange', readHash);
 readHash();
 
 window.LinguistaHome = {
+  syncSearchMode,
   suspend() {
     closeShelf({restoreFocus: false}); closePanel({restoreFocus: false, immediate: true});
-    closeSearch({restoreFocus: false});
     clearTimeout(playbackTimer);
   },
   resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); restoreSiteShelf(); updateNavigation(); syncPlayback();},

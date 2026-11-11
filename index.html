@@ -10,16 +10,16 @@
   <link rel="icon" type="image/svg+xml" href="./assets/brand/home-favicon.svg?v=6">
   <link rel="stylesheet" href="./styles.css?v=7bd9a4fa4a18">
   <link rel="stylesheet" href="./host.css">
-  <link rel="stylesheet" href="./rss.css?v=04d3d2f5788a">
+  <link rel="stylesheet" href="./rss.css?v=4400ea7829a4">
   <link rel="stylesheet" href="./identity-widgets.css">
-  <link rel="stylesheet" href="./site-home.css?v=1d2cb4df221d">
+  <link rel="stylesheet" href="./site-home.css?v=d6a402eb6d7d">
   <script src="./theme.js"></script>
   <script defer src="./identity-widgets.js"></script>
-  <script defer src="./site-home.js?v=aea7ed6bb86e"></script>
-  <script defer src="./main.js?v=e49f85e564e8"></script>
+  <script defer src="./site-home.js?v=97bdd24a3d6d"></script>
+  <script defer src="./main.js?v=ae67ebd4569d"></script>
   <script defer src="./shell.js"></script>
-  <script type="module" src="./rss.js?v=c32cdd78137a6691"></script>
-  <link rel="stylesheet" href="./home-subscriptions.css?v=c742c294ad96">
+  <script type="module" src="./rss.js?v=95f74c353533eae1"></script>
+  <link rel="stylesheet" href="./home-subscriptions.css?v=0fb694f3ee39">
   <script defer src="./home-subscriptions.js?v=3"></script>
 </head>
 <body>
@@ -28,6 +28,7 @@
   <a class="skip-link" href="#featured">跳到精选内容</a>
   <main class="dashboard">
     <aside class="sidebar" aria-label="周刊与快捷入口">
+      <header class="home-mobile-header" aria-label="当前站点与搜索"><button type="button" id="home-site-name" aria-controls="featured">Linguista</button></header>
       <!-- sync:newsletter:start -->
       <section class="newsletter" id="newsletter" aria-label="Newsletter">
         <div class="newsletter-cover">
@@ -149,7 +150,6 @@
         <div class="rss-heading-line"><h2><a id="rss-site-title" target="_blank" rel="noopener noreferrer">Linguista</a></h2><button type="button" id="rss-refresh" class="icon-button" aria-label="刷新当前站点订阅"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.1 8a7 7 0 0 1 11.55-3.1L20 8M4 16l3.35 3.1A7 7 0 0 0 18.9 16"/></svg></button></div>
         <p class="rss-description" id="rss-site-description"></p>
         <nav class="rss-sources" id="rss-sources" aria-label="Notion 知识库" hidden></nav>
-        <label class="rss-search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="rss-search" aria-label="筛选当前站点的 RSS 文章" placeholder="搜索标题、摘要…" autocomplete="off"></label>
         <div class="rss-list-meta"><span id="rss-count"></span><div class="rss-filter" id="rss-filter"><button type="button" id="rss-filter-button" aria-label="文章阅读状态" aria-haspopup="menu" aria-expanded="false" aria-controls="rss-filter-menu"><span id="rss-filter-label">未读</span><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button><div id="rss-filter-menu" role="menu" aria-label="文章阅读状态" hidden><button type="button" role="menuitemradio" aria-checked="true" data-read-filter="unread">未读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="read">已读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="all">全部</button></div></div></div>
       </header>
       <p class="rss-sync-status" id="rss-sync-status" role="status" aria-live="polite"></p>
