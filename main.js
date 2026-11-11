@@ -59,7 +59,14 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd, onTap }) {
     drag.delta = delta;
     onMove(delta);
   });
-  surface.addEventListener('pointerup', event => { if (drag?.id === event.pointerId) finish(false); });
+  surface.addEventListener('pointerup', event => {
+    if (drag?.id !== event.pointerId) return;
+    if (drag.active) {
+      drag.delta = axis === 'x' ? event.clientX - drag.x : event.clientY - drag.y;
+      onMove(drag.delta);
+    }
+    finish(false);
+  });
   ['pointercancel', 'lostpointercapture'].forEach(type => surface.addEventListener(type, event => {
     // Touch starts with implicit capture on the child; transferring it is not cancellation.
     if (type === 'lostpointercapture' && event.target !== surface) return;
@@ -871,7 +878,45 @@ document.querySelector('.feature-bottom').hidden = false;
 previousSlide.addEventListener('click', () => setSlide(slideIndex - 1));
 nextSlide.addEventListener('click', () => setSlide(slideIndex + 1));
 positionControl.addEventListener('input', () => setSlide(Number(positionControl.value), true, false, true));
-positionControl.addEventListener('pointerdown', () => { carouselDragging = true; syncPlayback(); });
+positionControl.max = String(slides.length - 1);
+let positionDrag = null;
+function scrubPosition(clientX) {
+  const box = positionControl.getBoundingClientRect(), inset = Math.min(17, box.width / 4);
+  const fraction = Math.max(0, Math.min(1, (clientX - box.left - inset) / Math.max(1, box.width - inset * 2)));
+  const next = Math.round(fraction * (slides.length - 1));
+  if (next !== slideIndex) setSlide(next, true, false, true);
+}
+function finishPositionDrag(cancelled, event) {
+  if (!positionDrag) return;
+  const previous = positionDrag; positionDrag = null;
+  if (cancelled) setSlide(previous.index, false, false, true);
+  else if (event) scrubPosition(event.clientX);
+  if (positionControl.hasPointerCapture(previous.id)) positionControl.releasePointerCapture(previous.id);
+  carouselDragging = false; syncPlayback();
+}
+positionControl.addEventListener('pointerdown', event => {
+  if (!event.isPrimary) { finishPositionDrag(true); return; }
+  if (event.button !== 0 || root.dataset.viewMode === 'rss' || currentPanel) return;
+  event.preventDefault();
+  positionDrag = { id:event.pointerId, index:slideIndex };
+  carouselDragging = true; syncPlayback();
+  positionControl.setPointerCapture(event.pointerId);
+  positionControl.focus({ preventScroll:true });
+  scrubPosition(event.clientX);
+});
+positionControl.addEventListener('pointermove', event => {
+  if (positionDrag?.id !== event.pointerId) return;
+  event.preventDefault(); scrubPosition(event.clientX);
+});
+positionControl.addEventListener('pointerup', event => {
+  if (positionDrag?.id === event.pointerId) finishPositionDrag(false, event);
+});
+for (const type of ['pointercancel','lostpointercapture']) positionControl.addEventListener(type, event => {
+  if (positionDrag?.id === event.pointerId) finishPositionDrag(true);
+});
+window.addEventListener('blur', () => finishPositionDrag(true));
+window.addEventListener('resize', () => finishPositionDrag(true));
+
 positionControl.addEventListener('keydown', event => {
   const step = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageUp: 3, PageDown: -3 }[event.key];
   if (!step && event.key !== 'Home' && event.key !== 'End') return;
@@ -1093,7 +1138,7 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
     axis: 'x',
     canStart(event) {
       blockClickUntil = 0;
-      if (!mobile.matches || event.pointerType === 'mouse' || document.querySelector('dialog[open]')) return false;
+      if (!mobile.matches || document.querySelector('dialog[open]')) return false;
       const entries = items(); if (!entries.length) return false;
       const index = current(entries);
       const rail = surface.getBoundingClientRect(), frame = host.getBoundingClientRect();
@@ -1102,6 +1147,7 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
       gesture = {
         entries, index, rail, frame, startX: event.clientX, started:performance.now(),
         tapped:entries.find(entry => entry.contains(event.target)),
+        direct: event.pointerType === 'mouse' || index >= 0 && entries[index].contains(event.target),
         width: Math.min(80, anchor.width + 14), height: Math.min(rail.height - 6, anchor.height + 6),
         threshold: clamp(rail.width * .12, 32, 52),
         state: [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|'),
@@ -1119,7 +1165,15 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
     onMove(delta) {
       if (!gesture) return;
       const g = gesture, direction = delta < 0 ? 1 : -1;
-      g.next = g.index + direction;
+      const pointerX = g.startX + delta;
+      if (g.direct) {
+        let nearest = Infinity;
+        g.entries.forEach((entry, index) => {
+          const box = entry.getBoundingClientRect();
+          const distance = Math.abs(pointerX - box.left - box.width / 2);
+          if (distance < nearest) { nearest = distance; g.next = index; }
+        });
+      } else g.next = g.index + direction;
       g.valid = g.next >= 0 && g.next < g.entries.length;
       const stretch = reducedMotion.matches ? 0 : Math.min(30, Math.abs(delta) * .25);
       const width = g.width + stretch, height = g.height - stretch * .08;
@@ -1138,7 +1192,7 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
       if (!g) return;
       // Capture before RSS's document handler, so a swipe cannot become a stray tap.
       blockClickUntil = performance.now() + 600;
-      const commit = !cancelled && g.valid && Math.abs(delta) >= g.threshold;
+      const commit = !cancelled && g.valid && (g.direct ? g.next !== g.index : Math.abs(delta) >= g.threshold);
       let target = g.entries[Math.max(0, g.index)];
       if (commit) {
         target = g.entries[g.next];
@@ -1161,6 +1215,7 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
       ], { duration: cancelled ? 140 : 280, complete() { glass.hidden = true; } });
     },
   });
+  surface.addEventListener('dragstart', event => { if (mobile.matches) event.preventDefault(); });
   document.addEventListener('click', event => {
     if (event.detail === 0 || performance.now() > blockClickUntil || !surface.contains(event.target)) return;
     event.preventDefault(); event.stopImmediatePropagation(); blockClickUntil = 0;
