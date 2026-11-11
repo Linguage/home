@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="430" viewBox="0 0 320 430" preserveAspectRatio="none"><title>Hinbox · Essays 模块纸张</title><defs>
+  <linearGradient id="postcard-skin-paper" x2=".8" y2="1"><stop stop-color="#fbf4e5"/><stop offset="1" stop-color="#e5d8bd"/></linearGradient>
+  <linearGradient id="postcard-skin-metal" x2="0" y2="1"><stop stop-color="#544c3b"/><stop offset=".25" stop-color="#c9c7b6"/><stop offset=".45" stop-color="#f6f1dc"/><stop offset=".62" stop-color="#827c68"/><stop offset="1" stop-color="#4b493e"/></linearGradient>
+  <linearGradient id="postcard-skin-spine"><stop stop-color="#203c44"/><stop offset=".45" stop-color="#42616a"/><stop offset=".8" stop-color="#213d45"/><stop offset="1" stop-color="#172f36"/></linearGradient>
+  <pattern id="postcard-skin-grain" width="17" height="19" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".45" fill="#6b5734" opacity=".07"/><circle cx="12" cy="15" r=".32" fill="#fff9e9" opacity=".4"/><path d="m8 7 1 .3" stroke="#75634c" stroke-width=".45" opacity=".08"/></pattern>
+  <pattern id="postcard-skin-pages" width="6" height="3" patternUnits="userSpaceOnUse"><path d="M0 0H6" stroke="#ab9777" stroke-width=".6"/></pattern>
+  <pattern id="postcard-skin-airmail" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="11" height="42" fill="#a45f50"/><rect x="21" width="11" height="42" fill="#4f7185"/></pattern>
+  <filter id="postcard-skin-shadow" x="-12%" y="-10%" width="128%" height="132%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#382d20" flood-opacity=".2"/></filter>
+  </defs><rect x="5" y="5" width="310" height="420" rx="9" fill="url(#postcard-skin-paper)" stroke="#c5b396" filter="url(#postcard-skin-shadow)"/>
+    <rect x="9" y="9" width="302" height="412" rx="6" fill="none" stroke="url(#postcard-skin-airmail)" stroke-width="9"/>
+    <g transform="rotate(3 262 75)"><path d="M230 33h63v82h-63Z" fill="#f8efd9" stroke="#a88c62" stroke-width="1.1" stroke-dasharray="2 3"/><path d="M237 40h49v68h-49Z" fill="#d6ad86" stroke="#c19f79" stroke-width=".7"/></g>
+    <g fill="none" stroke="#776f59" stroke-width=".75" opacity=".68" transform="rotate(-13 222 119)"><circle cx="218" cy="113" r="25"/><path d="M181 99q12-6 24 0t24 0t24 0"/><path d="M181 106q12-6 24 0t24 0t24 0"/><path d="M181 113q12-6 24 0t24 0t24 0"/><path d="M181 120q12-6 24 0t24 0t24 0"/><path d="M181 127q12-6 24 0t24 0t24 0"/></g>
+    
+    <path d="M31 399L286 399" fill="none" stroke="#596a5a" stroke-width="1.1" opacity="1"/>
+    <rect x="6" y="6" width="308" height="418" rx="5" fill="url(#postcard-skin-grain)" pointer-events="none"/></svg>

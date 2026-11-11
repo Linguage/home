@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="420" viewBox="0 0 320 420" preserveAspectRatio="none"><title>Linguista · Newsletter 模块纸张</title><defs>
+  <linearGradient id="newspaper-skin-paper" x2=".8" y2="1"><stop stop-color="#fbf4e5"/><stop offset="1" stop-color="#e5d8bd"/></linearGradient>
+  <linearGradient id="newspaper-skin-metal" x2="0" y2="1"><stop stop-color="#544c3b"/><stop offset=".25" stop-color="#c9c7b6"/><stop offset=".45" stop-color="#f6f1dc"/><stop offset=".62" stop-color="#827c68"/><stop offset="1" stop-color="#4b493e"/></linearGradient>
+  <linearGradient id="newspaper-skin-spine"><stop stop-color="#203c44"/><stop offset=".45" stop-color="#42616a"/><stop offset=".8" stop-color="#213d45"/><stop offset="1" stop-color="#172f36"/></linearGradient>
+  <pattern id="newspaper-skin-grain" width="17" height="19" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".45" fill="#6b5734" opacity=".07"/><circle cx="12" cy="15" r=".32" fill="#fff9e9" opacity=".4"/><path d="m8 7 1 .3" stroke="#75634c" stroke-width=".45" opacity=".08"/></pattern>
+  <pattern id="newspaper-skin-pages" width="6" height="3" patternUnits="userSpaceOnUse"><path d="M0 0H6" stroke="#ab9777" stroke-width=".6"/></pattern>
+  <pattern id="newspaper-skin-airmail" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="11" height="42" fill="#a45f50"/><rect x="21" width="11" height="42" fill="#4f7185"/></pattern>
+  <filter id="newspaper-skin-shadow" x="-12%" y="-10%" width="128%" height="132%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#382d20" flood-opacity=".2"/></filter>
+  </defs><g stroke="#b8aa8d" stroke-width=".7" filter="url(#newspaper-skin-shadow)"><path d="m12 10 298-5-4 407-298 5Z" fill="#ded2b7"/><path d="M8 9h301v406H8Z" fill="#f2e8d4"/><path d="M5 14h304v399H5Z" fill="url(#newspaper-skin-paper)"/></g>
+    <path d="M12 18v388" stroke="#9b8a6b" opacity=".18"/>
+    <path d="M24 386L291 386" fill="none" stroke="#343d31" stroke-width="1.6" opacity="1"/><path d="M24 391L291 391" fill="none" stroke="#343d31" stroke-width="0.7" opacity="1"/>
+    <rect x="6" y="6" width="308" height="408" rx="5" fill="url(#newspaper-skin-grain)" pointer-events="none"/></svg>

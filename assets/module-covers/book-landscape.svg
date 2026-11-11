@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400"><title>book · 横版纸张</title><defs>
+  <linearGradient id="book-landscape-skin-paper" x2=".8" y2="1"><stop stop-color="#fbf4e5"/><stop offset="1" stop-color="#e5d8bd"/></linearGradient>
+  <linearGradient id="book-landscape-skin-metal" x2="0" y2="1"><stop stop-color="#544c3b"/><stop offset=".25" stop-color="#c9c7b6"/><stop offset=".45" stop-color="#f6f1dc"/><stop offset=".62" stop-color="#827c68"/><stop offset="1" stop-color="#4b493e"/></linearGradient>
+  <linearGradient id="book-landscape-skin-spine"><stop stop-color="#203c44"/><stop offset=".45" stop-color="#42616a"/><stop offset=".8" stop-color="#213d45"/><stop offset="1" stop-color="#172f36"/></linearGradient>
+  <pattern id="book-landscape-skin-grain" width="17" height="19" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".45" fill="#6b5734" opacity=".07"/><circle cx="12" cy="15" r=".32" fill="#fff9e9" opacity=".4"/><path d="m8 7 1 .3" stroke="#75634c" stroke-width=".45" opacity=".08"/></pattern>
+  <pattern id="book-landscape-skin-pages" width="6" height="3" patternUnits="userSpaceOnUse"><path d="M0 0H6" stroke="#ab9777" stroke-width=".6"/></pattern>
+  <pattern id="book-landscape-skin-airmail" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="11" height="42" fill="#a45f50"/><rect x="21" width="11" height="42" fill="#4f7185"/></pattern>
+  <filter id="book-landscape-skin-shadow" x="-12%" y="-10%" width="128%" height="132%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#382d20" flood-opacity=".2"/></filter>
+  </defs><path d="M27 5h600v364q0 25-20 25H26Q3 394 3 371V28Q3 5 27 5Z" fill="url(#book-landscape-skin-spine)"/>
+        <path d="M30 360h595v25H30q-17-1-17-13t17-12Z" fill="#e1d2b5" stroke="#9f8c6d"/><path d="M32 364h587v16H32q-11 0-11-8t11-8Z" fill="url(#book-landscape-skin-pages)"/>
+        <path d="M622 17h12v343h-12Z" fill="#e0d0af"/><path d="M624 22h8v332h-8Z" fill="url(#book-landscape-skin-pages)"/>
+        <path d="M34 4h588q8 0 8 10v344q0 7-8 7H34Z" fill="url(#book-landscape-skin-paper)" stroke="#c0b195"/>
+        <path d="M34 4L34 365" fill="none" stroke="#577078" stroke-width="1.2" opacity="1"/><path d="M594 5h35v147h-82Z" fill="#365b63"/><path d="M593 5 547 152" stroke="#d0c5aa" stroke-width=".7"/><rect x="598" y="157" width="31" height="35" fill="#c38f46"/><rect x="40" y="12" width="580" height="346" rx="5" fill="url(#book-landscape-skin-grain)" pointer-events="none"/></svg>
