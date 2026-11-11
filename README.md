@@ -1,6 +1,6 @@
 # Linguista 阅读工作台
 
-Linguista 的 DeepSeek Harness 插件。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
+Linguista 的 DeepSeek Harness 插件，当前版本 **0.3.5**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
 
 [网站](https://linguista.cn/home/) · [下载插件](https://github.com/Linguage/home/releases)
 
@@ -8,7 +8,7 @@ Linguista 的 DeepSeek Harness 插件。打开 **Linguista**，用右上角在�
 
 在 DeepSeek Harness 0.2 系列的插件管理中选择添加插件，在「包名或地址」填入 `https://github.com/Linguage/home`。安装并启用后，从左侧打开 **Linguista**。宿主需要 Node.js 22.19 或以上。
 
-也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.3.0-dev.6)下载 `dsh-linguista-0.3.0-dev.6.tgz`，在同一个字段中填入文件的本地绝对路径。
+也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.3.5)下载 `dsh-linguista-0.3.5.tgz`，在同一个字段中填入文件的本地绝对路径。
 
 ## 开始阅读
 
@@ -22,7 +22,9 @@ Linguista 的 DeepSeek Harness 插件。打开 **Linguista**，用右上角在�
 
 Notion 入口可以在 Linguista 和 Bullets 两路公开摘要之间切换。只改 Notion 页面时，需要等主站重新发布 RSS 后才能在插件里刷新。订阅失败时，已有缓存仍可阅读。
 
-窄窗的 RSS 搜索紧接 Newsletter。点击底栏站点，半透明的模块卡片从选中图标上方展开，与图标以同一底色相接。再次点击收起，封面位置保持不动。默认主屏展示可滑动的软件卡片，优先排列 DSH 插件，子站主屏展示对应封面。宽窗模块入口统一为两列两行，显示图标、名称与简短说明，超过四项用底部箭头翻页。
+顶部搜索框常驻，并随首页 / RSS 切换检索范围：首页搜索各站内容，RSS 筛选当前站点文章。窄窗顶部显示当前站名，默认为 Linguista；点击 Linguista 可在主视图打开 Newsletter 封面。选中站点后模块栏保持展示，彩色图标靠左排列，选中项显示正方形线框。
+
+在底栏或模块栏左右滑动可切换相邻项；抓住当前选中图标拖向目标图标，松手选中对应项，玻璃高光跟随手势移动。主视图的软件进度滑块可在拖动中实时切换卡片。宽窗模块入口为两列两行，显示名称与简短说明，超过四项用底部箭头翻页。
 
 ## 来源与许可
 

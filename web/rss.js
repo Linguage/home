@@ -149,7 +149,7 @@ $('rss-read-full').addEventListener('click', () => {
 function renderList() {
   const feed = feedFor(activeSite); if (!feed) return;
   const snapshot = snapshots.get(activeSite);
-  const query = $('rss-search').value.trim().toLocaleLowerCase();
+  const query = $('search-input').value.trim().toLocaleLowerCase();
   const terms = query.split(/\s+/).filter(Boolean);
   const all = snapshot?.items || [];
   const articles = all.filter(item => (readFilter === 'all' || readIds.has(item.id) === (readFilter === 'read')) && terms.every(term => `${item.title} ${item.summary} ${item.categories.join(' ')} ${item.author}`.toLocaleLowerCase().includes(term)));
@@ -226,9 +226,10 @@ function selectSite(site) {
   activeSite = site; remember('linguista-rss-site', site);
   root.dataset.rssSite = feedFor(site)?.group || site;
   const feed = feedFor(site); if (!feed) return;
-  closeFilter(); closeReader({ focus: false }); $('rss-search').value = '';
+  closeFilter(); closeReader({ focus: false });
   $('rss-site-title').textContent = feed.title; $('rss-site-description').textContent = feed.description;
   $('rss-site-title').href = feed.home;
+  window.LinguistaHome?.syncSearchMode();
   window.LinguistaHome?.setDock(feed.group || site);
   const sources = $('rss-sources');
   sources.hidden = feed.group !== 'notion';
@@ -243,6 +244,7 @@ function selectSite(site) {
 async function setMode(next) {
   if (next === mode) return;
   mode = next; root.dataset.viewMode = mode;
+  window.LinguistaHome?.syncSearchMode();
   remember('linguista-view-mode', mode);
   switches.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.view === mode)));
   if (mode === 'home') {
@@ -260,7 +262,7 @@ const ready = listFeeds().then(response => {
 root.dataset.viewMode = 'home';
 switches.forEach(button => button.addEventListener('click', () => void setMode(button.dataset.view)));
 document.querySelector('.view-switch').addEventListener('keydown', event => {
-  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  if (!event.target.matches('[data-view]') || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
   event.preventDefault();
   const next = event.key === 'Home' ? switches[0] : event.key === 'End' ? switches[1] : switches.find(button => button !== document.activeElement);
   next.focus(); void setMode(next.dataset.view);
@@ -276,11 +278,11 @@ document.addEventListener('keydown', event => {
   const typing = event.target.closest('input,textarea,[contenteditable]');
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
     event.preventDefault(); event.stopImmediatePropagation();
-    closeReader({ focus: false }); $('rss-search').focus();
+    closeReader({ focus: false }); $('search-input').focus();
   } else if (event.key === 'Escape') {
     event.preventDefault(); event.stopImmediatePropagation();
     if (!$('rss-filter-menu').hidden) { closeFilter(); $('rss-filter-button').focus(); }
-    else if (activeArticle) closeReader(); else if ($('rss-search').value) { $('rss-search').value = ''; renderList(); }
+    else if (activeArticle) closeReader(); else if ($('search-input').value) { $('search-input').value = ''; $('search-input').dispatchEvent(new Event('input', { bubbles: true })); }
   } else if (event.target.closest('.dock') && event.key === 'ArrowUp') {
     event.preventDefault(); event.stopImmediatePropagation(); document.querySelector('.rss-article-item')?.focus();
   } else if (event.target.closest('.feature') && ['ArrowLeft', 'ArrowRight'].includes(event.key)) event.stopImmediatePropagation();
@@ -291,7 +293,6 @@ $('rss-article-list').addEventListener('keydown', event => {
   const offset = event.key === 'ArrowDown' ? 1 : event.key === 'ArrowUp' ? -1 : 0;
   if (!offset) return; event.preventDefault(); buttons[(index + offset + buttons.length) % buttons.length].focus();
 });
-$('rss-search').addEventListener('input', renderList);
 $('rss-refresh').addEventListener('click', () => void loadFeed(activeSite, { refresh: true }));
 $('rss-close').addEventListener('click', () => closeReader());
 window.addEventListener('resize', () => { if (mode === 'rss') window.LinguistaHome?.setDock(feedFor(activeSite)?.group || activeSite); });
@@ -302,7 +303,10 @@ function closeFilter() {
   $('rss-filter-button').setAttribute('aria-expanded', 'false');
 }
 function openFilter() {
-  $('rss-filter-menu').hidden = false;
+  const menu = $('rss-filter-menu');
+  menu.removeAttribute('data-placement'); menu.hidden = false;
+  const dockTop = document.querySelector('.dock').getBoundingClientRect().top;
+  if (menu.getBoundingClientRect().bottom > dockTop - 8) menu.dataset.placement = 'above';
   $('rss-filter-button').setAttribute('aria-expanded', 'true');
   $('rss-filter-menu').querySelector('[aria-checked="true"]').focus();
 }
@@ -334,6 +338,12 @@ if (stored('linguista-view-mode', 'home') === 'rss') void setMode('rss');
 let searchTask = null;
 function publishSearchUpdate() { window.dispatchEvent(new Event('linguista-rss-update')); }
 window.LinguistaRSS = {
+  selectSite(site) { if (mode === 'rss') selectSite(site); },
+  filter() {
+    if (mode !== 'rss') return;
+    closeReader({ focus: false }); renderList(); $('rss-article-list').scrollTop = 0;
+  },
+  showList() { if (mode === 'rss') closeReader({ focus: false }); },
   search(query = '') {
     const sources = feeds.filter(feed => feed.url);
     const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
@@ -370,4 +380,4 @@ window.LinguistaRSS = {
     if (activeSite === site && mode === 'rss') openArticle(article);
   },
 };
-if ($('search-dialog')?.open) void window.LinguistaRSS.syncSearch();
+if (root.hasAttribute('data-home-search')) void window.LinguistaRSS.syncSearch();

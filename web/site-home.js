@@ -1,7 +1,7 @@
 (() => {
   const root = document.documentElement;
   window.LinguistaSiteUI = {
-    init({ sites, cardGroups, shelfLinks, miniCover, showItem, clear, collapseShelf, update }) {
+    init({ sites, cardGroups, shelfLinks, miniCover, showItem, clear, showCover, collapseShelf, restoreShelf, update }) {
       const sidebar = document.querySelector('.sidebar');
       const section = document.createElement('section'); section.className = 'site-sidebar'; section.id = 'site-sidebar'; section.hidden = true;
       const art = document.createElement('div'); art.className = 'identity-art';
@@ -25,33 +25,73 @@
       previous.addEventListener('click', () => setModulePage(modulePage - 1)); next.addEventListener('click', () => setModulePage(modulePage + 1));
       modules.addEventListener('keydown', event => { if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return; event.preventDefault(); event.stopPropagation(); setModulePage(modulePage + (event.key === 'ArrowRight' ? 1 : -1)); modules.querySelector('a:not([hidden])')?.focus(); });
       footer.append(heading, pagination, pageStatus); section.append(art, modules, footer); sidebar.append(section);
-      const original = [...sidebar.children].filter(child => child !== section);
+      const newsletter = sidebar.querySelector('.newsletter');
+      const homeModules = sidebar.querySelector(':scope > .quick-links');
+      const mobileHeader = sidebar.querySelector('.home-mobile-header');
+      const siteName = mobileHeader.querySelector('#home-site-name');
+      const moduleLink = (item, group) => {
+        const link = document.createElement('a'); link.className = 'site-module'; link.href = item.href;
+        link.dataset.cardKey = item.key; link.setAttribute('aria-label', item.title); link.setAttribute('aria-controls', 'content-detail');
+        const mark = document.createElement('span'); mark.className = 'site-module-icon'; mark.style.setProperty('--module-image', `url("${item.image}")`); mark.setAttribute('aria-hidden', 'true');
+        const copy = document.createElement('span'); copy.className = 'site-module-copy';
+        const title = document.createElement('span'); title.className = 'site-module-title'; title.textContent = item.title; copy.append(title);
+        const short = { newsletter:'周刊与每日剪报', workshop:'开放项目', bookmarks:'阅读收藏', about:'关于我' };
+        if (item.meta) { const meta = document.createElement('small'); meta.textContent = item.shortMeta || short[item.key] || item.meta; copy.append(meta); }
+        link.append(mark, copy);
+        link.addEventListener('click', event => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault(); showItem(item, group, link);
+        });
+        return link;
+      };
+      homeModules.id = 'home-modules'; homeModules.classList.add('site-modules');
+      homeModules.replaceChildren(...cardGroups.home.map(item => moduleLink(item, 'home')));
+      const original = [...sidebar.children].filter(child => child !== section && child !== newsletter && child !== mobileHeader);
       const identities = new Map();
       const compact = matchMedia('(max-width: 900px)');
       const feature = document.querySelector('.feature');
-      const newsletter = sidebar.querySelector('.newsletter');
-      const search = feature.querySelector('#search-button');
       const syncStage = () => {
-        const isHome = root.dataset.homeSite === 'home';
+        const group = root.dataset.homeSite || 'home';
+        const isHome = group === 'home';
+        const coverVisible = compact.matches && isHome && root.dataset.homeCover === 'newsletter';
         const parent = compact.matches && !isHome ? feature : section;
         if (art.parentElement !== parent) parent.prepend(art);
-        if (compact.matches && search.parentElement !== sidebar) newsletter.after(search);
-        if (!compact.matches && search.parentElement !== feature) feature.prepend(search);
+        if (compact.matches && newsletter.parentElement !== feature) feature.prepend(newsletter);
+        if (!compact.matches && newsletter.parentElement !== sidebar) sidebar.insertBefore(newsletter, homeModules);
+        newsletter.classList.toggle('newsletter-stage', compact.matches);
+        newsletter.hidden = compact.matches ? !coverVisible || feature.classList.contains('has-detail') : !isHome;
+        newsletter.inert = newsletter.hidden || root.dataset.viewMode === 'rss';
+        mobileHeader.hidden = !compact.matches;
+        mobileHeader.inert = !compact.matches;
+        const isRSS = root.dataset.viewMode === 'rss';
+        siteName.textContent = sites[isRSS ? root.dataset.rssSite || 'home' : group]?.title || 'Linguista';
+        siteName.setAttribute('aria-label', siteName.textContent + (isRSS ? '，显示文章列表' : '，显示站点封面'));
+        siteName.setAttribute('aria-controls', isRSS ? 'rss-article-list' : 'featured');
+        siteName.setAttribute('aria-expanded', String(!isRSS && coverVisible && !feature.classList.contains('has-detail')));
         original.filter(child => !child.classList.contains('rss-sidebar')).forEach(child => {
-          const visible = child.classList.contains('newsletter') && compact.matches || isHome;
-          child.hidden = !visible; child.inert = !visible;
+          child.hidden = compact.matches || !isHome; child.inert = child.hidden;
         });
         section.hidden = compact.matches || isHome;
         art.hidden = isHome;
         art.inert = root.dataset.viewMode === 'rss' || (compact.matches && feature.classList.contains('has-detail'));
+        feature.classList.toggle('has-site-cover', compact.matches && (!isHome || coverVisible));
+        feature.querySelectorAll('[data-slide]').forEach(slide => {
+          slide.inert = root.dataset.viewMode === 'rss' || feature.classList.contains('has-detail') || compact.matches && (!isHome || coverVisible) || !slide.classList.contains('is-active');
+        });
+        feature.querySelector('.feature-bottom').inert = feature.classList.contains('has-detail') || compact.matches && (!isHome || coverVisible);
       };
+      siteName.addEventListener('click', () => {
+        if (root.dataset.viewMode === 'rss') { window.LinguistaRSS?.showList(); return; }
+        if (root.dataset.homeSite === 'home') root.dataset.homeCover = 'newsletter';
+        showCover(); syncStage(); update();
+      });
       this.syncStage = syncStage;
-      compact.addEventListener('change', () => { collapseShelf(); syncStage(); update(); });
+      compact.addEventListener('change', () => { collapseShelf(); syncStage(); restoreShelf(); update(); });
       new MutationObserver(syncStage).observe(root, { attributes: true, attributeFilter: ['data-view-mode', 'data-rss-site'] });
       const pictures = { hinbox: 'hinbox.svg', science: 'whats-old.svg', notion: 'notion.svg', bearblog: 'bearblog.svg' };
       const select = group => {
         if (!sites[group]) group = 'home';
-        clear(); root.dataset.homeSite = group;
+        clear(); root.dataset.homeSite = group; root.removeAttribute('data-home-cover');
         const isHome = group === 'home';
 
         if (!isHome) {
@@ -69,26 +109,14 @@
           identities.forEach((value, key) => { value.hidden = key !== group; value.inert = key !== group; });
           heading.textContent = sites[group].title; heading.href = sites[group].href;
           modules.setAttribute('aria-label', sites[group].title + ' 栏目');
-          modules.replaceChildren(...cardGroups[group].map(item => {
-            const link = document.createElement('a'); link.className = 'site-module'; link.href = item.href;
-            link.dataset.cardKey = item.key; link.setAttribute('aria-label', item.title); link.setAttribute('aria-controls', 'content-detail');
-            const mark = document.createElement('span'); mark.className = 'site-module-icon'; mark.style.setProperty('--module-image', `url("${item.image}")`); mark.setAttribute('aria-hidden', 'true');
-            const copy = document.createElement('span'); copy.className = 'site-module-copy';
-            const title = document.createElement('span'); title.className = 'site-module-title'; title.textContent = item.title; copy.append(title);
-            if (item.meta) { const meta = document.createElement('small'); meta.textContent = item.shortMeta || item.meta; copy.append(meta); }
-            link.append(mark, copy);
-            link.addEventListener('click', event => {
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-              event.preventDefault(); showItem(item, group, link);
-            }); return link;
-          }));
+          modules.replaceChildren(...cardGroups[group].map(item => moduleLink(item, group)));
           setModulePage(0);
         }
         syncStage(); update();
       };
       this.select = select;
-      this.focus = () => modules.querySelector('a:not([hidden])')?.focus();
-      root.dataset.homeSite = 'home'; syncStage();
+      this.focus = () => (root.dataset.homeSite === 'home' ? homeModules : modules).querySelector('a:not([hidden])')?.focus();
+      root.dataset.homeSite = 'home'; syncStage(); restoreShelf();
     }
   };
 })();

@@ -24,7 +24,7 @@ reducedMotion.addEventListener('change', () => {
 });
 
 // Lock to one axis only after intent is clear; vertical reading and pinch zoom stay native.
-function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
+function trackDrag(surface, { axis, canStart, onMove, onEnd, onTap }) {
   let drag = null;
   let ignoreClick = false;
   function finish(cancelled) {
@@ -35,7 +35,7 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
     if (previous.active) {
       ignoreClick = true;
       onEnd(previous.delta, cancelled);
-    }
+    } else if (!cancelled) onTap?.();
   }
   surface.addEventListener('pointerdown', event => {
     if (!event.isPrimary) { finish(true); return; }
@@ -59,7 +59,14 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
     drag.delta = delta;
     onMove(delta);
   });
-  surface.addEventListener('pointerup', event => { if (drag?.id === event.pointerId) finish(false); });
+  surface.addEventListener('pointerup', event => {
+    if (drag?.id !== event.pointerId) return;
+    if (drag.active) {
+      drag.delta = axis === 'x' ? event.clientX - drag.x : event.clientY - drag.y;
+      onMove(drag.delta);
+    }
+    finish(false);
+  });
   ['pointercancel', 'lostpointercapture'].forEach(type => surface.addEventListener(type, event => {
     // Touch starts with implicit capture on the child; transferring it is not cancellation.
     if (type === 'lostpointercapture' && event.target !== surface) return;
@@ -73,6 +80,7 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
   }, { capture: true });
   window.addEventListener('blur', () => finish(true));
   window.addEventListener('resize', () => finish(true));
+  return () => finish(true);
 }
 
 // The dock chooses a shelf; the shelf chooses content for the main screen.
@@ -151,7 +159,8 @@ const cardGroups = {
     "href": "https://linguista.cn/newsletter/",
     "description": "每周精选与每日剪报，按期阅读。",
     "action": "进入Newsletter",
-    "image": "./assets/linguista/newsletter-geometric.svg",
+    "image": "./assets/modules/home-newsletter.svg",
+    "imageStyle": "icon",
     "palette": [
       "#efe0bc",
       "#4d4930",
@@ -166,7 +175,8 @@ const cardGroups = {
     "href": "https://linguista.cn/workshop/",
     "description": "浏览原创项目的用途、实现方式与技术更新，并进入公开仓库。",
     "action": "进入工坊",
-    "image": "./assets/linguista/woz-jobs.webp",
+    "image": "./assets/modules/home-workshop.svg",
+    "imageStyle": "icon",
     "palette": [
       "#5d735d",
       "#fff3d9",
@@ -181,7 +191,8 @@ const cardGroups = {
     "href": "https://linguista.cn/bookmarks",
     "description": "精心整理的阅读清单与个人知识库，涵盖技术探索与设计美学的珍贵碎片。",
     "action": "浏览收藏",
-    "image": "./assets/linguista/Einstein-office.png",
+    "image": "./assets/modules/home-bookmarks.svg",
+    "imageStyle": "icon",
     "palette": [
       "#b7cad4",
       "#28444b",
@@ -196,7 +207,8 @@ const cardGroups = {
     "href": "https://linguista.cn/about",
     "description": "分享个人的所读、所思与所想。通过跨学科的视角，观察数字时代的极简主义与结构化表达。致力于知识边界的无缝对接。",
     "action": "了解本站",
-    "image": "./assets/linguista/Apollo-console.jpg",
+    "image": "./assets/modules/home-about.svg",
+    "imageStyle": "icon",
     "palette": [
       "#6c4149",
       "#f9e7d8",
@@ -553,8 +565,8 @@ function updateNavigation() {
 
   dockButtons.forEach(button => {
     const group = button.dataset.cardGroup;
-    button.setAttribute('aria-controls', mobile.matches || group === 'home' ? 'card-shelf' : 'site-sidebar');
-    button.setAttribute('aria-expanded', String(mobile.matches || group === 'home' ? shelfGroup === group : root.dataset.homeSite === group));
+    button.setAttribute('aria-controls', mobile.matches ? 'card-shelf' : group === 'home' ? 'home-modules' : 'site-sidebar');
+    button.setAttribute('aria-expanded', String(mobile.matches ? shelfGroup === group : root.dataset.homeSite === group));
     button.classList.toggle('is-active', group === (root.dataset.homeSite || shelfGroup || contentGroup));
     if (group === (root.dataset.homeSite || contentGroup)) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
@@ -654,20 +666,20 @@ function closeShelf({ restoreFocus = true } = {}) {
   updateNavigation();
   if (restoreFocus) shelfReturnFocus.focus({ preventScroll: true });
 }
-function openShelf(group, trigger = homeButton) {
-  if (shelfGroup === group) { closeShelf(); return; }
-  if (window.LinguistaSiteUI?.select) {
+function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
+  if (shelfGroup === group) return;
+  if (selectSite && window.LinguistaSiteUI?.select) {
     window.LinguistaSiteUI.select(group);
-    if (!mobile.matches && group !== 'home') return;
+    if (!mobile.matches) return;
   }
-  if (shelfGroup === group) { closeShelf(); return; }
   shelfGroup = group;
   syncPlayback();
   shelfReturnFocus = trigger;
   const siteLink = document.querySelector('#shelf-site');
   siteLink.textContent = sites[group].title;
   siteLink.href = sites[group].href;
-  document.querySelector('#shelf-description').textContent = sites[group].description;
+  shelf.setAttribute('data-module-icons', '');
+  document.querySelector('#shelf-close').hidden = true;
   const links = shelfLinks[group] || [];
   const indexNav = document.querySelector('#shelf-links');
   indexNav.replaceChildren(...links.map(item => {
@@ -682,11 +694,12 @@ function openShelf(group, trigger = homeButton) {
     button.className = 'mini-card mini-card-cover';
     button.dataset.cardKey = item.key;
     button.setAttribute('aria-label', item.title);
-    button.setAttribute('aria-controls', 'featured');
+    button.setAttribute('aria-controls', 'content-detail');
+    button.title = item.title;
     button.append(miniCover(item, group));
     button.addEventListener('click', () => showItem(item, group, button));
     button.addEventListener('pointerenter', event => {
-      if (event.pointerType === 'mouse' && hoverPointer.matches && !button.disabled) showItem(item, group, button, { focus: false });
+      if (!mobile.matches && event.pointerType === 'mouse' && hoverPointer.matches && !button.disabled) showItem(item, group, button, { focus: false });
     });
     button.addEventListener('focus', () => {
       if (!suppressFocusPreview && !mobile.matches && button.matches(':focus-visible')) showItem(item, group, button, { focus: false });
@@ -702,14 +715,19 @@ function openShelf(group, trigger = homeButton) {
   updateShelfArrows();
   move(shelf, mobile.matches ? [{ opacity: 0 }, { opacity: 1 }] :
     [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }]);
-  // Keep focus on the dock so repeated activation can fold the shelf.
+  // Every selected site's modules remain pinned.
+}
+function restoreSiteShelf() {
+  const group = root.dataset.homeSite;
+  if (mobile.matches && root.dataset.viewMode !== 'rss' && group) {
+    openShelf(group, dockButtons.find(button => button.dataset.cardGroup === group), { selectSite: false });
+  }
 }
 function showItem(item, group, trigger, { focus = true } = {}) {
   document.querySelector('.feature').classList.add('is-browsing');
   // Hover keeps keyboard focus in place; revisiting a card preserves its form/scroll state.
   if (selectedKey === item.key && contentGroup === group) {
     if (focus) {
-      if (mobile.matches) closeShelf({ restoreFocus: false });
       (currentPanel?.querySelector('.panel-heading h2') || slideSources[slideIndex].querySelector('h1, h2')).focus({ preventScroll: true });
     }
     return;
@@ -740,8 +758,7 @@ function showItem(item, group, trigger, { focus = true } = {}) {
   }
   contentGroup = group;
   selectedKey = item.key;
-  // On phones, selection hands the available space back to the reading card.
-  if (focus && mobile.matches) closeShelf({ restoreFocus: false });
+  // Keep the mobile module row available, including its selected square outline.
   updateNavigation();
 }
 triggers.forEach(trigger => trigger.addEventListener('click', event => {
@@ -760,7 +777,7 @@ dockButtons.forEach(button => button.addEventListener('keydown', event => {
   if (event.key !== 'ArrowUp') return;
   event.preventDefault();
   if (shelfGroup !== button.dataset.cardGroup) openShelf(button.dataset.cardGroup, button);
-  if (!mobile.matches && root.dataset.homeSite !== 'home') window.LinguistaSiteUI?.focus();
+  if (!mobile.matches) window.LinguistaSiteUI?.focus();
   else shelfTrack.querySelector('button')?.focus({ preventScroll: true });
 }));
 panels.forEach(panel => panel.querySelector('.panel-close').addEventListener('click', () => closePanel()));
@@ -783,9 +800,6 @@ shelfTrack.addEventListener('keydown', event => {
   event.preventDefault(); event.stopPropagation();
   buttons[next].focus({ preventScroll: true });
   buttons[next].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
-});
-document.addEventListener('click', event => {
-  if (shelfGroup && !event.target.closest('#card-shelf, .app-panel, .dock, #search-dialog')) closeShelf({ restoreFocus: false });
 });
 mobile.addEventListener('change', () => {
   updateNavigation();
@@ -817,7 +831,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && root.dataset.homeSite && root.dataset.homeSite !== 'home') || keyboardReading || carouselDragging || currentPanel || shelfGroup || document.querySelector('#search-dialog').open) return;
+  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && (root.dataset.homeSite && root.dataset.homeSite !== 'home' || root.dataset.homeCover === 'newsletter')) || keyboardReading || carouselDragging || currentPanel || root.hasAttribute('data-home-search')) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -864,7 +878,45 @@ document.querySelector('.feature-bottom').hidden = false;
 previousSlide.addEventListener('click', () => setSlide(slideIndex - 1));
 nextSlide.addEventListener('click', () => setSlide(slideIndex + 1));
 positionControl.addEventListener('input', () => setSlide(Number(positionControl.value), true, false, true));
-positionControl.addEventListener('pointerdown', () => { carouselDragging = true; syncPlayback(); });
+positionControl.max = String(slides.length - 1);
+let positionDrag = null;
+function scrubPosition(clientX) {
+  const box = positionControl.getBoundingClientRect(), inset = Math.min(17, box.width / 4);
+  const fraction = Math.max(0, Math.min(1, (clientX - box.left - inset) / Math.max(1, box.width - inset * 2)));
+  const next = Math.round(fraction * (slides.length - 1));
+  if (next !== slideIndex) setSlide(next, true, false, true);
+}
+function finishPositionDrag(cancelled, event) {
+  if (!positionDrag) return;
+  const previous = positionDrag; positionDrag = null;
+  if (cancelled) setSlide(previous.index, false, false, true);
+  else if (event) scrubPosition(event.clientX);
+  if (positionControl.hasPointerCapture(previous.id)) positionControl.releasePointerCapture(previous.id);
+  carouselDragging = false; syncPlayback();
+}
+positionControl.addEventListener('pointerdown', event => {
+  if (!event.isPrimary) { finishPositionDrag(true); return; }
+  if (event.button !== 0 || root.dataset.viewMode === 'rss' || currentPanel) return;
+  event.preventDefault();
+  positionDrag = { id:event.pointerId, index:slideIndex };
+  carouselDragging = true; syncPlayback();
+  positionControl.setPointerCapture(event.pointerId);
+  positionControl.focus({ preventScroll:true });
+  scrubPosition(event.clientX);
+});
+positionControl.addEventListener('pointermove', event => {
+  if (positionDrag?.id !== event.pointerId) return;
+  event.preventDefault(); scrubPosition(event.clientX);
+});
+positionControl.addEventListener('pointerup', event => {
+  if (positionDrag?.id === event.pointerId) finishPositionDrag(false, event);
+});
+for (const type of ['pointercancel','lostpointercapture']) positionControl.addEventListener(type, event => {
+  if (positionDrag?.id === event.pointerId) finishPositionDrag(true);
+});
+window.addEventListener('blur', () => finishPositionDrag(true));
+window.addEventListener('resize', () => finishPositionDrag(true));
+
 positionControl.addEventListener('keydown', event => {
   const step = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageUp: 3, PageDown: -3 }[event.key];
   if (!step && event.key !== 'Home' && event.key !== 'End') return;
@@ -898,7 +950,7 @@ setSlide(0, false);
 trackDrag(feature, {
   axis: 'x',
   canStart: event => {
-    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !shelfGroup && !(mobile.matches && root.dataset.homeSite !== 'home') && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
+    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !feature.classList.contains('has-site-cover') && !event.target.closest('a, button, input, .card-shelf') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
     if (allowed) { carouselDragging = true; syncPlayback(); }
     return allowed;
   },
@@ -918,7 +970,7 @@ trackDrag(feature, {
 let wheelDistance = 0;
 let lastWheelTime = 0;
 feature.addEventListener('wheel', event => {
-  if (root.dataset.viewMode === 'rss' || currentPanel || shelfGroup || (mobile.matches && root.dataset.homeSite !== 'home') || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
+  if (root.dataset.viewMode === 'rss' || currentPanel || feature.classList.contains('has-site-cover') || Math.abs(event.deltaX) <= Math.abs(event.deltaY) || event.ctrlKey) return;
   event.preventDefault();
   if (event.timeStamp - lastWheelTime > 200) wheelDistance = 0;
   lastWheelTime = event.timeStamp;
@@ -935,7 +987,14 @@ const searchDialog = document.querySelector('#search-dialog');
 const input = document.querySelector('#search-input');
 const list = document.querySelector('#search-results');
 const searchStatus = document.querySelector('#search-status');
+const searchMatches = searchDialog.querySelector('.search-matches');
+const channels = document.querySelector('.newsletter-channels');
+const searchQueries = { home: '', rss: '' };
+let searchMode = 'home';
+
 function renderResults() {
+  searchMatches.hidden = root.dataset.viewMode === 'rss' || !root.hasAttribute('data-home-search') || !input.value.trim();
+  if (searchMatches.hidden) { searchStatus.textContent = ''; list.replaceChildren(); return; }
   const result = window.LinguistaRSS?.search(input.value);
   if (!result) { searchStatus.textContent = '正在读取订阅…'; list.replaceChildren(); return; }
   const { items, total, loading, failed, available, sources } = result;
@@ -952,53 +1011,94 @@ function renderResults() {
     copy.append(source, title, summary); link.append(copy); li.append(link);
     link.addEventListener('click', event => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault(); searchDialog.close(); void window.LinguistaRSS.openResult(feed.id, article.id);
+      event.preventDefault(); closeSearch({ restoreFocus: false }); void window.LinguistaRSS.openResult(feed.id, article.id);
     }); return li;
   }));
 }
-window.addEventListener('linguista-rss-update', () => { if (searchDialog.open) renderResults(); });
-function openSearch(trigger = searchButton) {
-  if (searchDialog.open) return;
-  searchReturnFocus = trigger;
-  closeShelf({ restoreFocus: false });
-  input.value = '';
+function syncSearchLayout() {
+  const host = mobile.matches ? document.querySelector('.home-mobile-header') : document.querySelector('.workbench-controls');
+  if (host && searchDialog.parentElement !== host) {
+    if (mobile.matches) host.append(searchDialog); else host.prepend(searchDialog);
+  }
+  searchButton.hidden = true;
+  searchDialog.hidden = false;
+  channels.hidden = false;
+}
+function syncSearchMode() {
+  const next = root.dataset.viewMode === 'rss' ? 'rss' : 'home';
+  if (next !== searchMode) {
+    searchQueries[searchMode] = input.value;
+    searchMode = next;
+    input.value = searchQueries[next];
+    root.removeAttribute('data-home-search');
+    searchButton.setAttribute('aria-expanded', 'false');
+  }
+  const label = next === 'rss' ? '搜索 ' + (document.querySelector('#rss-site-title')?.textContent || '当前站点') + ' 的文章' : '搜索各站内容';
+  input.placeholder = label + '…';
+  input.setAttribute('aria-label', label);
+  searchDialog.setAttribute('aria-label', label);
+  searchDialog.dataset.searchMode = next;
+  searchDialog.toggleAttribute('data-has-query', !!input.value);
   renderResults();
-  searchDialog.showModal();
+  syncSearchLayout();
+}
+function closeSearch({ restoreFocus = true } = {}) {
+  if (root.dataset.viewMode === 'rss') {
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    if (restoreFocus) input.focus({ preventScroll: true });
+    return;
+  }
+  if (!root.hasAttribute('data-home-search')) return;
+  root.removeAttribute('data-home-search');
+  searchButton.setAttribute('aria-expanded', 'false');
+  input.value = ''; searchQueries.home = '';
+  searchDialog.removeAttribute('data-has-query');
+  renderResults();
+  syncSearchLayout();
+  if (restoreFocus) {
+    const target = mobile.matches ? document.querySelector('#home-site-name') : document.querySelector('[data-view="home"]');
+    (target || searchButton).focus({ preventScroll: true });
+  }
+  syncPlayback();
+}
+function openSearch(trigger = searchButton) {
+  if (root.hasAttribute('data-home-search')) { input.focus({ preventScroll: true }); return; }
+  searchReturnFocus = trigger;
+  if (root.dataset.viewMode === 'rss') { input.focus({ preventScroll: true }); return; }
+  root.setAttribute('data-home-search', '');
+  searchButton.setAttribute('aria-expanded', 'true');
+  syncSearchLayout();
+  renderResults();
   void window.LinguistaRSS?.syncSearch();
   syncPlayback();
-  input.focus();
+  input.focus({ preventScroll: true });
 }
-searchButton.hidden = false;
-searchButton.addEventListener('click', () => openSearch(searchButton));
-document.querySelector('#close-search').addEventListener('click', () => searchDialog.close());
-searchDialog.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    // Search inputs otherwise consume the first Escape to clear their value.
-    event.preventDefault();
-    event.stopPropagation();
-    searchDialog.close();
-  }
-}, { capture: true });
-searchDialog.addEventListener('click', event => {
-  const rect = searchDialog.getBoundingClientRect();
-  if (event.target === searchDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) searchDialog.close();
-});
-searchDialog.addEventListener('close', () => {
-  const target = searchReturnFocus.getClientRects().length && !searchReturnFocus.closest('[inert]') ? searchReturnFocus : searchButton;
-  target.focus({ preventScroll: true });
-  syncPlayback();
-});
-input.addEventListener('input', renderResults);
+window.addEventListener('linguista-rss-update', () => { if (root.hasAttribute('data-home-search')) renderResults(); });
+mobile.addEventListener('change', () => { if (root.dataset.viewMode !== 'rss') closeSearch({ restoreFocus: false }); syncSearchLayout(); });
+syncSearchMode();
+searchButton.addEventListener('click', () => root.hasAttribute('data-home-search') ? closeSearch() : openSearch(searchButton));
+input.addEventListener('focus', () => openSearch(input));
+document.querySelector('#close-search').addEventListener('click', () => closeSearch());
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !searchDialog.open) {
+  if (event.key !== 'Escape' || !root.hasAttribute('data-home-search') || document.querySelector('dialog[open]')) return;
+  event.preventDefault(); event.stopImmediatePropagation(); closeSearch();
+}, { capture: true });
+input.addEventListener('input', () => {
+  searchQueries[searchMode] = input.value;
+  searchDialog.toggleAttribute('data-has-query', !!input.value);
+  if (searchMode === 'rss') window.LinguistaRSS?.filter();
+  else { openSearch(input); renderResults(); }
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !root.hasAttribute('data-home-search')) {
     event.preventDefault();
-    if (shelfGroup) closeShelf();
-    else if (currentPanel) closePanel();
+    if (currentPanel) closePanel();
+
   }
   const typing = event.target.closest('input, textarea, [contenteditable="true"]');
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
-    event.preventDefault();
-    openSearch();
+    event.preventDefault(); openSearch();
   }
 });
 function readHash() {
@@ -1014,19 +1114,146 @@ function readHash() {
 }
 window.LinguistaSiteUI?.init({ sites, cardGroups, shelfLinks, miniCover, showItem,
   collapseShelf() { closeShelf({ restoreFocus: false }); },
-  clear() { closeShelf({ restoreFocus: false }); closePanel({ restoreFocus: false, immediate: true }); },
+  restoreShelf: restoreSiteShelf,
+  showCover() { closePanel({ restoreFocus: false, immediate: true }); },
+  clear() { closeSearch({ restoreFocus: false }); closeShelf({ restoreFocus: false }); closePanel({ restoreFocus: false, immediate: true }); },
   update() { updateNavigation(); syncPlayback(); }
 });
 window.addEventListener('hashchange', readHash);
 readHash();
 
+
+// Touch navigation stays on its own rail; content reading keeps native vertical gestures.
+function bindMobileSwipe({ surface, host, items, current, activate, label }) {
+  const glass = document.createElement('span');
+  glass.className = 'swipe-glass'; glass.hidden = true; glass.setAttribute('aria-hidden', 'true');
+  host.append(glass);
+  let gesture = null, blockClickUntil = 0;
+  const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+  const paint = (x, width, height, y) => {
+    glass.style.width = width + 'px'; glass.style.height = height + 'px';
+    glass.style.transform = `translate3d(${x}px,${y}px,0)`;
+  };
+  const cancel = trackDrag(surface, {
+    axis: 'x',
+    canStart(event) {
+      blockClickUntil = 0;
+      if (!mobile.matches || document.querySelector('dialog[open]')) return false;
+      const entries = items(); if (!entries.length) return false;
+      const index = current(entries);
+      const rail = surface.getBoundingClientRect(), frame = host.getBoundingClientRect();
+      const anchor = entries[Math.max(0, index)].getBoundingClientRect();
+      cancelMotion(glass); glass.hidden = true;
+      gesture = {
+        entries, index, rail, frame, startX: event.clientX, started:performance.now(),
+        tapped:entries.find(entry => entry.contains(event.target)),
+        direct: event.pointerType === 'mouse' || index >= 0 && entries[index].contains(event.target),
+        width: Math.min(80, anchor.width + 14), height: Math.min(rail.height - 6, anchor.height + 6),
+        threshold: clamp(rail.width * .12, 32, 52),
+        state: [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|'),
+      };
+      return true;
+    },
+    onTap() {
+      const g = gesture; gesture = null;
+      if (!g?.tapped || performance.now() - g.started > 500) return;
+      // Complete a touch tap on pointer release; keyboard/mouse clicks keep their native path.
+      blockClickUntil = performance.now() + 600;
+      activate(g.tapped);
+      swipeStatus.textContent = label + '：' + (g.tapped.getAttribute('aria-label') || g.tapped.textContent.trim());
+    },
+    onMove(delta) {
+      if (!gesture) return;
+      const g = gesture, direction = delta < 0 ? 1 : -1;
+      const pointerX = g.startX + delta;
+      if (g.direct) {
+        let nearest = Infinity;
+        g.entries.forEach((entry, index) => {
+          const box = entry.getBoundingClientRect();
+          const distance = Math.abs(pointerX - box.left - box.width / 2);
+          if (distance < nearest) { nearest = distance; g.next = index; }
+        });
+      } else g.next = g.index + direction;
+      g.valid = g.next >= 0 && g.next < g.entries.length;
+      const stretch = reducedMotion.matches ? 0 : Math.min(30, Math.abs(delta) * .25);
+      const width = g.width + stretch, height = g.height - stretch * .08;
+      const center = g.startX + delta * (g.valid ? 1 : .22);
+      const x = clamp(center - width / 2, g.rail.left + 2, g.rail.right - width - 2) - g.frame.left;
+      const y = g.rail.top - g.frame.top + (g.rail.height - height) / 2;
+      glass.hidden = false;
+      glass.dataset.edge = String(!g.valid);
+      glass.style.setProperty('--swipe-light-x', delta < 0 ? '24%' : '76%');
+      paint(x, width, height, y);
+      surface.classList.add('is-swiping');
+    },
+    onEnd(delta, cancelled) {
+      const g = gesture; gesture = null;
+      surface.classList.remove('is-swiping');
+      if (!g) return;
+      // Capture before RSS's document handler, so a swipe cannot become a stray tap.
+      blockClickUntil = performance.now() + 600;
+      const commit = !cancelled && g.valid && (g.direct ? g.next !== g.index : Math.abs(delta) >= g.threshold);
+      let target = g.entries[Math.max(0, g.index)];
+      if (commit) {
+        target = g.entries[g.next];
+        activate(target);
+        // Scroll only this rail, and only if needed; never scroll ancestor viewports during touch release.
+        const box = target.getBoundingClientRect(), rail = surface.getBoundingClientRect();
+        const shift = box.left < rail.left + 4 ? box.left - rail.left - 4
+          : box.right > rail.right - 4 ? box.right - rail.right + 4 : 0;
+        if (shift && surface.scrollWidth > surface.clientWidth) surface.scrollLeft += shift;
+        swipeStatus.textContent = label + '：' + (target.getAttribute('aria-label') || target.textContent.trim());
+      }
+      if (glass.hidden) return;
+      const box = target.getBoundingClientRect(), frame = host.getBoundingClientRect();
+      const width = Math.min(80, box.width + 14), height = Math.min(g.rail.height - 6, box.height + 6);
+      const x = clamp(box.left + box.width / 2 - width / 2, g.rail.left + 2, g.rail.right - width - 2) - frame.left;
+      const y = g.rail.top - frame.top + (g.rail.height - height) / 2;
+      move(glass, [
+        { transform: glass.style.transform, width: glass.style.width, height: glass.style.height, opacity: .95 },
+        { transform: `translate3d(${x}px,${y}px,0)`, width: width + 'px', height: height + 'px', opacity: 0 }
+      ], { duration: cancelled ? 140 : 280, complete() { glass.hidden = true; } });
+    },
+  });
+  surface.addEventListener('dragstart', event => { if (mobile.matches) event.preventDefault(); });
+  document.addEventListener('click', event => {
+    if (event.detail === 0 || performance.now() > blockClickUntil || !surface.contains(event.target)) return;
+    event.preventDefault(); event.stopImmediatePropagation(); blockClickUntil = 0;
+  }, { capture: true });
+  new MutationObserver(() => {
+    if (gesture && gesture.state !== [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|')) cancel();
+  }).observe(root, { attributes: true, attributeFilter: ['data-view-mode', 'data-home-site', 'data-rss-site'] });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) cancel(); });
+}
+const swipeStatus = document.createElement('p');
+swipeStatus.className = 'sr-only'; swipeStatus.setAttribute('role', 'status'); swipeStatus.setAttribute('aria-live', 'polite'); swipeStatus.setAttribute('aria-atomic', 'true');
+document.body.append(swipeStatus);
+bindMobileSwipe({
+  surface: dockApps, host: document.querySelector('.dock'), label: '站点',
+  items: () => dockButtons,
+  current: entries => entries.findIndex(button => button.classList.contains('is-active')),
+  activate(button) {
+    if (root.dataset.viewMode === 'rss') window.LinguistaRSS?.selectSite(button.dataset.cardGroup);
+    else openShelf(button.dataset.cardGroup, button);
+  },
+});
+bindMobileSwipe({
+  surface: shelfTrack, host: shelf, label: '模块',
+  items: () => root.dataset.viewMode !== 'rss' ? [...shelfTrack.querySelectorAll('.mini-card')] : [],
+  current: entries => entries.findIndex(button => button.getAttribute('aria-pressed') === 'true'),
+  activate(button) {
+    const item = cardGroups[shelfGroup]?.find(item => item.key === button.dataset.cardKey);
+    if (item) showItem(item, shelfGroup, button, { focus: false });
+  },
+});
+
 window.LinguistaHome = {
+  syncSearchMode,
   suspend() {
     closeShelf({restoreFocus: false}); closePanel({restoreFocus: false, immediate: true});
-    if (searchDialog.open) searchDialog.close();
     clearTimeout(playbackTimer);
   },
-  resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); updateNavigation(); syncPlayback();},
+  resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); restoreSiteShelf(); updateNavigation(); syncPlayback();},
   setDock(id) {
     dockButtons.forEach(button => {
       const active = button.dataset.cardGroup === id;

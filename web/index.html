@@ -18,7 +18,7 @@
   <script defer src="./site-home.js"></script>
   <script defer src="./main.js"></script>
   <script defer src="./shell.js"></script>
-  <script type="module" src="./rss.js?v=414988e48c2b1acb"></script>
+  <script type="module" src="./rss.js?v=e576ce2758cf2ee9"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -26,6 +26,7 @@
   <a class="skip-link" href="#featured">跳到精选内容</a>
   <main class="dashboard">
     <aside class="sidebar" aria-label="周刊与快捷入口">
+      <header class="home-mobile-header" aria-label="当前站点与搜索"><button type="button" id="home-site-name" aria-controls="featured">Linguista</button></header>
       <!-- sync:newsletter:start -->
       <section class="newsletter" id="newsletter" aria-label="Newsletter">
         <div class="newsletter-cover">
@@ -45,7 +46,7 @@
       <a class="sidebar-footer" href="https://linguista.cn/">Linguista <span>所读 · 所思 · 所想 </span></a>
     </aside>
     <section class="feature" id="featured" aria-label="主屏内容">
-      <button class="search-button" id="search-button" aria-label="搜索各站 RSS 内容" aria-haspopup="dialog" hidden><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>搜索各站 RSS</span><kbd>/</kbd></button>
+      <button type="button" class="search-button" id="search-button" aria-label="搜索各站内容" aria-expanded="false" aria-controls="search-dialog" hidden><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg></button>
       <!-- sync:featured:start -->
       <article class="feature-slide is-active" data-slide data-site="Workshop" data-short-title="来一桌" data-image="./assets/linguista/labs-icon.svg" data-cover-title="来一桌" data-cover-subtitle="DeepSeek Harness 插件" data-cover-kicker="TypeScript" data-image-style="icon" aria-label="第 1 项，共 6 项" aria-roledescription="幻灯片">
         <div class="feature-card"><div class="feature-copy"><p class="feature-category">Workshop <span>·</span> DeepSeek Harness 插件</p><h2 tabindex="-1">来一桌</h2><p class="feature-description">DeepSeek Harness的本地人机陪练插件，包含棋桌、牌桌和麻将桌。</p><a class="read-button" href="https://linguista.cn/workshop/lai-yi-zhuo/" data-search="来一桌 Workshop DeepSeek Harness 插件 TypeScript" data-search-title="来一桌"><span>查看软件</span></a></div></div>
@@ -76,8 +77,8 @@
         </div>
       </div>
       <p class="sr-only" id="slide-status" role="status" aria-live="polite"></p>
-      <section class="card-shelf" id="card-shelf" aria-labelledby="shelf-title" aria-describedby="shelf-description" hidden>
-        <div class="shelf-heading"><h2 id="shelf-title"><a id="shelf-site" href="https://linguista.cn/">Linguista</a></h2><p class="shelf-description" id="shelf-description">所读 · 所思 · 所想</p><div class="shelf-actions"><button class="icon-button" id="shelf-previous" aria-label="向前浏览卡片"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button><button class="icon-button" id="shelf-next" aria-label="向后浏览卡片"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button><button class="icon-button" id="shelf-close" aria-label="收起卡片栏"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div></div>
+      <section class="card-shelf" id="card-shelf" aria-labelledby="shelf-title" hidden>
+        <div class="shelf-heading"><h2 id="shelf-title"><a id="shelf-site" href="https://linguista.cn/">Linguista</a></h2><div class="shelf-actions"><button class="icon-button" id="shelf-previous" aria-label="向前浏览卡片"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button><button class="icon-button" id="shelf-next" aria-label="向后浏览卡片"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button><button class="icon-button" id="shelf-close" aria-label="收起卡片栏"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div></div>
         <div class="shelf-track" id="shelf-track" role="group" aria-labelledby="shelf-title"><nav class="shelf-links" id="shelf-links" aria-label="索引与导航" hidden></nav></div>
       </section>
       <div class="panel-layer">
@@ -124,7 +125,10 @@
     <a href="#notion" class="dock-item" data-card-group="notion" aria-label="Notion"><span class="site-mark dock-notion-mark" aria-hidden="true"></span></a><a href="#bearblog" class="dock-item" data-card-group="bearblog" aria-label="bearblog"><span class="dock-bear-mark" aria-hidden="true">ʕ•ᴥ•ʔ</span></a></nav>
 
   </footer>
-  <dialog id="search-dialog" aria-labelledby="search-title"><div class="dialog-heading"><h2 id="search-title">找点什么</h2><button class="icon-button" id="close-search" aria-label="关闭搜索"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><label class="search-field" for="search-input"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span class="sr-only">搜索各站 RSS 标题与摘要</span><input type="search" id="search-input" placeholder="标题、摘要、作者…" autocomplete="off"></label><p class="search-scope">搜索各站公开 RSS 摘要</p><p id="search-status" role="status" aria-live="polite"></p><ul id="search-results"></ul></dialog>
+  <section id="search-dialog" class="home-search" role="search" aria-label="搜索各站内容" hidden>
+    <div class="search-field"><label class="sr-only" for="search-input">搜索各站 RSS 标题、摘要与作者</label><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="search-input" placeholder="搜索标题、摘要、作者…" autocomplete="off" aria-controls="search-results"><button type="button" class="icon-button" id="close-search" aria-label="关闭搜索"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="search-matches" hidden><p id="search-status" role="status" aria-live="polite"></p><ul id="search-results"></ul></div>
+  </section>
   <div class="workbench-controls">
     <div class="view-switch" role="group" aria-label="浏览模式">
       <button type="button" data-view="home" aria-pressed="true" aria-label="首页"><svg class="view-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></svg><span class="view-label">首页</span></button>
@@ -141,7 +145,6 @@
         <div class="rss-heading-line"><h2><a id="rss-site-title" target="_blank" rel="noopener noreferrer">Linguista</a></h2><button type="button" id="rss-refresh" class="icon-button" aria-label="刷新当前站点订阅"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.1 8a7 7 0 0 1 11.55-3.1L20 8M4 16l3.35 3.1A7 7 0 0 0 18.9 16"/></svg></button></div>
         <p class="rss-description" id="rss-site-description"></p>
         <nav class="rss-sources" id="rss-sources" aria-label="Notion 知识库" hidden></nav>
-        <label class="rss-search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="rss-search" aria-label="筛选当前站点的 RSS 文章" placeholder="搜索标题、摘要…" autocomplete="off"></label>
         <div class="rss-list-meta"><span id="rss-count"></span><div class="rss-filter" id="rss-filter"><button type="button" id="rss-filter-button" aria-label="文章阅读状态" aria-haspopup="menu" aria-expanded="false" aria-controls="rss-filter-menu"><span id="rss-filter-label">未读</span><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button><div id="rss-filter-menu" role="menu" aria-label="文章阅读状态" hidden><button type="button" role="menuitemradio" aria-checked="true" data-read-filter="unread">未读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="read">已读</button><button type="button" role="menuitemradio" aria-checked="false" data-read-filter="all">全部</button></div></div></div>
       </header>
       <p class="rss-sync-status" id="rss-sync-status" role="status" aria-live="polite"></p>
