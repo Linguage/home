@@ -10,7 +10,7 @@ function cancelMotion(element) {
 }
 function move(element, frames, { duration = 260, complete } = {}) {
   cancelMotion(element);
-  if (reducedMotion.matches) { complete?.(); return; }
+  if (reducedMotion.matches || root.hasAttribute('data-navigation-drag')) { complete?.(); return; }
   const animation = element.animate(frames, { duration, easing: 'cubic-bezier(.22, 1, .36, 1)' });
   motions.set(element, animation);
   animation.onfinish = () => {
@@ -95,6 +95,8 @@ const shelf = document.querySelector('#card-shelf');
 const shelfTrack = document.querySelector('#shelf-track');
 const detail = document.querySelector('#content-detail');
 const detailBody = document.querySelector('#detail-body');
+const detailMedia = document.createElement('div'); detailMedia.className = 'link-preview-media'; detailMedia.setAttribute('aria-hidden', 'true');
+const detailImage = document.createElement('img'); detailImage.alt = ''; detailMedia.append(detailImage); detail.prepend(detailMedia);
 let shelfGroup = null;
 let contentGroup = 'home';
 let selectedKey = '';
@@ -448,6 +450,14 @@ for (const [group, source] of Object.entries(extraModules)) {
 }
 
 
+// Reuse the geometric originals identified in the archived Hugo homepage.
+cardGroups.home.forEach(item => { item.image = `./assets/module-covers/home-${item.key}-art.svg`; });
+
+function moduleArtwork(item, group) {
+  if (group === 'alpaca' || group === 'bearblog') return `./assets/module-covers/${item.key}-art.svg`;
+  return item.image;
+}
+
 function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'icon');
@@ -482,6 +492,9 @@ function applyReadingCover(card, item, group) {
   const { source, background, ink, accent, image } = coverDesign(item, group);
   card.classList.add('reading-card');
   card.dataset.coverKind = item.isModule ? 'module' : 'article';
+  card.dataset.material = item.isModule ? ({ home:'newspaper', alpaca:'notebook', library:'book', hinbox:'postcard', science:'journal' }[group] || group) : '';
+  card.style.setProperty('--module-cover', item.isModule && group !== 'notion' ? `url("./assets/module-covers/${card.dataset.material}.svg")` : 'none');
+  card.style.setProperty('--module-cover-landscape', item.isModule && group !== 'notion' ? `url("./assets/module-covers/${card.dataset.material}-landscape.svg")` : 'none');
   card.dataset.motif = item.motif || '';
   card.style.setProperty('--cover-accent', accent);
   card.dataset.art = source.imageStyle === 'icon' ? 'icon' : 'photo';
@@ -539,7 +552,8 @@ panels.forEach(panel => {
   panel.setAttribute('aria-hidden', 'true');
   panel.inert = true;
   panel.querySelector('.panel-heading h2').tabIndex = -1;
-  panel.querySelector('.panel-close').hidden = false;
+  const close = panel.querySelector('.panel-close');
+  if (close) close.hidden = false;
 });
 const dockApps = document.querySelector('.dock-apps');
 const dockIndicator = document.createElement('span');
@@ -745,6 +759,7 @@ function showItem(item, group, trigger, { focus = true } = {}) {
     document.querySelector('#detail-title').textContent = item.title;
     document.querySelector('#detail-category').textContent = groupLabels[group];
     applyReadingCover(detail, item, group);
+    detailImage.src = moduleArtwork(item, group);
     const copy = document.createElement('div'); copy.className = 'detail-copy';
     const meta = document.createElement('p'); meta.className = 'detail-meta'; meta.textContent = item.meta;
     const link = document.createElement('a'); link.className = 'read-button'; link.href = item.href;
@@ -758,7 +773,7 @@ function showItem(item, group, trigger, { focus = true } = {}) {
   }
   contentGroup = group;
   selectedKey = item.key;
-  // Keep the mobile module row available, including its selected square outline.
+  // Keep the mobile module row and its selection marker available.
   updateNavigation();
 }
 triggers.forEach(trigger => trigger.addEventListener('click', event => {
@@ -780,7 +795,26 @@ dockButtons.forEach(button => button.addEventListener('keydown', event => {
   if (!mobile.matches) window.LinguistaSiteUI?.focus();
   else shelfTrack.querySelector('button')?.focus({ preventScroll: true });
 }));
-panels.forEach(panel => panel.querySelector('.panel-close').addEventListener('click', () => closePanel()));
+panels.forEach(panel => panel.querySelector('.panel-close')?.addEventListener('click', () => closePanel()));
+
+// Only a tap on empty space dismisses a module. Drags, scrolling, and controls
+// keep their own behavior, including drags that finish outside the card.
+let outsideTap = null;
+const outsideModule = target => target instanceof Element &&
+  !target.closest('.app-panel, #card-shelf, .dock, .sidebar, .workbench-controls, .home-mobile-header, a, button, input, select, textarea, dialog, [role="dialog"]');
+document.addEventListener('pointerdown', event => {
+  outsideTap = event.isPrimary && event.button === 0 && currentPanel === detail && outsideModule(event.target)
+    ? { id:event.pointerId, x:event.clientX, y:event.clientY, panel:currentPanel } : null;
+}, { capture:true });
+document.addEventListener('pointermove', event => {
+  if (outsideTap && (event.pointerId !== outsideTap.id || Math.hypot(event.clientX-outsideTap.x,event.clientY-outsideTap.y) > 8)) outsideTap = null;
+}, { capture:true, passive:true });
+document.addEventListener('pointercancel', () => { outsideTap = null; }, { capture:true });
+document.addEventListener('click', event => {
+  const tap = outsideTap; outsideTap = null;
+  if (tap && currentPanel === tap.panel && detail.dataset.coverKind === 'module' &&
+      outsideModule(event.target) && !root.hasAttribute('data-navigation-drag')) closePanel();
+});
 document.querySelector('#shelf-close').addEventListener('click', () => closeShelf());
 ['previous', 'next'].forEach(direction => document.querySelector(`#shelf-${direction}`).addEventListener('click', () => {
   shelfTrack.scrollBy({ left: (direction === 'next' ? 1 : -1) * shelfTrack.clientWidth * .8, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
@@ -831,7 +865,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && (root.dataset.homeSite && root.dataset.homeSite !== 'home' || root.dataset.homeCover === 'newsletter')) || keyboardReading || carouselDragging || currentPanel || root.hasAttribute('data-home-search')) return;
+  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || document.querySelector('dialog[open]') || (mobile.matches && (root.dataset.homeSite && root.dataset.homeSite !== 'home' || root.dataset.homeCover === 'newsletter')) || keyboardReading || carouselDragging || currentPanel || root.hasAttribute('data-home-search')) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -1121,10 +1155,33 @@ window.LinguistaSiteUI?.init({ sites, cardGroups, shelfLinks, miniCover, showIte
 });
 window.addEventListener('hashchange', readHash);
 readHash();
+import('./project-launcher.js').then(({initProjectLauncher}) => initProjectLauncher(href => {
+  const item=featuredItems.find(item=>item.href===href);
+  if(!item)return;
+  document.querySelector('[data-view="home"]')?.click();
+  window.LinguistaSiteUI?.select('home');
+  root.dataset.homeCover='workshop';
+  window.LinguistaSiteUI?.syncStage();
+  closeSearch({restoreFocus:false});
+  showItem(item,'home',document.querySelector('#project-launcher'));
+}, syncPlayback));
 
 
-// Touch navigation stays on its own rail; content reading keeps native vertical gestures.
-function bindMobileSwipe({ surface, host, items, current, activate, label }) {
+// A drag anywhere on a rail moves the current selection by the same distance.
+// Content follows the glass while held; cancellation restores the original view.
+function captureHomeNavigation() {
+  const group = root.dataset.homeSite || 'home', cover = root.dataset.homeCover;
+  const item = cardGroups[contentGroup]?.find(item => item.key === selectedKey);
+  return () => {
+    openShelf(group, dockButtons.find(button => button.dataset.cardGroup === group));
+    if (cover) root.dataset.homeCover = cover;
+    else root.removeAttribute('data-home-cover');
+    if (item) showItem(item, group, shelfTrack.querySelector(`[data-card-key="${item.key}"]`), { focus: false });
+    else closePanel({ restoreFocus: false, immediate: true });
+    syncMainContent();
+  };
+}
+function bindMobileSwipe({ surface, track = surface, host, items, current, activate, snapshot, cover, label }) {
   const glass = document.createElement('span');
   glass.className = 'swipe-glass'; glass.hidden = true; glass.setAttribute('aria-hidden', 'true');
   host.append(glass);
@@ -1138,18 +1195,22 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
     axis: 'x',
     canStart(event) {
       blockClickUntil = 0;
-      if (!mobile.matches || document.querySelector('dialog[open]')) return false;
+      if (!mobile.matches || document.querySelector('dialog[open]') || event.target.closest('.shelf-heading')) return false;
       const entries = items(); if (!entries.length) return false;
       const index = current(entries);
-      const rail = surface.getBoundingClientRect(), frame = host.getBoundingClientRect();
+      const rail = track.getBoundingClientRect(), frame = host.getBoundingClientRect();
       const anchor = entries[Math.max(0, index)].getBoundingClientRect();
+      const boxes = entries.map(entry => entry.getBoundingClientRect());
+      const centers = boxes.map(box => box.left + box.width / 2);
+      // The leading stop connects a site's cover to its module previews.
+      const pitch = centers.length > 1 ? centers[1] - centers[0] : anchor.width + 8;
+      const origin = index < 0 && cover ? centers[0] - pitch : centers[Math.max(0, index)];
       cancelMotion(glass); glass.hidden = true;
       gesture = {
-        entries, index, rail, frame, startX: event.clientX, started:performance.now(),
+        entries, index, next:index, rail, frame, centers, origin, pitch, scroll:track.scrollLeft,
+        restore:snapshot(), started:performance.now(),
         tapped:entries.find(entry => entry.contains(event.target)),
-        direct: event.pointerType === 'mouse' || index >= 0 && entries[index].contains(event.target),
         width: Math.min(80, anchor.width + 14), height: Math.min(rail.height - 6, anchor.height + 6),
-        threshold: clamp(rail.width * .12, 32, 52),
         state: [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|'),
       };
       return true;
@@ -1164,27 +1225,41 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
     },
     onMove(delta) {
       if (!gesture) return;
-      const g = gesture, direction = delta < 0 ? 1 : -1;
-      const pointerX = g.startX + delta;
-      if (g.direct) {
-        let nearest = Infinity;
-        g.entries.forEach((entry, index) => {
-          const box = entry.getBoundingClientRect();
-          const distance = Math.abs(pointerX - box.left - box.width / 2);
-          if (distance < nearest) { nearest = distance; g.next = index; }
-        });
-      } else g.next = g.index + direction;
-      g.valid = g.next >= 0 && g.next < g.entries.length;
-      const stretch = reducedMotion.matches ? 0 : Math.min(30, Math.abs(delta) * .25);
+      const g = gesture, position = g.origin + delta;
+      let next = 0, nearest = Infinity;
+      g.centers.forEach((center, index) => {
+        const distance = Math.abs(position - center);
+        if (distance < nearest) { nearest = distance; next = index; }
+      });
+      if (cover && position < g.centers[0] - g.pitch / 2) next = -1;
+      root.setAttribute('data-navigation-drag', '');
+      surface.classList.add('is-swiping');
+      if (next !== g.next) {
+        g.next = next;
+        if (next < 0) cover();
+        else {
+          const target = g.entries[next];
+          activate(target);
+          // Reveal overflowing modules without scrolling the page or moving the drag origin.
+          const box = target.getBoundingClientRect();
+          const shift = box.left < g.rail.left + 4 ? box.left - g.rail.left - 4
+            : box.right > g.rail.right - 4 ? box.right - g.rail.right + 4 : 0;
+          if (shift && track.scrollWidth > track.clientWidth) track.scrollLeft += shift;
+        }
+        g.state = [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|');
+      }
+      const low = g.centers[0] - (cover ? g.pitch : 0), high = g.centers.at(-1);
+      const bounded = clamp(position, low, high);
+      const edge = position !== bounded;
+      const stretch = reducedMotion.matches ? 0 : Math.min(24, Math.abs(delta) * .18);
       const width = g.width + stretch, height = g.height - stretch * .08;
-      const center = g.startX + delta * (g.valid ? 1 : .22);
+      const center = bounded + (position - bounded) * .18 - (track.scrollLeft - g.scroll);
       const x = clamp(center - width / 2, g.rail.left + 2, g.rail.right - width - 2) - g.frame.left;
       const y = g.rail.top - g.frame.top + (g.rail.height - height) / 2;
       glass.hidden = false;
-      glass.dataset.edge = String(!g.valid);
+      glass.dataset.edge = String(edge);
       glass.style.setProperty('--swipe-light-x', delta < 0 ? '24%' : '76%');
       paint(x, width, height, y);
-      surface.classList.add('is-swiping');
     },
     onEnd(delta, cancelled) {
       const g = gesture; gesture = null;
@@ -1192,18 +1267,12 @@ function bindMobileSwipe({ surface, host, items, current, activate, label }) {
       if (!g) return;
       // Capture before RSS's document handler, so a swipe cannot become a stray tap.
       blockClickUntil = performance.now() + 600;
-      const commit = !cancelled && g.valid && (g.direct ? g.next !== g.index : Math.abs(delta) >= g.threshold);
-      let target = g.entries[Math.max(0, g.index)];
-      if (commit) {
-        target = g.entries[g.next];
-        activate(target);
-        // Scroll only this rail, and only if needed; never scroll ancestor viewports during touch release.
-        const box = target.getBoundingClientRect(), rail = surface.getBoundingClientRect();
-        const shift = box.left < rail.left + 4 ? box.left - rail.left - 4
-          : box.right > rail.right - 4 ? box.right - rail.right + 4 : 0;
-        if (shift && surface.scrollWidth > surface.clientWidth) surface.scrollLeft += shift;
-        swipeStatus.textContent = label + '：' + (target.getAttribute('aria-label') || target.textContent.trim());
-      }
+      const sameView = g.state === [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|');
+      if (cancelled && sameView) { g.restore(); track.scrollLeft = g.scroll; }
+      root.removeAttribute('data-navigation-drag');
+      const index = cancelled ? g.index : g.next;
+      const target = g.entries[Math.max(0, index)];
+      swipeStatus.textContent = label + '：' + (index < 0 ? '站点封面' : target.getAttribute('aria-label') || target.textContent.trim());
       if (glass.hidden) return;
       const box = target.getBoundingClientRect(), frame = host.getBoundingClientRect();
       const width = Math.min(80, box.width + 14), height = Math.min(g.rail.height - 6, box.height + 6);
@@ -1229,18 +1298,25 @@ const swipeStatus = document.createElement('p');
 swipeStatus.className = 'sr-only'; swipeStatus.setAttribute('role', 'status'); swipeStatus.setAttribute('aria-live', 'polite'); swipeStatus.setAttribute('aria-atomic', 'true');
 document.body.append(swipeStatus);
 bindMobileSwipe({
-  surface: dockApps, host: document.querySelector('.dock'), label: '站点',
+  surface: document.querySelector('.dock'), track:dockApps, host: document.querySelector('.dock'), label: '站点',
   items: () => dockButtons,
   current: entries => entries.findIndex(button => button.classList.contains('is-active')),
+  snapshot() {
+    if (root.dataset.viewMode !== 'rss') return captureHomeNavigation();
+    const site = root.dataset.rssSite;
+    return () => window.LinguistaRSS?.selectSite(site);
+  },
   activate(button) {
     if (root.dataset.viewMode === 'rss') window.LinguistaRSS?.selectSite(button.dataset.cardGroup);
     else openShelf(button.dataset.cardGroup, button);
   },
 });
 bindMobileSwipe({
-  surface: shelfTrack, host: shelf, label: '模块',
+  surface: shelf, track:shelfTrack, host: shelf, label: '模块',
   items: () => root.dataset.viewMode !== 'rss' ? [...shelfTrack.querySelectorAll('.mini-card')] : [],
   current: entries => entries.findIndex(button => button.getAttribute('aria-pressed') === 'true'),
+  snapshot: captureHomeNavigation,
+  cover() { closePanel({ restoreFocus: false, immediate: true }); },
   activate(button) {
     const item = cardGroups[shelfGroup]?.find(item => item.key === button.dataset.cardKey);
     if (item) showItem(item, shelfGroup, button, { focus: false });

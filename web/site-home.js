@@ -26,6 +26,8 @@
       modules.addEventListener('keydown', event => { if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return; event.preventDefault(); event.stopPropagation(); setModulePage(modulePage + (event.key === 'ArrowRight' ? 1 : -1)); modules.querySelector('a:not([hidden])')?.focus(); });
       footer.append(heading, pagination, pageStatus); section.append(art, modules, footer); sidebar.append(section);
       const newsletter = sidebar.querySelector('.newsletter');
+      const workshopPreview = document.createElement('button'); workshopPreview.id = 'newsletter-workshop-preview'; workshopPreview.className = 'newsletter-workshop-preview'; workshopPreview.textContent = '浏览工坊';
+      newsletter.querySelector('.newsletter-cover').append(workshopPreview);
       const homeModules = sidebar.querySelector(':scope > .quick-links');
       const mobileHeader = sidebar.querySelector('.home-mobile-header');
       const siteName = mobileHeader.querySelector('#home-site-name');
@@ -50,17 +52,40 @@
       const identities = new Map();
       const compact = matchMedia('(max-width: 900px)');
       const feature = document.querySelector('.feature');
+      const syncPreviewBounds = () => {
+        if (!compact.matches) return;
+        const group = root.dataset.homeSite || 'home';
+        const cover = group === 'home' ? newsletter.querySelector('.newsletter-cover') : identities.get(group);
+        const frame = feature.getBoundingClientRect(), box = cover?.getBoundingClientRect();
+        let width, height, left, top;
+        if (box?.width && box.height) {
+          const style = getComputedStyle(cover);
+          width = box.width * (group === 'home' ? 1 : parseFloat(style.getPropertyValue('--art-width')));
+          height = box.height * (group === 'home' ? 1 : parseFloat(style.getPropertyValue('--art-height')));
+          left = box.left - frame.left + (box.width - width) / 2;
+          top = box.top - frame.top + (box.height - height) / 2;
+        } else if (group === 'home') {
+          const shelfHeight = parseFloat(getComputedStyle(feature).getPropertyValue('--mobile-shelf-height'));
+          width = Math.min(260, frame.width - 64, (frame.height - shelfHeight - 32) * .75);
+          height = width / .75; left = (frame.width - width) / 2; top = (frame.height - shelfHeight - height) / 2;
+        } else return;
+        for (const [name,value] of Object.entries({width,height,left,top})) feature.style.setProperty(`--preview-${name}`, `${value}px`);
+      };
+      const previewLayout = new ResizeObserver(syncPreviewBounds);
+      previewLayout.observe(feature); previewLayout.observe(art); previewLayout.observe(newsletter.querySelector('.newsletter-cover'));
       const syncStage = () => {
         const group = root.dataset.homeSite || 'home';
         const isHome = group === 'home';
-        const coverVisible = compact.matches && isHome && root.dataset.homeCover === 'newsletter';
+        const coverVisible = compact.matches && isHome && root.dataset.homeCover !== 'workshop';
+        if (coverVisible) root.dataset.homeCover = 'newsletter';
         const parent = compact.matches && !isHome ? feature : section;
         if (art.parentElement !== parent) parent.prepend(art);
         if (compact.matches && newsletter.parentElement !== feature) feature.prepend(newsletter);
         if (!compact.matches && newsletter.parentElement !== sidebar) sidebar.insertBefore(newsletter, homeModules);
         newsletter.classList.toggle('newsletter-stage', compact.matches);
-        newsletter.hidden = compact.matches ? !coverVisible || feature.classList.contains('has-detail') : !isHome;
-        newsletter.inert = newsletter.hidden || root.dataset.viewMode === 'rss';
+        newsletter.hidden = compact.matches ? !coverVisible : !isHome;
+        newsletter.classList.toggle('is-preview-hidden', compact.matches && feature.classList.contains('has-detail'));
+        newsletter.inert = newsletter.hidden || root.dataset.viewMode === 'rss' || compact.matches && feature.classList.contains('has-detail');
         mobileHeader.hidden = !compact.matches;
         mobileHeader.inert = !compact.matches;
         const isRSS = root.dataset.viewMode === 'rss';
@@ -74,6 +99,7 @@
         section.hidden = compact.matches || isHome;
         art.hidden = isHome;
         art.inert = root.dataset.viewMode === 'rss' || (compact.matches && feature.classList.contains('has-detail'));
+        syncPreviewBounds();
         feature.classList.toggle('has-site-cover', compact.matches && (!isHome || coverVisible));
         feature.querySelectorAll('[data-slide]').forEach(slide => {
           slide.inert = root.dataset.viewMode === 'rss' || feature.classList.contains('has-detail') || compact.matches && (!isHome || coverVisible) || !slide.classList.contains('is-active');
@@ -84,6 +110,9 @@
         if (root.dataset.viewMode === 'rss') { window.LinguistaRSS?.showList(); return; }
         if (root.dataset.homeSite === 'home') root.dataset.homeCover = 'newsletter';
         showCover(); syncStage(); update();
+      });
+      workshopPreview.addEventListener('click', () => {
+        root.dataset.homeCover = 'workshop'; showCover(); syncStage(); update();
       });
       this.syncStage = syncStage;
       compact.addEventListener('change', () => { collapseShelf(); syncStage(); restoreShelf(); update(); });
@@ -104,7 +133,7 @@
             } else {
               const image = document.createElement('img'); image.src = './assets/identities/' + pictures[group]; image.alt = sites[group].title; identity.append(image);
             }
-            art.append(identity); identities.set(group, identity);
+            art.append(identity); identities.set(group, identity); previewLayout.observe(identity);
           }
           identities.forEach((value, key) => { value.hidden = key !== group; value.inert = key !== group; });
           heading.textContent = sites[group].title; heading.href = sites[group].href;

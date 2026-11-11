@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="462" viewBox="0 0 320 462" preserveAspectRatio="none"><title>what's old · 调研 模块纸张</title><defs>
+  <linearGradient id="journal-skin-paper" x2=".8" y2="1"><stop stop-color="#fbf4e5"/><stop offset="1" stop-color="#e5d8bd"/></linearGradient>
+  <linearGradient id="journal-skin-metal" x2="0" y2="1"><stop stop-color="#544c3b"/><stop offset=".25" stop-color="#c9c7b6"/><stop offset=".45" stop-color="#f6f1dc"/><stop offset=".62" stop-color="#827c68"/><stop offset="1" stop-color="#4b493e"/></linearGradient>
+  <linearGradient id="journal-skin-spine"><stop stop-color="#203c44"/><stop offset=".45" stop-color="#42616a"/><stop offset=".8" stop-color="#213d45"/><stop offset="1" stop-color="#172f36"/></linearGradient>
+  <pattern id="journal-skin-grain" width="17" height="19" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".45" fill="#6b5734" opacity=".07"/><circle cx="12" cy="15" r=".32" fill="#fff9e9" opacity=".4"/><path d="m8 7 1 .3" stroke="#75634c" stroke-width=".45" opacity=".08"/></pattern>
+  <pattern id="journal-skin-pages" width="6" height="3" patternUnits="userSpaceOnUse"><path d="M0 0H6" stroke="#ab9777" stroke-width=".6"/></pattern>
+  <pattern id="journal-skin-airmail" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="11" height="42" fill="#a45f50"/><rect x="21" width="11" height="42" fill="#4f7185"/></pattern>
+  <filter id="journal-skin-shadow" x="-12%" y="-10%" width="128%" height="132%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#382d20" flood-opacity=".2"/></filter>
+  </defs><rect x="7" y="5" width="307" height="451" rx="6" fill="url(#journal-skin-paper)" stroke="#b5af92" filter="url(#journal-skin-shadow)"/>
+    <path d="M13 5h295q6 0 6 7v116H7V12q0-7 6-7Z" fill="#6c7d63"/>
+    <path d="M7 128h307" stroke="#9ba88e" stroke-width="1"/>
+    <path d="M13 6v449" stroke="#3d5142" opacity=".25" stroke-width="3"/>
+    <path d="M31 432L290 432" fill="none" stroke="#60745d" stroke-width="1.1" opacity="1"/>
+    <rect x="6" y="6" width="308" height="450" rx="5" fill="url(#journal-skin-grain)" pointer-events="none"/></svg>

@@ -1,6 +1,6 @@
 # Linguista 阅读工作台
 
-Linguista 的 DeepSeek Harness 插件，当前版本 **0.3.5**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
+Linguista 的 DeepSeek Harness 插件，当前版本 **0.4.0**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
 
 [网站](https://linguista.cn/home/) · [下载插件](https://github.com/Linguage/home/releases)
 
@@ -8,7 +8,7 @@ Linguista 的 DeepSeek Harness 插件，当前版本 **0.3.5**。打开 **Lingui
 
 在 DeepSeek Harness 0.2 系列的插件管理中选择添加插件，在「包名或地址」填入 `https://github.com/Linguage/home`。安装并启用后，从左侧打开 **Linguista**。宿主需要 Node.js 22.19 或以上。
 
-也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.3.5)下载 `dsh-linguista-0.3.5.tgz`，在同一个字段中填入文件的本地绝对路径。
+也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.4.0)下载 `dsh-linguista-0.4.0.tgz`，在同一个字段中填入文件的本地绝对路径。
 
 ## 开始阅读
 
