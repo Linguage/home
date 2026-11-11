@@ -1,7 +1,7 @@
 (() => {
   const root = document.documentElement;
   window.LinguistaSiteUI = {
-    init({ sites, cardGroups, shelfLinks, miniCover, showItem, clear, collapseShelf, update }) {
+    init({ sites, cardGroups, shelfLinks, miniCover, showItem, clear, collapseShelf, restoreShelf, update }) {
       const sidebar = document.querySelector('.sidebar');
       const section = document.createElement('section'); section.className = 'site-sidebar'; section.id = 'site-sidebar'; section.hidden = true;
       const art = document.createElement('div'); art.className = 'identity-art';
@@ -29,14 +29,10 @@
       const identities = new Map();
       const compact = matchMedia('(max-width: 900px)');
       const feature = document.querySelector('.feature');
-      const newsletter = sidebar.querySelector('.newsletter');
-      const search = feature.querySelector('#search-button');
       const syncStage = () => {
         const isHome = root.dataset.homeSite === 'home';
         const parent = compact.matches && !isHome ? feature : section;
         if (art.parentElement !== parent) parent.prepend(art);
-        if (compact.matches && search.parentElement !== sidebar) newsletter.after(search);
-        if (!compact.matches && search.parentElement !== feature) feature.prepend(search);
         original.filter(child => !child.classList.contains('rss-sidebar')).forEach(child => {
           const visible = child.classList.contains('newsletter') && compact.matches || isHome;
           child.hidden = !visible; child.inert = !visible;
@@ -46,7 +42,7 @@
         art.inert = root.dataset.viewMode === 'rss' || (compact.matches && feature.classList.contains('has-detail'));
       };
       this.syncStage = syncStage;
-      compact.addEventListener('change', () => { collapseShelf(); syncStage(); update(); });
+      compact.addEventListener('change', () => { collapseShelf(); syncStage(); restoreShelf(); update(); });
       new MutationObserver(syncStage).observe(root, { attributes: true, attributeFilter: ['data-view-mode', 'data-rss-site'] });
       const pictures = { hinbox: 'hinbox.svg', science: 'whats-old.svg', notion: 'notion.svg', bearblog: 'bearblog.svg' };
       const select = group => {

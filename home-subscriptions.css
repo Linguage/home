@@ -103,11 +103,12 @@
   font-size: 12px;
 }
 @media (max-width: 900px) {
-  #home-subscribe { width: 42px; height: 42px; }
-  html[data-view-mode="home"] .newsletter-cover-title { max-width: calc(100% - 166px); }
+  #home-subscribe { width: 40px; height: 40px; }
+  html[data-view-mode="home"] .newsletter-cover-title { max-width: calc(100% - 206px); }
 }
 @media (max-width: 360px) {
-  html[data-view-mode="home"] .newsletter-cover-title { font-size: 24px; }
+  #home-subscribe { width: 36px; height: 36px; }
+  html[data-view-mode="home"] .newsletter-cover-title { font-size: 20px; max-width: calc(100% - 180px); }
   .subscription-heading, .subscription-feeds { padding-inline: 14px; }
   .subscription-heading { gap: 8px; }
   .subscription-plugin { padding-inline: 8px; }

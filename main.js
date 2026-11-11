@@ -654,20 +654,20 @@ function closeShelf({ restoreFocus = true } = {}) {
   updateNavigation();
   if (restoreFocus) shelfReturnFocus.focus({ preventScroll: true });
 }
-function openShelf(group, trigger = homeButton) {
-  if (shelfGroup === group) { closeShelf(); return; }
-  if (window.LinguistaSiteUI?.select) {
+function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
+  if (shelfGroup === group) { if (group === 'home') closeShelf(); return; }
+  if (selectSite && window.LinguistaSiteUI?.select) {
     window.LinguistaSiteUI.select(group);
     if (!mobile.matches && group !== 'home') return;
   }
-  if (shelfGroup === group) { closeShelf(); return; }
   shelfGroup = group;
   syncPlayback();
   shelfReturnFocus = trigger;
   const siteLink = document.querySelector('#shelf-site');
   siteLink.textContent = sites[group].title;
   siteLink.href = sites[group].href;
-  document.querySelector('#shelf-description').textContent = sites[group].description;
+  shelf.toggleAttribute('data-module-icons', group !== 'home');
+  document.querySelector('#shelf-close').hidden = group !== 'home';
   const links = shelfLinks[group] || [];
   const indexNav = document.querySelector('#shelf-links');
   indexNav.replaceChildren(...links.map(item => {
@@ -682,11 +682,12 @@ function openShelf(group, trigger = homeButton) {
     button.className = 'mini-card mini-card-cover';
     button.dataset.cardKey = item.key;
     button.setAttribute('aria-label', item.title);
-    button.setAttribute('aria-controls', 'featured');
+    button.setAttribute('aria-controls', 'content-detail');
+    button.title = item.title;
     button.append(miniCover(item, group));
     button.addEventListener('click', () => showItem(item, group, button));
     button.addEventListener('pointerenter', event => {
-      if (event.pointerType === 'mouse' && hoverPointer.matches && !button.disabled) showItem(item, group, button, { focus: false });
+      if (!mobile.matches && event.pointerType === 'mouse' && hoverPointer.matches && !button.disabled) showItem(item, group, button, { focus: false });
     });
     button.addEventListener('focus', () => {
       if (!suppressFocusPreview && !mobile.matches && button.matches(':focus-visible')) showItem(item, group, button, { focus: false });
@@ -702,14 +703,19 @@ function openShelf(group, trigger = homeButton) {
   updateShelfArrows();
   move(shelf, mobile.matches ? [{ opacity: 0 }, { opacity: 1 }] :
     [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }]);
-  // Keep focus on the dock so repeated activation can fold the shelf.
+  // Subsite modules remain pinned; only the Home shelf can be folded.
+}
+function restoreSiteShelf() {
+  const group = root.dataset.homeSite;
+  if (mobile.matches && root.dataset.viewMode !== 'rss' && group && group !== 'home') {
+    openShelf(group, dockButtons.find(button => button.dataset.cardGroup === group), { selectSite: false });
+  }
 }
 function showItem(item, group, trigger, { focus = true } = {}) {
   document.querySelector('.feature').classList.add('is-browsing');
   // Hover keeps keyboard focus in place; revisiting a card preserves its form/scroll state.
   if (selectedKey === item.key && contentGroup === group) {
     if (focus) {
-      if (mobile.matches) closeShelf({ restoreFocus: false });
       (currentPanel?.querySelector('.panel-heading h2') || slideSources[slideIndex].querySelector('h1, h2')).focus({ preventScroll: true });
     }
     return;
@@ -740,8 +746,7 @@ function showItem(item, group, trigger, { focus = true } = {}) {
   }
   contentGroup = group;
   selectedKey = item.key;
-  // On phones, selection hands the available space back to the reading card.
-  if (focus && mobile.matches) closeShelf({ restoreFocus: false });
+  // Keep the mobile module row available, including its selected square outline.
   updateNavigation();
 }
 triggers.forEach(trigger => trigger.addEventListener('click', event => {
@@ -785,7 +790,7 @@ shelfTrack.addEventListener('keydown', event => {
   buttons[next].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
 });
 document.addEventListener('click', event => {
-  if (shelfGroup && !event.target.closest('#card-shelf, .app-panel, .dock, #search-dialog')) closeShelf({ restoreFocus: false });
+  if (shelfGroup === 'home' && !event.target.closest('#card-shelf, .app-panel, .dock, #search-dialog, .workbench-controls')) closeShelf({ restoreFocus: false });
 });
 mobile.addEventListener('change', () => {
   updateNavigation();
@@ -817,7 +822,7 @@ let carouselDragging = false;
 syncPlayback = () => {
   clearTimeout(playbackTimer);
   const keyboardReading = feature.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
-  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && root.dataset.homeSite && root.dataset.homeSite !== 'home') || keyboardReading || carouselDragging || currentPanel || shelfGroup || document.querySelector('#search-dialog').open) return;
+  if (root.dataset.viewMode === 'rss' || reducedMotion.matches || document.hidden || pointerReading || (mobile.matches && root.dataset.homeSite && root.dataset.homeSite !== 'home') || keyboardReading || carouselDragging || currentPanel || shelfGroup || root.hasAttribute('data-home-search')) return;
   playbackTimer = setTimeout(() => {
     if (slideIndex === slides.length - 1) autoDirection = -1;
     else if (slideIndex === 0) autoDirection = 1;
@@ -935,7 +940,12 @@ const searchDialog = document.querySelector('#search-dialog');
 const input = document.querySelector('#search-input');
 const list = document.querySelector('#search-results');
 const searchStatus = document.querySelector('#search-status');
+const searchMatches = searchDialog.querySelector('.search-matches');
+const channels = document.querySelector('.newsletter-channels');
+document.querySelector('.view-switch')?.prepend(searchButton);
 function renderResults() {
+  searchMatches.hidden = !input.value.trim();
+  if (searchMatches.hidden) { searchStatus.textContent = ''; list.replaceChildren(); return; }
   const result = window.LinguistaRSS?.search(input.value);
   if (!result) { searchStatus.textContent = '正在读取订阅…'; list.replaceChildren(); return; }
   const { items, total, loading, failed, available, sources } = result;
@@ -952,53 +962,63 @@ function renderResults() {
     copy.append(source, title, summary); link.append(copy); li.append(link);
     link.addEventListener('click', event => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault(); searchDialog.close(); void window.LinguistaRSS.openResult(feed.id, article.id);
+      event.preventDefault(); closeSearch({ restoreFocus: false }); void window.LinguistaRSS.openResult(feed.id, article.id);
     }); return li;
   }));
 }
-window.addEventListener('linguista-rss-update', () => { if (searchDialog.open) renderResults(); });
-function openSearch(trigger = searchButton) {
-  if (searchDialog.open) return;
-  searchReturnFocus = trigger;
-  closeShelf({ restoreFocus: false });
+function syncSearchLayout() {
+  const inline = mobile.matches;
+  if (inline) channels.after(searchDialog);
+  else (document.querySelector('.workbench-controls') || document.body).prepend(searchDialog);
+  searchButton.hidden = !inline;
+  searchDialog.hidden = inline && !root.hasAttribute('data-home-search');
+  channels.hidden = inline && root.hasAttribute('data-home-search');
+}
+function closeSearch({ restoreFocus = true } = {}) {
+  if (!root.hasAttribute('data-home-search')) return;
+  root.removeAttribute('data-home-search');
+  searchButton.setAttribute('aria-expanded', 'false');
   input.value = '';
   renderResults();
-  searchDialog.showModal();
+  syncSearchLayout();
+  if (restoreFocus) {
+    const target = mobile.matches ? searchReturnFocus : document.querySelector('[data-view="home"]');
+    (target || searchButton).focus({ preventScroll: true });
+  }
+  syncPlayback();
+}
+function openSearch(trigger = searchButton) {
+  if (root.hasAttribute('data-home-search')) { input.focus({ preventScroll: true }); return; }
+  searchReturnFocus = trigger;
+  if (root.dataset.viewMode === 'rss') document.querySelector('[data-view="home"]')?.click();
+  root.setAttribute('data-home-search', '');
+  searchButton.setAttribute('aria-expanded', 'true');
+  syncSearchLayout();
+  renderResults();
   void window.LinguistaRSS?.syncSearch();
   syncPlayback();
-  input.focus();
+  input.focus({ preventScroll: true });
 }
-searchButton.hidden = false;
-searchButton.addEventListener('click', () => openSearch(searchButton));
-document.querySelector('#close-search').addEventListener('click', () => searchDialog.close());
-searchDialog.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    // Search inputs otherwise consume the first Escape to clear their value.
-    event.preventDefault();
-    event.stopPropagation();
-    searchDialog.close();
-  }
+window.addEventListener('linguista-rss-update', () => { if (root.hasAttribute('data-home-search')) renderResults(); });
+mobile.addEventListener('change', () => { closeSearch({ restoreFocus: false }); syncSearchLayout(); });
+syncSearchLayout();
+searchButton.addEventListener('click', () => root.hasAttribute('data-home-search') ? closeSearch() : openSearch(searchButton));
+input.addEventListener('focus', () => { if (!mobile.matches) openSearch(input); });
+document.querySelector('#close-search').addEventListener('click', () => closeSearch());
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || !root.hasAttribute('data-home-search') || document.querySelector('dialog[open]')) return;
+  event.preventDefault(); event.stopImmediatePropagation(); closeSearch();
 }, { capture: true });
-searchDialog.addEventListener('click', event => {
-  const rect = searchDialog.getBoundingClientRect();
-  if (event.target === searchDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) searchDialog.close();
-});
-searchDialog.addEventListener('close', () => {
-  const target = searchReturnFocus.getClientRects().length && !searchReturnFocus.closest('[inert]') ? searchReturnFocus : searchButton;
-  target.focus({ preventScroll: true });
-  syncPlayback();
-});
 input.addEventListener('input', renderResults);
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !searchDialog.open) {
+  if (event.key === 'Escape' && !root.hasAttribute('data-home-search')) {
     event.preventDefault();
-    if (shelfGroup) closeShelf();
-    else if (currentPanel) closePanel();
+    if (currentPanel) closePanel();
+    else if (shelfGroup === 'home') closeShelf();
   }
   const typing = event.target.closest('input, textarea, [contenteditable="true"]');
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
-    event.preventDefault();
-    openSearch();
+    event.preventDefault(); openSearch();
   }
 });
 function readHash() {
@@ -1014,7 +1034,8 @@ function readHash() {
 }
 window.LinguistaSiteUI?.init({ sites, cardGroups, shelfLinks, miniCover, showItem,
   collapseShelf() { closeShelf({ restoreFocus: false }); },
-  clear() { closeShelf({ restoreFocus: false }); closePanel({ restoreFocus: false, immediate: true }); },
+  restoreShelf: restoreSiteShelf,
+  clear() { closeSearch({ restoreFocus: false }); closeShelf({ restoreFocus: false }); closePanel({ restoreFocus: false, immediate: true }); },
   update() { updateNavigation(); syncPlayback(); }
 });
 window.addEventListener('hashchange', readHash);
@@ -1023,10 +1044,10 @@ readHash();
 window.LinguistaHome = {
   suspend() {
     closeShelf({restoreFocus: false}); closePanel({restoreFocus: false, immediate: true});
-    if (searchDialog.open) searchDialog.close();
+    closeSearch({restoreFocus: false});
     clearTimeout(playbackTimer);
   },
-  resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); updateNavigation(); syncPlayback();},
+  resume() {dockButtons.forEach(button => button.setAttribute('aria-controls', 'card-shelf')); restoreSiteShelf(); updateNavigation(); syncPlayback();},
   setDock(id) {
     dockButtons.forEach(button => {
       const active = button.dataset.cardGroup === id;

@@ -260,7 +260,7 @@ const ready = listFeeds().then(response => {
 root.dataset.viewMode = 'home';
 switches.forEach(button => button.addEventListener('click', () => void setMode(button.dataset.view)));
 document.querySelector('.view-switch').addEventListener('keydown', event => {
-  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  if (!event.target.matches('[data-view]') || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
   event.preventDefault();
   const next = event.key === 'Home' ? switches[0] : event.key === 'End' ? switches[1] : switches.find(button => button !== document.activeElement);
   next.focus(); void setMode(next.dataset.view);
@@ -370,4 +370,4 @@ window.LinguistaRSS = {
     if (activeSite === site && mode === 'rss') openArticle(article);
   },
 };
-if ($('search-dialog')?.open) void window.LinguistaRSS.syncSearch();
+if (root.hasAttribute('data-home-search')) void window.LinguistaRSS.syncSearch();
