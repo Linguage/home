@@ -24,7 +24,7 @@ reducedMotion.addEventListener('change', () => {
 });
 
 // Lock to one axis only after intent is clear; vertical reading and pinch zoom stay native.
-function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
+function trackDrag(surface, { axis, canStart, onMove, onEnd, onTap }) {
   let drag = null;
   let ignoreClick = false;
   function finish(cancelled) {
@@ -35,7 +35,7 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
     if (previous.active) {
       ignoreClick = true;
       onEnd(previous.delta, cancelled);
-    }
+    } else if (!cancelled) onTap?.();
   }
   surface.addEventListener('pointerdown', event => {
     if (!event.isPrimary) { finish(true); return; }
@@ -73,6 +73,7 @@ function trackDrag(surface, { axis, canStart, onMove, onEnd }) {
   }, { capture: true });
   window.addEventListener('blur', () => finish(true));
   window.addEventListener('resize', () => finish(true));
+  return () => finish(true);
 }
 
 // The dock chooses a shelf; the shelf chooses content for the main screen.
@@ -904,7 +905,7 @@ setSlide(0, false);
 trackDrag(feature, {
   axis: 'x',
   canStart: event => {
-    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !feature.classList.contains('has-site-cover') && !event.target.closest('a, button, input') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
+    const allowed = root.dataset.viewMode !== 'rss' && !currentPanel && !feature.classList.contains('has-site-cover') && !event.target.closest('a, button, input, .card-shelf') && (event.pointerType !== 'mouse' || event.target.closest('.feature-card'));
     if (allowed) { carouselDragging = true; syncPlayback(); }
     return allowed;
   },
@@ -1075,6 +1076,121 @@ window.LinguistaSiteUI?.init({ sites, cardGroups, shelfLinks, miniCover, showIte
 });
 window.addEventListener('hashchange', readHash);
 readHash();
+
+
+// Touch navigation stays on its own rail; content reading keeps native vertical gestures.
+function bindMobileSwipe({ surface, host, items, current, activate, label }) {
+  const glass = document.createElement('span');
+  glass.className = 'swipe-glass'; glass.hidden = true; glass.setAttribute('aria-hidden', 'true');
+  host.append(glass);
+  let gesture = null, blockClickUntil = 0;
+  const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+  const paint = (x, width, height, y) => {
+    glass.style.width = width + 'px'; glass.style.height = height + 'px';
+    glass.style.transform = `translate3d(${x}px,${y}px,0)`;
+  };
+  const cancel = trackDrag(surface, {
+    axis: 'x',
+    canStart(event) {
+      blockClickUntil = 0;
+      if (!mobile.matches || event.pointerType === 'mouse' || document.querySelector('dialog[open]')) return false;
+      const entries = items(); if (!entries.length) return false;
+      const index = current(entries);
+      const rail = surface.getBoundingClientRect(), frame = host.getBoundingClientRect();
+      const anchor = entries[Math.max(0, index)].getBoundingClientRect();
+      cancelMotion(glass); glass.hidden = true;
+      gesture = {
+        entries, index, rail, frame, startX: event.clientX, started:performance.now(),
+        tapped:entries.find(entry => entry.contains(event.target)),
+        width: Math.min(80, anchor.width + 14), height: Math.min(rail.height - 6, anchor.height + 6),
+        threshold: clamp(rail.width * .12, 32, 52),
+        state: [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|'),
+      };
+      return true;
+    },
+    onTap() {
+      const g = gesture; gesture = null;
+      if (!g?.tapped || performance.now() - g.started > 500) return;
+      // Complete a touch tap on pointer release; keyboard/mouse clicks keep their native path.
+      blockClickUntil = performance.now() + 600;
+      activate(g.tapped);
+      swipeStatus.textContent = label + '：' + (g.tapped.getAttribute('aria-label') || g.tapped.textContent.trim());
+    },
+    onMove(delta) {
+      if (!gesture) return;
+      const g = gesture, direction = delta < 0 ? 1 : -1;
+      g.next = g.index + direction;
+      g.valid = g.next >= 0 && g.next < g.entries.length;
+      const stretch = reducedMotion.matches ? 0 : Math.min(30, Math.abs(delta) * .25);
+      const width = g.width + stretch, height = g.height - stretch * .08;
+      const center = g.startX + delta * (g.valid ? 1 : .22);
+      const x = clamp(center - width / 2, g.rail.left + 2, g.rail.right - width - 2) - g.frame.left;
+      const y = g.rail.top - g.frame.top + (g.rail.height - height) / 2;
+      glass.hidden = false;
+      glass.dataset.edge = String(!g.valid);
+      glass.style.setProperty('--swipe-light-x', delta < 0 ? '24%' : '76%');
+      paint(x, width, height, y);
+      surface.classList.add('is-swiping');
+    },
+    onEnd(delta, cancelled) {
+      const g = gesture; gesture = null;
+      surface.classList.remove('is-swiping');
+      if (!g) return;
+      // Capture before RSS's document handler, so a swipe cannot become a stray tap.
+      blockClickUntil = performance.now() + 600;
+      const commit = !cancelled && g.valid && Math.abs(delta) >= g.threshold;
+      let target = g.entries[Math.max(0, g.index)];
+      if (commit) {
+        target = g.entries[g.next];
+        activate(target);
+        // Scroll only this rail, and only if needed; never scroll ancestor viewports during touch release.
+        const box = target.getBoundingClientRect(), rail = surface.getBoundingClientRect();
+        const shift = box.left < rail.left + 4 ? box.left - rail.left - 4
+          : box.right > rail.right - 4 ? box.right - rail.right + 4 : 0;
+        if (shift && surface.scrollWidth > surface.clientWidth) surface.scrollLeft += shift;
+        swipeStatus.textContent = label + '：' + (target.getAttribute('aria-label') || target.textContent.trim());
+      }
+      if (glass.hidden) return;
+      const box = target.getBoundingClientRect(), frame = host.getBoundingClientRect();
+      const width = Math.min(80, box.width + 14), height = Math.min(g.rail.height - 6, box.height + 6);
+      const x = clamp(box.left + box.width / 2 - width / 2, g.rail.left + 2, g.rail.right - width - 2) - frame.left;
+      const y = g.rail.top - frame.top + (g.rail.height - height) / 2;
+      move(glass, [
+        { transform: glass.style.transform, width: glass.style.width, height: glass.style.height, opacity: .95 },
+        { transform: `translate3d(${x}px,${y}px,0)`, width: width + 'px', height: height + 'px', opacity: 0 }
+      ], { duration: cancelled ? 140 : 280, complete() { glass.hidden = true; } });
+    },
+  });
+  document.addEventListener('click', event => {
+    if (event.detail === 0 || performance.now() > blockClickUntil || !surface.contains(event.target)) return;
+    event.preventDefault(); event.stopImmediatePropagation(); blockClickUntil = 0;
+  }, { capture: true });
+  new MutationObserver(() => {
+    if (gesture && gesture.state !== [root.dataset.viewMode, root.dataset.homeSite, root.dataset.rssSite].join('|')) cancel();
+  }).observe(root, { attributes: true, attributeFilter: ['data-view-mode', 'data-home-site', 'data-rss-site'] });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) cancel(); });
+}
+const swipeStatus = document.createElement('p');
+swipeStatus.className = 'sr-only'; swipeStatus.setAttribute('role', 'status'); swipeStatus.setAttribute('aria-live', 'polite'); swipeStatus.setAttribute('aria-atomic', 'true');
+document.body.append(swipeStatus);
+bindMobileSwipe({
+  surface: dockApps, host: document.querySelector('.dock'), label: '站点',
+  items: () => dockButtons,
+  current: entries => entries.findIndex(button => button.classList.contains('is-active')),
+  activate(button) {
+    if (root.dataset.viewMode === 'rss') window.LinguistaRSS?.selectSite(button.dataset.cardGroup);
+    else openShelf(button.dataset.cardGroup, button);
+  },
+});
+bindMobileSwipe({
+  surface: shelfTrack, host: shelf, label: '模块',
+  items: () => root.dataset.viewMode !== 'rss' ? [...shelfTrack.querySelectorAll('.mini-card')] : [],
+  current: entries => entries.findIndex(button => button.getAttribute('aria-pressed') === 'true'),
+  activate(button) {
+    const item = cardGroups[shelfGroup]?.find(item => item.key === button.dataset.cardKey);
+    if (item) showItem(item, shelfGroup, button, { focus: false });
+  },
+});
 
 window.LinguistaHome = {
   syncSearchMode,

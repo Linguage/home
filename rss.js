@@ -338,6 +338,7 @@ if (stored('linguista-view-mode', 'home') === 'rss') void setMode('rss');
 let searchTask = null;
 function publishSearchUpdate() { window.dispatchEvent(new Event('linguista-rss-update')); }
 window.LinguistaRSS = {
+  selectSite(site) { if (mode === 'rss') selectSite(site); },
   filter() {
     if (mode !== 'rss') return;
     closeReader({ focus: false }); renderList(); $('rss-article-list').scrollTop = 0;
