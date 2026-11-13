@@ -37,7 +37,7 @@
         const mark = document.createElement('span'); mark.className = 'site-module-icon'; mark.style.setProperty('--module-image', `url("${item.image}")`); mark.setAttribute('aria-hidden', 'true');
         const copy = document.createElement('span'); copy.className = 'site-module-copy';
         const title = document.createElement('span'); title.className = 'site-module-title'; title.textContent = item.title; copy.append(title);
-        const short = { newsletter:'周刊与每日剪报', workshop:'开放项目', bookmarks:'阅读收藏', about:'关于我' };
+        const short = { newsletter:'Review 与每日剪报', workshop:'开放项目', bookmarks:'阅读收藏', about:'关于我' };
         if (item.meta) { const meta = document.createElement('small'); meta.textContent = item.shortMeta || short[item.key] || item.meta; copy.append(meta); }
         link.append(mark, copy);
         link.addEventListener('click', event => {

@@ -567,13 +567,13 @@
     },
     {
       "path": "index.html",
-      "bytes": 26256,
-      "sha256": "943673e5ee41c20d1a4bc7a53c7c22d3c6b7798c1354978ecc8b84328e96c206"
+      "bytes": 26262,
+      "sha256": "58362825a2713bd78f38ebb5255035b63c7305ce1149f65b6ab2b0a4e9e3eed4"
     },
     {
       "path": "main.js",
-      "bytes": 60840,
-      "sha256": "6fbdf5bb9a166164fe4bcc7569a803a4f4d31959462e74a0aa0ebe951b0a7150"
+      "bytes": 60828,
+      "sha256": "975039fc73e4735673fab139ec40cbce72eda5c71cf4049458aa016558e77189"
     },
     {
       "path": "project-catalog.js",
@@ -592,8 +592,8 @@
     },
     {
       "path": "site-home.js",
-      "bytes": 11821,
-      "sha256": "2a3b11b1a488aa2d5072951a03ee48527cacffd841188c71e416e056fbac4bf3"
+      "bytes": 11822,
+      "sha256": "c1486bacc90feabae19f8cc777be6199c56d428b88d930cc7d3b90bfe32ee9c3"
     },
     {
       "path": "styles.css",

@@ -1,6 +1,6 @@
 # Linguista 阅读工作台
 
-Linguista 的 DeepSeek Harness 插件，当前版本 **0.4.0**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
+Linguista 的 DeepSeek Harness 插件，当前版本 **0.4.1**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。旁边的日月按钮可切换明暗，选择保存在本地。
 
 [网站](https://linguista.cn/home/) · [下载插件](https://github.com/Linguage/home/releases)
 
@@ -8,9 +8,11 @@ Linguista 的 DeepSeek Harness 插件，当前版本 **0.4.0**。打开 **Lingui
 
 在 DeepSeek Harness 0.2 系列的插件管理中选择添加插件，在「包名或地址」填入 `https://github.com/Linguage/home`。安装并启用后，从左侧打开 **Linguista**。宿主需要 Node.js 22.19 或以上。
 
-也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.4.0)下载 `dsh-linguista-0.4.0.tgz`，在同一个字段中填入文件的本地绝对路径。
+也可以从[发行页](https://github.com/Linguage/home/releases/tag/dsh-v0.4.1)下载 `dsh-linguista-0.4.1.tgz`，在同一个字段中填入文件的本地绝对路径。
 
 ## 开始阅读
+
+0.4.1 新增聊天侧栏模式：在 DeepSeek Harness 聊天顶部点击 **在侧栏打开 Linguista**，或从右侧栏的新标签页选择 **Linguista**，即可边聊边浏览首页和 RSS。收起侧栏、切换标签或聊天时保留当前浏览页面。侧栏模式使用当前聊天旁的浏览区；文章的专用 **AI 伴读** 仍从左侧独立 Linguista 主视图打开。该入口需要宿主提供原生右侧标签页接口（已核对 0.2.2-rc.1 / rc.2）；较早宿主保留独立主视图入口。
 
 1. 点击右上角 **RSS**，再从底栏选择站点。
 2. 点击文章查看摘要。打开即标记为已读，可在筛选菜单找回。
