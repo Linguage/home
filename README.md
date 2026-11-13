@@ -1,6 +1,6 @@
 # Linguista 阅读工作台
 
-Linguista 的 DeepSeek Harness 插件，当前版本 **0.6.3**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。点击右上角 **Rosetta 石碑** 展开阅读侧栏，集中使用搜索、订阅、伴读与设置，偏好保存在本地。
+Linguista 的 DeepSeek Harness 插件，当前版本 **0.6.4**。打开 **Linguista**，用右上角在首页与 RSS 之间切换。首页展示 Workshop 软件，切换底栏时，左侧同步显示站点形象与栏目。搜索可检索各站 RSS 的标题与摘要。点击右上角 **Rosetta 石碑** 展开阅读侧栏，集中使用搜索、订阅、伴读与设置，偏好保存在本地。
 
 [网站](https://linguista.cn/home/) · [下载插件](https://github.com/Linguage/home/releases)
 
