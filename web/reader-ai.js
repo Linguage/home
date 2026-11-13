@@ -12,7 +12,7 @@ const clean = (text, limit) => typeof text === 'string' ? text.replaceAll('\0', 
 export function readingContext(payload) {
   if (typeof payload?.url !== 'string' || payload.url.length > 2048) throw Error('无效的文章地址。');
   const url = new URL(payload?.url);
-  if (url.protocol !== 'https:' || !origins.has(url.origin) || url.username || url.password) throw Error('无效的文章地址。');
+  if (!['https:', 'http:'].includes(url.protocol) || (payload.source !== 'web' && (url.protocol !== 'https:' || !origins.has(url.origin))) || url.username || url.password) throw Error('无效的文章地址。');
   url.hash = '';
   const skill = skills.find(item => item.task === payload.task);
   if (!skill && payload.task !== 'chat') throw Error('未知的阅读技能。');
@@ -21,7 +21,7 @@ export function readingContext(payload) {
   const article = clean(payload.text, contextLimit);
   if (!title || !article) throw Error('请先打开有内容的文章。');
   if (skill?.task === 'explain' && !excerpt) throw Error('请先在文章中选中要解释的文字。');
-  return { url: url.href, title, edition: clean(payload.edition, 40), task: payload.task,
+  return { source: ['web', 'navigation'].includes(payload.source) ? payload.source : 'article', url: url.href, title, edition: clean(payload.edition, 40), task: payload.task,
     selection: excerpt, text: article, partial: payload.partial === true || payload.text.length > contextLimit };
 }
 
@@ -37,7 +37,7 @@ export function connectReadingAI({ snapshot }) {
   const topBar = document.querySelector('.workbench-controls');
   const dock = document.querySelector('.dock');
   const root = document.documentElement;
-  let ready = false;
+  let ready = false, globalEntry = false, enabled = true;
   let selection = '';
   let lastSelection = false;
   let trayWidth = 0;
@@ -78,7 +78,7 @@ export function connectReadingAI({ snapshot }) {
     const content = body.hidden ? summary : body;
     selection = range?.anchorNode && content.contains(range.anchorNode) && content.contains(range.focusNode)
       ? clean(range.toString(), selectionLimit) : '';
-    explain.hidden = !ready || !selection;
+    explain.hidden = !ready || !enabled || !selection;
     if (ready && Boolean(selection) !== lastSelection) {
       lastSelection = Boolean(selection);
       send('selection', { available: lastSelection });
@@ -86,8 +86,13 @@ export function connectReadingAI({ snapshot }) {
   }
 
   function request(task) {
-    const article = snapshot();
-    if (!ready || !article) return;
+    const article = root.dataset.viewMode === 'rss' && !reader.hidden ? snapshot() : null;
+    if (!ready || !enabled) return;
+    if (!article) {
+      send('open', { payload: { source: 'navigation', task: 'chat', url: 'https://linguista.cn/home/', title: 'Linguista Home', edition: '导航页',
+        text: '当前位于 Linguista Home 导航页。可浏览各站入口、Workshop 和公开 RSS。尚未选择文章，不能据此声称已读取文章正文。', partial: true } });
+      return;
+    }
     reportLayout();
     const fullText = (body.hidden ? summary : body).innerText.trim();
     const selectedAt = task === 'explain' && selection ? fullText.indexOf(selection) : -1;
@@ -103,12 +108,12 @@ export function connectReadingAI({ snapshot }) {
   open.addEventListener('click', () => request('chat'));
   window.addEventListener('message', event => {
     if (event.source !== window.parent || event.origin !== origin || event.data?.channel !== channel) return;
-    if (event.data.type === 'connect') { ready = true; open.hidden = false; updateSelection(); reportLayout(); }
+    if (event.data.type === 'connect') { ready = true; globalEntry = event.data.global === true; enabled = event.data.enabled !== false; open.hidden = globalEntry || !enabled; updateSelection(); reportLayout(); }
     if (event.data.type === 'tray') {
       trayWidth = Number.isFinite(event.data.width) ? Math.max(0, event.data.width) : 0;
       fitArticle();
     }
-    if (event.data.type === 'prepare' && skills.some(skill => skill.task === event.data.task)) request(event.data.task);
+    if (event.data.type === 'prepare' && (event.data.task === 'chat' || skills.some(skill => skill.task === event.data.task))) request(event.data.task);
     if (event.data.type === 'focus-reader' && !document.getElementById('rss-reader').hidden) open.focus({ preventScroll: true });
   });
   send('ready');

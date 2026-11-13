@@ -1,6 +1,6 @@
 {
   "name": "dsh-linguista",
-  "version": "0.4.1",
+  "version": "0.6.3",
   "private": true,
   "type": "module",
   "description": "Linguista 阅读工作台：跨站 RSS 正文阅读与 DSH 原生 AI 伴读。",
@@ -47,6 +47,8 @@
     "package": "node scripts/package.mjs",
     "test:identities": "node scripts/check-identities-browser.mjs",
     "test:mobile": "node scripts/check-mobile-browser.mjs",
-    "test:sidebar": "node scripts/check-sidebar-host.mjs"
+    "test:sidebar": "node scripts/check-sidebar-host.mjs",
+    "test:web-browser": "node scripts/check-web-browser-host.mjs",
+    "test:settings": "node scripts/check-settings-host.mjs"
   }
 }

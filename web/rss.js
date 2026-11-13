@@ -344,8 +344,10 @@ window.LinguistaRSS = {
     closeReader({ focus: false }); renderList(); $('rss-article-list').scrollTop = 0;
   },
   showList() { if (mode === 'rss') closeReader({ focus: false }); },
-  search(query = '') {
-    const sources = feeds.filter(feed => feed.url);
+  get catalog() { return feeds.filter(feed => feed.url); },
+  get state() { return { mode, site: activeSite, reading: !!activeArticle }; },
+  search(query = '', site = null) {
+    const sources = feeds.filter(feed => feed.url && (!site || feed.id === site));
     const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     const matches = sources.flatMap(feed => (snapshots.get(feed.id)?.items || []).map(article => ({ feed, article })))
       .filter(({ feed, article }) => terms.every(term => `${feed.title} ${article.title} ${article.summary} ${article.author} ${article.categories.join(' ')}`.toLocaleLowerCase().includes(term)))
@@ -381,3 +383,5 @@ window.LinguistaRSS = {
   },
 };
 if (root.hasAttribute('data-home-search')) void window.LinguistaRSS.syncSearch();
+
+void ready.then(publishSearchUpdate);

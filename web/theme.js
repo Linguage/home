@@ -27,6 +27,11 @@
     }
   }
 
+  window.addEventListener('linguista-theme-choice', event => {
+    choice = ['light', 'dark'].includes(event.detail) ? event.detail : undefined;
+    try { if (choice) localStorage.setItem(storageKey, choice); else localStorage.removeItem(storageKey); } catch {}
+    sync();
+  });
   sync();
   document.addEventListener('DOMContentLoaded', () => {
     button = document.querySelector('#workbench-theme');

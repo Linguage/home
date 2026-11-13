@@ -1,59 +1,96 @@
+/* Shared Home palette, bounded sliding door and permanently visible navigation. */
 .linguista-workspace {
-  container-type: inline-size;
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
+  container-type: inline-size; position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden;
+  --linguista-surface: #f3f2eb; --linguista-raised: #f9f8f2; --linguista-ink: #29382f; --linguista-muted: #647269; --linguista-line: #29382f25; --linguista-hover: #64726912; --linguista-accent: #728467;
+  --linguista-drawer-width: min(100%, clamp(320px, 34%, 430px));
+  background: var(--linguista-surface); color: var(--linguista-ink); color-scheme: light; font: 13px/1.55 system-ui, sans-serif;
 }
-
-.linguista-workspace > iframe { flex: 1; min-width: 0; height: 100%; border: 0; }
-
-.linguista-discussion {
-  --dsw-alias-bg-base: var(--linguista-reader-surface, Canvas);
-  --dsw-alias-bg-layer-1: var(--linguista-reader-surface-raised, Canvas);
-  --dsw-alias-bg-module-platform: var(--linguista-reader-surface-raised, Canvas);
-  --dsw-alias-label-primary: var(--linguista-reader-ink, CanvasText);
-  --dsw-alias-label-secondary: var(--linguista-reader-muted, GrayText);
-  --dsw-alias-border-l1: var(--linguista-reader-line, #8885);
-  --dsw-alias-separator-primary: var(--linguista-reader-line, #8885);
-  --dsw-alias-interactive-bg-hover: var(--linguista-reader-accent-soft, #8882);
-  position: absolute;
-  inset: var(--linguista-tray-top, 132px) 0 var(--linguista-tray-bottom, 60px) auto;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  width: min(100%, clamp(300px, 36%, 430px));
-  min-width: 0;
-  min-height: 0;
-  background: var(--dsw-alias-bg-base);
-  color: var(--dsw-alias-label-primary);
-  border-inline-start: 1px solid var(--dsw-alias-border-l1);
-  box-shadow: -8px 0 24px #00000016;
-  visibility: hidden;
-  transform: translateX(100%);
-  transition: transform 220ms cubic-bezier(.22, .61, .36, 1), visibility 0s 220ms;
+.linguista-workspace[data-theme="dark"] { --linguista-surface: #203438; --linguista-raised: #294146; --linguista-ink: #e7e7d9; --linguista-muted: #a2b4b1; --linguista-line: #d7e1d326; --linguista-hover: #b2cec213; --linguista-accent: #c7ba90; color-scheme: dark; }
+.linguista-content, .linguista-reading-surface { position: absolute; inset: 0; min-width: 0; min-height: 0; }
+.linguista-reading-surface > iframe { display: block; width: 100%; height: 100%; border: 0; }
+.linguista-drawer {
+  --dsw-specific-input-major: var(--linguista-raised); --dsw-specific-menu: var(--linguista-raised); --dsw-specific-selector: var(--linguista-hover); --dsw-menu-backdrop-filter: none;
+  --dsw-alias-bg-layer-2: var(--linguista-raised); --dsw-alias-bg-layer-3: var(--linguista-raised); --dsw-alias-label-tertiary: var(--linguista-muted); --dsw-alias-label-caption: var(--linguista-muted);
+  --dsw-alias-bg-base: var(--linguista-surface); --dsw-alias-bg-layer-1: var(--linguista-raised); --dsw-alias-bg-module-platform: var(--linguista-raised);
+  --dsw-alias-label-primary: var(--linguista-ink); --dsw-alias-label-secondary: var(--linguista-muted); --dsw-alias-border-l1: var(--linguista-line); --dsw-alias-border-l2: var(--linguista-line); --dsw-alias-border-l3: var(--linguista-line); --dsw-alias-separator-primary: var(--linguista-line); --dsw-alias-interactive-bg-hover: var(--linguista-hover); --dsw-alias-interactive-bg-hover-solid: var(--linguista-raised);
+  position: absolute; inset: var(--linguista-tray-top) 0 var(--linguista-tray-bottom) auto; z-index: 3;
+  width: var(--linguista-drawer-width); display: flex; flex-direction: column; min-height: 0; min-width: 0;
+  background: var(--linguista-surface); color: var(--linguista-ink); border-inline-start: 1px solid var(--linguista-line); box-shadow: -8px 0 22px #00000010;
+  visibility: hidden; transform: translateX(100%); transition: transform 220ms cubic-bezier(.22,.61,.36,1), visibility 0s 220ms;
 }
-
-.linguista-discussion[data-open] { visibility: visible; transform: translateX(0); transition-delay: 0s; }
-.linguista-discussion > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
-.linguista-discussion > header div { min-width: 0; }
-.linguista-discussion h2 { margin: 0; font-size: 15px; font-weight: 650; }
-.linguista-discussion > header p { display: flex; align-items: baseline; gap: 6px; margin: 4px 0 0; font-size: 12px; color: var(--dsw-alias-label-secondary, GrayText); }
-.linguista-discussion > header a { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; }
-.linguista-discussion-source { flex: none; white-space: nowrap; font-size: 10px; }
-.linguista-discussion > nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1, #8885); }
-.linguista-discussion :is(header, nav) button { background: transparent; color: inherit; border: 1px solid var(--dsw-alias-border-l1, #8885); border-radius: 6px; padding: 4px 9px; font-size: 12px; min-height: 30px; cursor: pointer; }
-.linguista-discussion > header button { min-width: 32px; font-size: 20px; line-height: 1; }
-.linguista-discussion :is(header, nav) button:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover, #8882); }
-.linguista-discussion > nav button[aria-pressed="true"] { background: var(--dsw-alias-interactive-bg-hover, #8882); }
-.linguista-discussion > nav button:disabled { opacity: .5; cursor: default; }
-.linguista-discussion-status { padding: 0 16px; margin: 10px 0; font-size: 12px; }
+.linguista-drawer[data-open] { visibility: visible; transform: translateX(0); transition-delay: 0s; }
+.linguista-drawer > header { box-sizing: border-box; display: flex; flex: none; align-items: center; justify-content: space-between; height: 44px; padding: 0 12px; border-bottom: 1px solid var(--linguista-line); }
+.linguista-drawer [role="tablist"] { display: flex; align-self: stretch; gap: 18px; }
+.linguista-drawer button, .linguista-drawer input, .linguista-drawer select { font: inherit; color: inherit; }
+.linguista-drawer button { cursor: pointer; }
+.linguista-drawer :is(button, input, select):focus-visible { outline: 2px solid var(--linguista-accent); outline-offset: -2px; }
+.linguista-drawer [role="tab"] { padding: 0 4px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--linguista-muted); }
+.linguista-drawer [role="tab"][aria-selected="true"] { border-bottom-color: var(--linguista-accent); color: var(--linguista-ink); }
+.linguista-drawer svg, .linguista-browser svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.linguista-drawer button:disabled { opacity: .4; cursor: default; }
+.linguista-drawer-close { width: 32px; height: 32px; padding: 0; font-size: 22px !important; background: none; border: 0; border-radius: 4px; }
+.linguista-drawer button:hover:not(:disabled) { background-color: var(--linguista-hover); }
+.linguista-drawer-pane { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; overflow: auto; }
+.linguista-drawer-pane[hidden] { display: none; }
+.linguista-drawer-status { flex: none; margin: 10px 16px; font-size: 11px; color: var(--linguista-muted); }
+.linguista-subscriptions ul { list-style: none; padding: 0 16px 20px; margin: 0; }
+.linguista-subscriptions li { padding: 9px 0; border-bottom: 1px solid var(--linguista-line); }
+.linguista-subscriptions li > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.linguista-subscriptions a { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; text-decoration: none; font-weight: 600; }
+.linguista-subscriptions a:hover { text-decoration: underline; }
+.linguista-subscriptions button { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; background: transparent; border: 0; padding: 4px; border-radius: 4px; color: var(--linguista-muted); }
+.linguista-subscriptions button svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.linguista-subscriptions small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 18px; color: var(--linguista-muted); font-size: 11px; }
+.linguista-subscriptions input { display: block; width: 100%; min-width: 0; padding: 5px 0 0; border: 0; background: none; font-size: 11px; color: var(--linguista-muted); text-overflow: ellipsis; }
+.linguista-search-controls { display: flex; flex: none; flex-wrap: wrap; gap: 8px; padding: 14px 16px 0; }
+.linguista-search-controls input { flex: 1 1 180px; min-width: 0; width: 100%; padding: 8px 10px; border: 1px solid var(--linguista-line); border-radius: 6px; background: var(--linguista-raised); }
+.linguista-search-controls select { max-width: 100%; border: 0; background: var(--linguista-surface); font-size: 11px; }
+.linguista-search-results { margin: 0; padding: 0 8px 16px; list-style: none; overflow: auto; }
+.linguista-search-results li { border-bottom: 1px solid var(--linguista-line); }
+.linguista-search-results button { width: 100%; padding: 12px 8px; border: 0; background: none; text-align: left; }
+.linguista-search-results :is(small,strong,span) { display: block; }
+.linguista-search-results small { font-size: 10px; color: var(--linguista-muted); }
+.linguista-search-results strong { font-size: 13px; font-weight: 550; margin: 3px 0; }
+.linguista-search-results span { font-size: 11px; color: var(--linguista-muted); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.linguista-discussion { overflow: hidden; }
+.linguista-discussion-source { display: flex; align-items: baseline; gap: 8px; flex: none; margin: 10px 16px 4px; font-size: 11px; color: var(--linguista-muted); }
+.linguista-discussion-source a { flex: 1; min-width: 0; color: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
+.linguista-discussion-source span { flex: none; font-size: 10px; }
+.linguista-discussion > nav { display: flex; gap: 4px; padding: 4px 10px 8px; border-bottom: 1px solid var(--linguista-line); }
+.linguista-discussion > nav button { padding: 4px 6px; min-height: 28px; background: none; border: 0; border-radius: 4px; font-size: 11px; }
 .linguista-discussion-session { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
 .linguista-discussion-session > * { flex: 1; min-height: 0; }
+@media(prefers-reduced-motion: reduce) { .linguista-drawer { transition: none; } }
+@container(max-width:699px) { .linguista-workspace .linguista-drawer { width: 100%; border-inline-start: 0; } }
+.linguista-browser { position: absolute; inset: var(--linguista-browser-top, var(--linguista-tray-top)) var(--linguista-browser-right, 0px) var(--linguista-browser-bottom, var(--linguista-tray-bottom)) var(--linguista-browser-left, 0px); z-index: 2; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--dsw-alias-bg-base, Canvas); color: var(--dsw-alias-label-primary, CanvasText); color-scheme: light dark; }
+.linguista-browser[hidden] { display: none; }
+.linguista-browser > header { box-sizing: border-box; flex: none; display: flex; align-items: center; flex-wrap: nowrap; gap: 4px; height: 44px; padding: 5px 8px; border-bottom: 1px solid var(--linguista-line); }
+.linguista-browser :is(button, header a) { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; font: 14px/1 system-ui, sans-serif; text-decoration: none; cursor: pointer; }
+.linguista-browser button:disabled { opacity: .4; cursor: default; }
+.linguista-browser :is(button, header a):hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover, #8882); }
+.linguista-browser-address { flex: 1 1 0; min-width: 0; padding-inline: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 11px/1.5 system-ui, sans-serif; color: var(--linguista-muted); }
+.linguista-browser-status { flex: none; margin: 0; padding: 6px 12px; font: 12px/1.5 system-ui, sans-serif; }
+.linguista-browser-status button { margin-inline-start: 8px; }
+.linguista-browser-page { display: flex; flex: 1; min-width: 0; min-height: 0; }
+.linguista-browser-page > :is(webview, iframe) { display: flex; flex: 1; width: 100%; height: 100%; min-width: 0; border: 0; background: var(--linguista-surface); color-scheme: inherit; }
 
-@media (prefers-reduced-motion: reduce) {
-  .linguista-discussion { transition: none; }
-}
+
+.linguista-browser { background: var(--linguista-surface); color: var(--linguista-ink); color-scheme: inherit; }
+.linguista-workspace[data-drawer-open] .linguista-browser { right: max(var(--linguista-browser-right, 0px), var(--linguista-drawer-width)); }
+.linguista-browser > header, .linguista-browser :is(button,header a) { border-color: var(--linguista-line); }
+.linguista-settings { box-sizing: border-box; padding: 8px 16px 20px; color: var(--linguista-ink); }
+.linguista-setting-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 64px; padding: 10px 0; border-bottom: 1px solid var(--linguista-line); }
+.linguista-setting-row > span { flex: none; }
+.linguista-capsule { display: inline-flex; flex-wrap: nowrap; padding: 3px; gap: 2px; border: 1px solid var(--linguista-line); border-radius: 24px; background: var(--linguista-hover); }
+.linguista-capsule [role="radio"] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 32px; padding: 5px 9px; border: 0; border-radius: 20px; background: transparent; color: var(--linguista-muted); white-space: nowrap; font-size: 12px; }
+.linguista-capsule [role="radio"][aria-checked="true"] { color: var(--linguista-ink); background: var(--linguista-raised); box-shadow: 0 1px 4px #0001; }
+.linguista-settings input[role="switch"] { appearance: none; box-sizing: border-box; flex: none; width: 34px; height: 20px; margin: 0; padding: 2px; border: 1px solid var(--linguista-line); border-radius: 12px; background: var(--linguista-muted); cursor: pointer; }
+.linguista-settings input[role="switch"]::before { content: ''; display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--linguista-surface); }
+.linguista-settings input[role="switch"]:checked { background: var(--linguista-accent); }
+.linguista-settings input[role="switch"]:checked::before { transform: translateX(14px); }
+@container(max-width:360px) { .linguista-capsule [role="radio"] { gap: 4px; padding-inline: 6px; } .linguista-setting-row { flex-wrap: wrap; } }
+.linguista-open-sidebar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+
+.linguista-subscriptions small span { opacity: .7; }
+.linguista-copy-fallback { display: block !important; font-size: 11px; }
+.linguista-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

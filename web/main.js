@@ -1027,9 +1027,9 @@ const searchQueries = { home: '', rss: '' };
 let searchMode = 'home';
 
 function renderResults() {
-  searchMatches.hidden = root.dataset.viewMode === 'rss' || !root.hasAttribute('data-home-search') || !input.value.trim();
+  searchMatches.hidden = (root.dataset.viewMode === 'rss' && !root.hasAttribute('data-web-drawer')) || !root.hasAttribute('data-home-search') || !input.value.trim();
   if (searchMatches.hidden) { searchStatus.textContent = ''; list.replaceChildren(); return; }
-  const result = window.LinguistaRSS?.search(input.value);
+  const result = window.LinguistaRSS?.search(input.value, root.hasAttribute('data-web-drawer') && root.dataset.viewMode === 'rss' ? window.LinguistaRSS.state.site : null);
   if (!result) { searchStatus.textContent = '正在读取订阅…'; list.replaceChildren(); return; }
   const { items, total, loading, failed, available, sources } = result;
   searchStatus.textContent = `${total} 篇匹配 · ${available}/${sources} 个订阅源` + (loading ? ' · 正在同步…' : failed ? ` · ${failed} 个来源同步失败，保留已有缓存` : '');
@@ -1050,6 +1050,12 @@ function renderResults() {
   }));
 }
 function syncSearchLayout() {
+  if (root.hasAttribute('data-web-drawer')) {
+    const host = document.querySelector('#home-drawer-search');
+    if (host && searchDialog.parentElement !== host) host.append(searchDialog);
+    searchButton.hidden = true; searchDialog.hidden = false; channels.hidden = false;
+    return;
+  }
   const host = mobile.matches ? document.querySelector('.home-mobile-header') : document.querySelector('.workbench-controls');
   if (host && searchDialog.parentElement !== host) {
     if (mobile.matches) host.append(searchDialog); else host.prepend(searchDialog);
@@ -1097,9 +1103,13 @@ function closeSearch({ restoreFocus = true } = {}) {
   syncPlayback();
 }
 function openSearch(trigger = searchButton) {
+  if (root.hasAttribute('data-web-drawer')) window.dispatchEvent(new Event('linguista-search-open'));
   if (root.hasAttribute('data-home-search')) { input.focus({ preventScroll: true }); return; }
   searchReturnFocus = trigger;
-  if (root.dataset.viewMode === 'rss') { input.focus({ preventScroll: true }); return; }
+  if (root.dataset.viewMode === 'rss') {
+    if (root.hasAttribute('data-web-drawer')) { root.setAttribute('data-home-search', ''); renderResults(); }
+    input.focus({ preventScroll: true }); return;
+  }
   root.setAttribute('data-home-search', '');
   searchButton.setAttribute('aria-expanded', 'true');
   syncSearchLayout();
@@ -1115,13 +1125,14 @@ searchButton.addEventListener('click', () => root.hasAttribute('data-home-search
 input.addEventListener('focus', () => openSearch(input));
 document.querySelector('#close-search').addEventListener('click', () => closeSearch());
 document.addEventListener('keydown', event => {
+  if (root.hasAttribute('data-web-drawer')) return;
   if (event.key !== 'Escape' || !root.hasAttribute('data-home-search') || document.querySelector('dialog[open]')) return;
   event.preventDefault(); event.stopImmediatePropagation(); closeSearch();
 }, { capture: true });
 input.addEventListener('input', () => {
   searchQueries[searchMode] = input.value;
   searchDialog.toggleAttribute('data-has-query', !!input.value);
-  if (searchMode === 'rss') window.LinguistaRSS?.filter();
+  if (searchMode === 'rss') { window.LinguistaRSS?.filter(); if (root.hasAttribute('data-web-drawer')) renderResults(); }
   else { openSearch(input); renderResults(); }
 });
 document.addEventListener('keydown', event => {

@@ -5,3 +5,28 @@
   mask: url('./assets/platforms/notion.svg') center / contain no-repeat;
 }
 .dock-bear-mark { font: 600 clamp(12px, 2vw, 16px)/1 Georgia, serif; letter-spacing: -1px; }
+
+/* Host actions share the existing search row; standalone Home has no host actions. */
+.linguista-host-action { display:inline-grid; place-items:center; flex:none; width:40px; height:40px; padding:8px; color:var(--ink); background:transparent; border:0; cursor:pointer; pointer-events:auto; }
+.linguista-host-action[hidden] { display:none; }
+.linguista-host-action svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.linguista-host-action:hover,.linguista-host-action[aria-expanded="true"] { background:var(--accent-soft); }
+.linguista-host-action:disabled { opacity:.45; }
+@media(max-width:900px) { [data-plugin-host] .home-search .search-field { display:flex; } [data-plugin-host] .home-search #search-input { min-width:0; flex:1; width:0; } .linguista-host-action { width:34px; height:36px; padding:6px; } }
+
+/* Host search lives in Rosetta; the standalone website keeps its own search. */
+[data-plugin-host] #search-dialog.home-search { display: none !important; }
+[data-plugin-host] .workbench-controls { top: 12px; right: 16px; gap: 6px; }
+[data-plugin-host] .linguista-host-action { width: 40px; height: 40px; padding: 4px; border-radius: 6px; }
+[data-plugin-host] .linguista-host-action img { width: 32px; height: 32px; object-fit: contain; }
+@media(max-width:900px) {
+  [data-plugin-host] .home-mobile-header { height: 68px; padding: 15px 14px 0; }
+  [data-plugin-host] #home-site-name { max-width: calc(100% - 195px); font-size: 18px; }
+  [data-plugin-host] .workbench-controls { right: 8px; gap: 2px; }
+  [data-plugin-host] .view-switch button { min-width: 46px; padding-inline: 9px; }
+  [data-plugin-host] .linguista-host-action { width: 34px; }
+}
+
+@media(min-width:901px) { [data-plugin-host][data-instant-reader] .rss-stage { padding-top: var(--linguista-reader-top, 68px); } }
+@media(max-width:900px) { [data-plugin-host][data-view-mode="rss"] .feature { inset: var(--linguista-reader-top, 68px) 0 0; height: calc(100% - var(--linguista-reader-top, 68px)); } }
+@media(max-width:360px) { [data-plugin-host] #home-site-name { max-width: calc(100% - 165px); } }
