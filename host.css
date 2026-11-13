@@ -5,3 +5,11 @@
   mask: url('./assets/platforms/notion.svg') center / contain no-repeat;
 }
 .dock-bear-mark { font: 600 clamp(12px, 2vw, 16px)/1 Georgia, serif; letter-spacing: -1px; }
+
+/* Host actions share the existing search row; standalone Home has no host actions. */
+.linguista-host-action { display:inline-grid; place-items:center; flex:none; width:40px; height:40px; padding:8px; color:var(--ink); background:transparent; border:0; cursor:pointer; pointer-events:auto; }
+.linguista-host-action[hidden] { display:none; }
+.linguista-host-action svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.linguista-host-action:hover,.linguista-host-action[aria-expanded="true"] { background:var(--accent-soft); }
+.linguista-host-action:disabled { opacity:.45; }
+@media(max-width:900px) { [data-plugin-host] .home-search .search-field { display:flex; } [data-plugin-host] .home-search #search-input { min-width:0; flex:1; width:0; } .linguista-host-action { width:34px; height:36px; padding:6px; } }
