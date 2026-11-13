@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="dark">
+<html data-web-drawer lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,18 +9,18 @@
   <title>Linguista Home</title>
   <link rel="icon" type="image/svg+xml" href="./assets/brand/home-favicon.svg?v=10">
   <link rel="stylesheet" href="./styles.css?v=7bd9a4fa4a18">
-  <link rel="stylesheet" href="./host.css">
-  <link rel="stylesheet" href="./rss.css?v=4400ea7829a4">
+  <link rel="stylesheet" href="./host.css?v=46136f7e6b34">
+  <link rel="stylesheet" href="./rss.css?v=debe57ba9de0">
   <link rel="stylesheet" href="./identity-widgets.css">
   <link rel="stylesheet" href="./site-home.css?v=b35d4310e02b">
   <script src="./theme.js"></script>
   <script defer src="./identity-widgets.js"></script>
   <script defer src="./site-home.js?v=c1486bacc90f"></script>
-  <script defer src="./main.js?v=a53951b9de51"></script>
-  <script defer src="./shell.js"></script>
-  <script type="module" src="./rss.js?v=be607e02a66a4a90"></script>
-  <link rel="stylesheet" href="./home-subscriptions.css?v=0fb694f3ee39">
-  <script defer src="./home-subscriptions.js?v=3"></script>
+  <script defer src="./main.js?v=8ef0b773bc68"></script>
+  <script defer src="./shell.js?v=1ea1b253633a"></script>
+  <script type="module" src="./rss.js?v=1aa75906b2dea683"></script>
+  <link rel="stylesheet" href="./home-subscriptions.css?v=39465fc9ea18">
+  <script defer src="./home-subscriptions.js?v=b63a11adc441"></script>
 </head>
 <body>
   <div class="site-scene" aria-hidden="true"><img class="site-backdrop" src="./assets/study-room.svg" alt="" width="1600" height="1000" fetchpriority="high"><div class="site-shade"></div></div>
@@ -140,7 +140,7 @@
       <svg class="icon theme-sun" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-sun"/></svg>
       <svg class="icon theme-moon" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-moon"/></svg>
     </button>
-    <button type="button" id="home-subscribe" aria-label="RSS 订阅" aria-haspopup="dialog" aria-controls="home-subscriptions" hidden>
+    <button type="button" id="home-subscribe" aria-label="Rosetta · 搜索与订阅" aria-expanded="false" aria-controls="home-subscriptions" hidden>
       <img src="./assets/brand/home-logo.svg?v=6" width="44" height="44" alt="">
     </button>
   </div>
@@ -164,8 +164,6 @@
         <div class="rss-reader-top">
           <span class="rss-eyebrow" id="rss-reader-site"></span>
           <div class="rss-reader-actions">
-            <button type="button" id="rss-ask-selection" hidden>解释选段</button>
-            <button type="button" id="rss-ask-ai" hidden>AI 伴读</button>
             <button type="button" id="rss-close" class="icon-button" aria-label="关闭阅读，返回文章列表"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
           </div>
         </div>
@@ -186,27 +184,22 @@
     </section>
   </template>
 
-  <dialog id="home-subscriptions" aria-labelledby="subscriptions-title">
+  <aside id="home-subscriptions" aria-label="搜索与订阅" inert>
     <header class="subscription-heading">
-      <div class="subscription-title">
-        <img src="./assets/brand/home-logo.svg?v=6" width="29" height="29" alt="">
-        <h2 id="subscriptions-title">RSS 订阅</h2>
+      <div role="tablist" aria-label="侧栏内容">
+        <button type="button" id="home-search-tab" role="tab" aria-selected="false" aria-controls="home-drawer-search" tabindex="-1">搜索</button>
+        <button type="button" id="home-subscriptions-tab" role="tab" aria-selected="true" aria-controls="home-drawer-feeds">订阅</button>
       </div>
-      <a class="subscription-plugin" href="/workshop/linguista-reader/" aria-label="DSH 插件下载">
-        <span class="subscription-plugin-mark" aria-hidden="true"></span>
-        DSH
-      </a>
-      <form method="dialog">
-        <button class="icon-button" aria-label="关闭订阅列表" autofocus><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
-      </form>
+      <button type="button" class="icon-button" aria-label="关闭侧栏"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
     </header>
-    <ul class="subscription-feeds">
+    <div id="home-drawer-search" role="tabpanel" aria-labelledby="home-search-tab" hidden></div>
+    <div id="home-drawer-feeds" role="tabpanel" aria-labelledby="home-subscriptions-tab">
+      <ul class="subscription-feeds">
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>Linguista</strong>
-          <span class="subscription-feed-description">Review、科技剪报与 HN 热点</span>
+          <a class="subscription-url" href="https://linguista.cn/rss.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/rss.xml"><strong>Linguista</strong></a>
+          <span class="subscription-feed-description">Review、科技剪报与 HN 热点 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>rss.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 Linguista 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -214,10 +207,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>AlpacaNotes</strong>
-          <span class="subscription-feed-description">个人随笔与日常笔记</span>
+          <a class="subscription-url" href="https://linguista.cn/alpacanotes/rss.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/alpacanotes/rss.xml"><strong>AlpacaNotes</strong></a>
+          <span class="subscription-feed-description">个人随笔与日常笔记 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/alpacanotes/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>alpacanotes/<wbr>rss.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 AlpacaNotes 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -225,10 +217,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>Library</strong>
-          <span class="subscription-feed-description">人物专辑译文与频道概要</span>
+          <a class="subscription-url" href="https://linguista.cn/library/rss.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/library/rss.xml"><strong>Library</strong></a>
+          <span class="subscription-feed-description">人物专辑译文与频道概要 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/library/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>library/<wbr>rss.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 Library 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -236,10 +227,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>Hinbox</strong>
-          <span class="subscription-feed-description">文章、访谈与研究报告</span>
+          <a class="subscription-url" href="https://linguista.cn/hinbox/rss.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/hinbox/rss.xml"><strong>Hinbox</strong></a>
+          <span class="subscription-feed-description">文章、访谈与研究报告 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/hinbox/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>hinbox/<wbr>rss.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 Hinbox 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -247,10 +237,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>what’s old</strong>
-          <span class="subscription-feed-description">科学技术笔记与调研报告</span>
+          <a class="subscription-url" href="https://linguista.cn/sci-notes/rss.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/sci-notes/rss.xml"><strong>what’s old</strong></a>
+          <span class="subscription-feed-description">科学技术笔记与调研报告 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/sci-notes/rss.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>sci-notes/<wbr>rss.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 what’s old 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -258,10 +247,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>bearblog</strong>
-          <span class="subscription-feed-description">公开博客文章的摘要镜像</span>
+          <a class="subscription-url" href="https://linguista.cn/home/bearblog.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/home/bearblog.xml"><strong>bearblog</strong></a>
+          <span class="subscription-feed-description">公开博客文章的摘要镜像 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/home/bearblog.xml" target="_blank" rel="noopener noreferrer" title="RSS 摘要镜像">https://linguista.cn/<wbr>home/<wbr>bearblog.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 bearblog 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -269,10 +257,9 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>Notion · Linguista</strong>
-          <span class="subscription-feed-description">公开阅读收藏与主题资料</span>
+          <a class="subscription-url" href="https://linguista.cn/feeds/notion-linguista.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/feeds/notion-linguista.xml"><strong>Notion · Linguista</strong></a>
+          <span class="subscription-feed-description">公开阅读收藏与主题资料 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/feeds/notion-linguista.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>feeds/<wbr>notion-linguista.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 Notion · Linguista 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
@@ -280,18 +267,18 @@
       </li>
       <li class="subscription-feed">
         <div class="subscription-feed-heading">
-          <strong>Notion · Bullets</strong>
-          <span class="subscription-feed-description">每日资讯、剪报与研究摘录</span>
+          <a class="subscription-url" href="https://linguista.cn/feeds/notion-bullets.xml" target="_blank" rel="noopener noreferrer" title="https://linguista.cn/feeds/notion-bullets.xml"><strong>Notion · Bullets</strong></a>
+          <span class="subscription-feed-description">每日资讯、剪报与研究摘录 <span>linguista.cn</span></span>
         </div>
-        <a class="subscription-url" href="https://linguista.cn/feeds/notion-bullets.xml" target="_blank" rel="noopener noreferrer">https://linguista.cn/<wbr>feeds/<wbr>notion-bullets.xml</a>
         <button class="subscription-copy" type="button" aria-label="复制 Notion · Bullets 的 RSS 地址">
           <svg class="icon copy-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
           <svg class="icon copied-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
         </button>
       </li>
-    </ul>
-    <p class="subscription-status sr-only" role="status"></p>
-  </dialog>
+      </ul>
+      <p class="subscription-status sr-only" role="status"></p>
+    </div>
+  </aside>
 
 </body>
 </html>
