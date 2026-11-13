@@ -157,9 +157,9 @@ const cardGroups = {
   {
     "key": "newsletter",
     "title": "Newsletter",
-    "meta": "每周精选与每日剪报，按期阅读。",
+    "meta": "按期阅读，也可以回到原文。",
     "href": "https://linguista.cn/newsletter/",
-    "description": "每周精选与每日剪报，按期阅读。",
+    "description": "按期阅读，也可以回到原文。",
     "action": "进入Newsletter",
     "image": "./assets/modules/home-newsletter.svg",
     "imageStyle": "icon",
