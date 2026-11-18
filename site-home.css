@@ -156,8 +156,7 @@ html[data-home-search] .newsletter { z-index: 35; }
   .search-matches { position:absolute; top:calc(100% + 8px); left:0; right:auto; width:min(520px,calc(100vw - 48px)); }
 }
 @media(max-width:900px) {
-  :root { --dock-shelf-fill: rgb(233 229 218 / 70%); }
-  :root[data-theme="dark"] { --dock-shelf-fill: rgb(48 58 55 / 72%); }
+  :root { --dock-shelf-fill: var(--glass); }
   .feature { --mobile-shelf-height: 136px; }
   .workbench-controls .view-switch #search-button { width: 36px; min-width: 36px; height: 36px; min-height: 36px; }
   html[data-view-mode="home"] .newsletter-cover-title { max-width: calc(100% - 164px); }
@@ -278,8 +277,7 @@ html[data-home-search] .newsletter { z-index: 35; }
 .home-search:not([data-has-query]) #close-search { display:none; }
 
 @media(max-width:900px) and (prefers-reduced-transparency:reduce) {
-  :root { --dock-shelf-fill:#e9e5da; }
-  :root[data-theme="dark"] { --dock-shelf-fill:#303a37; }
+  :root { --dock-shelf-fill:var(--surface-raised); }
   .card-shelf { backdrop-filter:none; -webkit-backdrop-filter:none; }
 }
 
