@@ -324,6 +324,25 @@ body:has(dialog[open]) { overflow: hidden; }
 .shelf-heading h2 { flex-shrink: 0; font: 500 14px var(--sans); }
 #shelf-site { display: inline-flex; align-items: center; min-height: 34px; text-underline-offset: 4px; }
 #shelf-site:hover, #shelf-site:focus-visible { color: var(--accent); text-decoration: underline; }
+
+#shelf-site[data-linguista-wordmark],
+span[data-linguista-wordmark] { font-size: 0; }
+[data-linguista-wordmark]::after {
+  content: '';
+  display: inline-block;
+  height: var(--wordmark-height, 12px);
+  aspect-ratio: 446 / 128;
+  vertical-align: middle;
+  background: currentColor;
+  mask: url('./assets/linguista/linguista-wordmark.svg') center / contain no-repeat;
+  forced-color-adjust: none;
+}
+#home-site-name [data-linguista-wordmark] {
+  --wordmark-height: 20px;
+  display: inline-flex;
+  vertical-align: middle;
+}
+#shelf-site { --wordmark-height: 18px; }
 .shelf-description { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 11px/1.5 var(--sans); color: var(--muted); }
 .shelf-links { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; flex: 0 0 88px; height: 84px; margin-left: 4px; padding-left: 16px; border-left: 1px solid var(--line); scroll-snap-align: start; }
 .shelf-links a { display: inline-flex; align-items: center; min-height: 22px; flex-shrink: 0; color: var(--muted); font: 11px/1.4 var(--sans); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }

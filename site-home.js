@@ -31,6 +31,7 @@
       const homeModules = sidebar.querySelector(':scope > .quick-links');
       const mobileHeader = sidebar.querySelector('.home-mobile-header');
       const siteName = mobileHeader.querySelector('#home-site-name');
+      const siteNameLabel = siteName.querySelector('span');
       const moduleLink = (item, group) => {
         const link = document.createElement('a'); link.className = 'site-module'; link.href = item.href;
         link.dataset.cardKey = item.key; link.setAttribute('aria-label', item.title); link.setAttribute('aria-controls', 'content-detail');
@@ -89,8 +90,11 @@
         mobileHeader.hidden = !compact.matches;
         mobileHeader.inert = !compact.matches;
         const isRSS = root.dataset.viewMode === 'rss';
-        siteName.textContent = sites[isRSS ? root.dataset.rssSite || 'home' : group]?.title || 'Linguista';
-        siteName.setAttribute('aria-label', siteName.textContent + (isRSS ? '，显示文章列表' : '，显示站点封面'));
+        const activeSite = sites[isRSS ? root.dataset.rssSite || 'home' : group];
+        const title = activeSite?.title || 'Linguista';
+        siteNameLabel.textContent = title;
+        siteNameLabel.toggleAttribute('data-linguista-wordmark', title === 'Linguista');
+        siteName.setAttribute('aria-label', title + (isRSS ? '，显示文章列表' : '，显示站点封面'));
         siteName.setAttribute('aria-controls', isRSS ? 'rss-article-list' : 'featured');
         siteName.setAttribute('aria-expanded', String(!isRSS && coverVisible && !feature.classList.contains('has-detail')));
         original.filter(child => !child.classList.contains('rss-sidebar')).forEach(child => {
