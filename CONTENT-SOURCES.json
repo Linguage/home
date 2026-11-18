@@ -191,6 +191,11 @@
       "sha256": "35348c9f41e87023dea53ff82c3ab7db837a287f03859e877ae4532fa5c53a9c"
     },
     {
+      "path": "assets/linguista/linguista-wordmark.svg",
+      "bytes": 14459,
+      "sha256": "ae5dba0c4bd788bd31a8f4c58f2c92e5a54bc8821787628187d5db0a8eb0e082"
+    },
+    {
       "path": "assets/linguista/lucide-LICENSE",
       "bytes": 2004,
       "sha256": "3c57143f22dac950efebf84002e360bba5458c7b90fe583b0667aaaef1a7256e"
@@ -552,8 +557,8 @@
     },
     {
       "path": "assets/study-room.svg",
-      "bytes": 22009,
-      "sha256": "e428e79bd70d11d4cccb8cb4dcf2f8a705aa43b4aeeb090b2bc60d7c5eda9670"
+      "bytes": 22218,
+      "sha256": "1a7a9cfcd888046c9df99958e61bc7e89d599656fb7f26e13d4b4d61f77110d3"
     },
     {
       "path": "identity-widgets.css",
@@ -567,13 +572,13 @@
     },
     {
       "path": "index.html",
-      "bytes": 26262,
-      "sha256": "58362825a2713bd78f38ebb5255035b63c7305ce1149f65b6ab2b0a4e9e3eed4"
+      "bytes": 26383,
+      "sha256": "e6b14d979e70d8c7f9b8cc48a608e707870ce168199f891881aa3922448af268"
     },
     {
       "path": "main.js",
-      "bytes": 61609,
-      "sha256": "90a33096fff43ef5cef8f9ae58871daac7d27a36f86eebe5df7452321b139d75"
+      "bytes": 61103,
+      "sha256": "32c32ca140e2a0608e72048b5b2c61b527db7e0879047595bd600f730287efa0"
     },
     {
       "path": "project-catalog.js",
@@ -587,23 +592,23 @@
     },
     {
       "path": "site-home.css",
-      "bytes": 40239,
-      "sha256": "b35d4310e02b986f7ff95f8534c3ddce6de3b9a6e1eb22acdf1ffa9b04ac7d83"
+      "bytes": 40114,
+      "sha256": "a94cf6943cb89147584ed3d5150ec671e18302a7d56031e7e4ae106e279b0c19"
     },
     {
       "path": "site-home.js",
-      "bytes": 11822,
-      "sha256": "c1486bacc90feabae19f8cc777be6199c56d428b88d930cc7d3b90bfe32ee9c3"
+      "bytes": 12029,
+      "sha256": "2946c460183669646a362166460e4d5465a4f0d523cf9cbfbf2dd8683228251b"
     },
     {
       "path": "styles.css",
-      "bytes": 47970,
-      "sha256": "7bd9a4fa4a182820ae46e5b8356f6a6c51a0b4edea1f0a448dc61de54f31f0b2"
+      "bytes": 48882,
+      "sha256": "5683d001c442538af5f406a33f6638d094b775c486832c374289d47f453a109a"
     },
     {
       "path": "theme.js",
-      "bytes": 300,
-      "sha256": "8712a86984dad0c2b5ec5089654f07b169bcfca37a60d23869e980f060cf588c"
+      "bytes": 4251,
+      "sha256": "607f5942113dc16278b8579d308a711bed0bc65ba01b83ef2249c5f28e2c7245"
     }
   ]
 }

@@ -1,14 +1,15 @@
 /* Shared Home palette, bounded sliding door and permanently visible navigation. */
 .linguista-workspace {
   container-type: inline-size; position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden;
-  --linguista-surface: #f3f2eb; --linguista-raised: #f9f8f2; --linguista-ink: #29382f; --linguista-muted: #647269; --linguista-line: #29382f25; --linguista-hover: #64726912; --linguista-accent: #728467;
+  --linguista-surface: #ede4d5; --linguista-raised: #f4ecdf; --linguista-ink: #392f29; --linguista-muted: #51453c; --linguista-line: #392f2925; --linguista-hover: #51453c12; --linguista-accent: #884b3d;
   --linguista-drawer-width: min(100%, clamp(320px, 34%, 430px));
   background: var(--linguista-surface); color: var(--linguista-ink); color-scheme: light; font: 13px/1.55 system-ui, sans-serif;
 }
-.linguista-workspace[data-theme="dark"] { --linguista-surface: #203438; --linguista-raised: #294146; --linguista-ink: #e7e7d9; --linguista-muted: #a2b4b1; --linguista-line: #d7e1d326; --linguista-hover: #b2cec213; --linguista-accent: #c7ba90; color-scheme: dark; }
+.linguista-workspace[data-theme="dark"] { color-scheme: dark; }
 .linguista-content, .linguista-reading-surface { position: absolute; inset: 0; min-width: 0; min-height: 0; }
 .linguista-reading-surface > iframe { display: block; width: 100%; height: 100%; border: 0; }
 .linguista-drawer {
+  container: linguista-drawer / inline-size;
   --dsw-specific-input-major: var(--linguista-raised); --dsw-specific-menu: var(--linguista-raised); --dsw-specific-selector: var(--linguista-hover); --dsw-menu-backdrop-filter: none;
   --dsw-alias-bg-layer-2: var(--linguista-raised); --dsw-alias-bg-layer-3: var(--linguista-raised); --dsw-alias-label-tertiary: var(--linguista-muted); --dsw-alias-label-caption: var(--linguista-muted);
   --dsw-alias-bg-base: var(--linguista-surface); --dsw-alias-bg-layer-1: var(--linguista-raised); --dsw-alias-bg-module-platform: var(--linguista-raised);
@@ -88,7 +89,12 @@
 .linguista-settings input[role="switch"]::before { content: ''; display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--linguista-surface); }
 .linguista-settings input[role="switch"]:checked { background: var(--linguista-accent); }
 .linguista-settings input[role="switch"]:checked::before { transform: translateX(14px); }
-@container(max-width:360px) { .linguista-capsule [role="radio"] { gap: 4px; padding-inline: 6px; } .linguista-setting-row { flex-wrap: wrap; } }
+@container linguista-drawer (max-width: 360px) {
+  .linguista-setting-row { flex-wrap: wrap; }
+  .linguista-capsule { max-width: 100%; flex-wrap: wrap; }
+  .linguista-capsule [role="radio"] { gap: 4px; padding-inline: 6px; }
+  .linguista-capsule[aria-label="主题模式"] svg { display: none; }
+}
 .linguista-open-sidebar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
 
 .linguista-subscriptions small span { opacity: .7; }

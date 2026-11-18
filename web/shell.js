@@ -59,12 +59,16 @@
     new MutationObserver(() => { publishSearch(); reportLayout(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-view-mode', 'data-rss-site', 'data-rss-reading'] });
     publishSearch(); reportLayout();
   }
+  function reportPalette() {
+    if (connected) send('palette', { palette: document.documentElement.dataset.palette });
+  }
   function configure(value) {
     if (value && typeof value === 'object') preferences = value;
     createActions();
     const themeButton = document.querySelector('#workbench-theme');
     if (themeButton) themeButton.hidden = true;
     window.dispatchEvent(new CustomEvent('linguista-theme-choice', { detail: preferences.theme }));
+    reportPalette();
     prepareLinks(document);
   }
   const send = (type, fields = {}) => window.parent.postMessage({ channel, type, ...fields }, location.origin === 'null' ? '*' : location.origin);
@@ -85,6 +89,7 @@
       }
       if (message.type === 'open-result') void window.LinguistaRSS?.openResult(message.site, message.id);
     });
+    window.addEventListener('linguista-palette-change', reportPalette);
     window.addEventListener('linguista-rss-update', publishSearch);
     document.addEventListener('keydown', event => {
       if (!connected) return;

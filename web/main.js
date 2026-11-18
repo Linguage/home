@@ -504,7 +504,11 @@ function applyReadingCover(card, item, group) {
 }
 featuredItems.forEach((item, index) => {
   const group = { AlpacaNotes: 'alpaca', Library: 'library', Hinbox: 'hinbox' }[item.site] || 'science';
-  applyReadingCover(slideSources[index].querySelector('.feature-card'), item, group);
+  const card = slideSources[index].querySelector('.feature-card');
+  applyReadingCover(card, item, group);
+  card.style.setProperty('--cover-bg', 'var(--workshop-paper)');
+  card.style.setProperty('--cover-ink', 'var(--ink)');
+  card.style.setProperty('--cover-accent', 'var(--accent)');
 });
 ['workshop', 'bookmarks', 'about', 'science'].forEach(id => {
   const panel = document.querySelector(`#${id}`);
@@ -691,6 +695,7 @@ function openShelf(group, trigger = homeButton, { selectSite = true } = {}) {
   shelfReturnFocus = trigger;
   const siteLink = document.querySelector('#shelf-site');
   siteLink.textContent = sites[group].title;
+  siteLink.toggleAttribute('data-linguista-wordmark', group === 'home');
   siteLink.href = sites[group].href;
   shelf.setAttribute('data-module-icons', '');
   document.querySelector('#shelf-close').hidden = true;
